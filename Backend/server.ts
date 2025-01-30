@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/database";
+import userRoutes from "./routes/user";
 
-//const { connectDB, sequelize } = require("./config/database");
 
 dotenv.config();
 
@@ -11,6 +11,7 @@ const port = process.env.PORT;
 
 // Middleware pour parser le JSON
 app.use(express.json());
+app.use("/api/users", userRoutes);
 
 app.get("/test", (req, res) => {
     res.json({ message: "Hello World" });
