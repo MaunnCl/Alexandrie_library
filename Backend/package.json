@@ -6,7 +6,10 @@
   "scripts": {
     "start": "ts-node server.ts",
     "dev": "nodemon server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:generate": "npx drizzle-kit generate",
+    "db:migrate": "npx drizzle-kit migrate",
+    "db:push": "npx drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +19,7 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.39.1",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.1",
@@ -26,6 +30,8 @@
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",
     "@types/node": "^22.12.0",
+    "@types/pg": "^8.11.11",
+    "drizzle-kit": "^0.30.4",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",

@@ -1,5 +1,5 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
 import 'dotenv/config';
+import { defineConfig } from 'drizzle-kit';
 
 const dbName = process.env.DB_NAME as string;
 const dbUser = process.env.DB_USER as string;
@@ -8,4 +8,11 @@ const dbHost = process.env.DB_HOST as string;
 
 const dbUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}/${dbName}`;
 
-export const db = drizzle(process.env.DATABASE_URL!);
+export default defineConfig({
+    dialect: "postgresql",
+    out: "./config/migration",
+    schema: "./config/schema.ts",
+    dbCredentials: {
+        url: dbUrl as string,
+    },
+});
