@@ -1,18 +1,21 @@
-import { Dialect, Sequelize } from "sequelize";
-require("dotenv").config();
+import { Sequelize, Dialect } from "sequelize";
+import dotenv from "dotenv";
 
-const sequelize = new Sequelize(
-    process.env.DB_NAME as string,
-    process.env.DB_USER as string,
-    process.env.DB_PASSWORD as string,
-    {
-        host: process.env.DB_HOST as string,
-        dialect: process.env.DB_DIALECT as Dialect,
-        logging: false,
-    }
-);
+dotenv.config();
 
-async function connectDB() {
+const dbName = process.env.DB_NAME as string;
+const dbUser = process.env.DB_USER as string;
+const dbPassword = process.env.DB_PASSWORD as string;
+const dbHost = process.env.DB_HOST as string;
+const dbDialect = process.env.DB_DIALECT as Dialect;
+
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+    host: dbHost,
+    dialect: dbDialect,
+    logging: false,
+});
+
+export async function connectDB() {
     try {
         await sequelize.authenticate();
         console.log("✅ Connexion à PostgreSQL réussie !");
@@ -22,4 +25,4 @@ async function connectDB() {
     }
 }
 
-module.exports = { sequelize, connectDB };
+export default sequelize;
