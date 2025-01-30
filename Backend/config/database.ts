@@ -12,7 +12,7 @@ const dbDialect = process.env.DB_DIALECT as Dialect;
 const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,
     dialect: dbDialect,
-    logging: false,
+    logging: false
 });
 
 export async function connectDB() {

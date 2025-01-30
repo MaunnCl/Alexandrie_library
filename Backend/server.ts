@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./config/database.ts";
+import { connectDB } from "./config/database";
 
 //const { connectDB, sequelize } = require("./config/database");
 
@@ -11,6 +11,10 @@ const port = process.env.PORT;
 
 // Middleware pour parser le JSON
 app.use(express.json());
+
+app.get("/test", (req, res) => {
+    res.json({ message: "Hello World" });
+});
 
 // Lancer le serveur
 async function startServer() {
