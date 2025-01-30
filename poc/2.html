@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Congress Streaming</title>
+    <style>
+        body {
+            background-color: #0e0e0e;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background-color: #181818;
+        }
+        .navbar h1 {
+            color: #00d4ff;
+            font-size: 24px;
+        }
+        .navbar nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        .navbar nav a:hover {
+            color: #00d4ff;
+        }
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(to bottom, #121212, #181818);
+        }
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #bbbbbb;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+        .grid-item {
+            background-color: #222;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .grid-item:hover {
+            transform: scale(1.05);
+        }
+        .grid-item img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .grid-item h3 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .grid-item p {
+            font-size: 14px;
+            color: #cccccc;
+        }
+        .details {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>MedStream</h1>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Live Events</a>
+            <a href="#">Categories</a>
+            <a href="#">Login</a>
+        </nav>
+    </div>
+    <div class="hero">
+        <h2>Experience the Future of Medical Congresses</h2>
+        <p>Stream, Learn, and Connect with Leading Experts</p>
+    </div>
+    <div class="grid">
+        <div class="grid-item">
+            <img src="https://via.placeholder.com/300" alt="Congress 1">
+            <h3>Advances in Cardiology</h3>
+            <p>Latest research and innovations in cardiovascular medicine.</p>
+            <p class="details">Duration: 2h 30m | Speakers: Dr. John Doe, Dr. Jane Smith</p>
+        </div>
+        <div class="grid-item">
+            <img src="https://via.placeholder.com/300" alt="Congress 2">
+            <h3>Neuroscience Innovations</h3>
+            <p>Breakthrough discoveries in brain science and neurological treatments.</p>
+            <p class="details">Duration: 1h 45m | Speakers: Dr. Alice Brown, Dr. Robert Wilson</p>
+        </div>
+        <div class="grid-item">
+            <img src="https://via.placeholder.com/300" alt="Congress 3">
+            <h3>Breakthroughs in Oncology</h3>
+            <p>Exploring the latest advancements in cancer research and therapy.</p>
+            <p class="details">Duration: 3h 15m | Speakers: Dr. Emily White, Dr. Michael Green</p>
+        </div>
+        <div class="grid-item">
+            <img src="https://via.placeholder.com/300" alt="Congress 4">
+            <h3>Robotic Surgery Summit</h3>
+            <p>How AI and robotics are revolutionizing surgical procedures.</p>
+            <p class="details">Duration: 2h | Speakers: Dr. Kevin Lee, Dr. Sarah Johnson</p>
+        </div>
+    </div>
+</body>
+</html>
