@@ -1,3 +1,5 @@
+import '../styles/GridSection.css';
+
 function GridSection() {
   return (
     <div className="grid">

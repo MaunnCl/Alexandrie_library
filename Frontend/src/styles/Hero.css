@@ -1,0 +1,28 @@
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(to bottom right, #121212, #1f1f1f);
+}
+
+.hero h2 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #00d4ff;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #bbbbbb;
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+@media (max-width: 768px) {
+    .hero h2 {
+        font-size: 32px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+}
