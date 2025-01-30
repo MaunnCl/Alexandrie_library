@@ -32,6 +32,38 @@ User.init({
         type: DataTypes.STRING,
         allowNull: false
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    city: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    country: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    zipCode: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    subscription_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: "Subscription",
+            key: "id"
+        }
+    },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
