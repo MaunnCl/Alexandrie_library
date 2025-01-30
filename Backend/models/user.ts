@@ -3,8 +3,15 @@ import { DataTypes, Model } from "sequelize";
 
 class User extends Model {
     public id!: number;
+    public name!: string;
+    public lastName!: string;
     public email!: string;
     public password!: string;
+    public phone!: string;
+    public city!: string;
+    public country!: string;
+    public zipCode!: string;
+    public subscription_id!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -34,7 +41,8 @@ User.init({
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW
-    }
+    },
+
 }, {
     sequelize,
     modelName: "User"
