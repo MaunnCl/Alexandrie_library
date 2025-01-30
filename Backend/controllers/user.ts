@@ -1,8 +1,10 @@
+import { userTable } from "../config/schema";
 import { Request, Response } from "express";
-import User from "../models/user";
-import bcrypt from "bcrypt";
+import { db } from "../config/database";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import { eq } from "drizzle-orm";
 
 dotenv.config();
 
@@ -11,11 +13,11 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await db.select().from(userTable).where(eq(userTable.email, email));
     if (existingUser) return res.status(400).json({ message: "Email déjà utilisé" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ email, password: hashedPassword });
+    const newUser = await db.insert(userTable).values({ email: email, password: hashedPassword });
 
     res.status(201).json({ message: "Utilisateur créé", user: newUser });
   } catch (error) {
@@ -28,13 +30,13 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await db.select().from(userTable).where(eq(userTable.email, email));
     if (!user) return res.status(400).json({ message: "Utilisateur non trouvé" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user[0].password);
     if (!isMatch) return res.status(400).json({ message: "Mot de passe incorrect" });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user[0].id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
 
     res.json({ message: "Connexion réussie", token, user });
   } catch (error) {
@@ -45,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
 // 📌 3️⃣ Obtenir un utilisateur (Read)
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await db.select().from(userTable).where(eq(userTable.id, Number(req.params.id)));
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
     res.json(user);
@@ -59,11 +61,11 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findByPk(req.params.id);
+    const user = await db.select().from(userTable).where(eq(userTable.id, Number(req.params.id)));
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : user.password;
-    await user.update({ email, password: hashedPassword });
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : user[0].password;
+    await db.update(userTable).set({ email, password: hashedPassword }).where(eq(userTable.id, Number(req.params.id)));
 
     res.json({ message: "Utilisateur mis à jour", user });
   } catch (error) {
@@ -74,10 +76,10 @@ export const updateUser = async (req: Request, res: Response) => {
 // 📌 5️⃣ Suppression de compte (Delete)
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await db.select().from(userTable).where(eq(userTable.id, Number(req.params.id)));
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
-    await user.destroy();
+    await db.delete(userTable).where(eq(userTable.id, Number(req.params.id)));
     res.json({ message: "Utilisateur supprimé" });
   } catch (error) {
     res.status(500).json({ message: "Erreur serveur", error });
