@@ -1,4 +1,6 @@
+import { relations } from "drizzle-orm";
 import { pgTable, serial, varchar, date } from "drizzle-orm/pg-core";
+import { subscriptionTable } from "./subscription";
 
 export const userTable = pgTable("users", {
     id: serial("id").primaryKey().unique(),
@@ -13,3 +15,10 @@ export const userTable = pgTable("users", {
     createdAt: date("createdAt").notNull().defaultNow(),
     updatedAt: date("updatedAt").notNull().defaultNow()
 });
+
+export const userRelations = relations(userTable, ({ one }) => ({
+    subscription: one(subscriptionTable, {
+        fields: [userTable.id],
+        references: [subscriptionTable.user_id]
+    }),
+}))

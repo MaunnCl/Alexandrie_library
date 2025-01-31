@@ -1,4 +1,6 @@
 import { pgTable, uuid, varchar, date, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { paymentHistoryTable } from "./payment";
 import { userTable } from "./user";
 
 export const subscriptionTable = pgTable("subscriptions", {
@@ -14,3 +16,11 @@ export const subscriptionTable = pgTable("subscriptions", {
     createdAt: date("createdAt").notNull().defaultNow(),
     updatedAt: date("updatedAt").notNull().defaultNow()
 });
+
+export const subscriptionRelations = relations(subscriptionTable, ({ one, many }) => ({
+    payments: many(paymentHistoryTable),
+    user: one(userTable, {
+        fields: [subscriptionTable.user_id],
+        references: [userTable.id]
+    })
+}))
