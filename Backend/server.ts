@@ -1,7 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import userRoutes from "./routes/user";
-import { Login } from "./controllers/user";
 
 
 dotenv.config();
@@ -11,13 +9,10 @@ const port = process.env.PORT;
 
 // Middleware pour parser le JSON
 app.use(express.json());
-app.use("/api/users", userRoutes);
 
 app.get("/test", (req, res) => {
     res.json({ message: "Hello World" });
 });
-
-app.post("/login", Login);
 
 // Lancer le serveur
 //server automatically connected to the database when it starts
