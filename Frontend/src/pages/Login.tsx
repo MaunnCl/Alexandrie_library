@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/Login.css';
 
 function Login() {
@@ -27,7 +26,12 @@ function Login() {
 
         <div className="login-divider">or</div>
 
-        <button className="signup-button">Create Account</button>
+        <button 
+          className="signup-button" 
+          onClick={() => window.location.href = '/register'}
+        >
+          Create Account
+        </button>
       </div>
     </div>
   );
