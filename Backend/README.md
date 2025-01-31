@@ -168,6 +168,39 @@ L'API utilise PostgreSQL avec Drizzle ORM.
 | `zipcode`  	| `VARCHAR(10)` 	|	|
 | `createdat`  	| `DATE` 	|DEFAULT NOW()	|
 
+
+### 🛠 **Table `subscriptions`**
+| Champ | Type | Contraintes |
+|-------|------|------------|
+| `id` | `UUID` | PRIMARY KEY, UNIQUE |
+| `user_id` | `INTEGER` | FOREIGN KEY → `users.id` (ON DELETE CASCADE) |
+| `status` | `VARCHAR(50)` | NOT NULL |
+| `plan` | `VARCHAR(100)` | NOT NULL |
+| `price` | `INTEGER` | NOT NULL |
+| `payment_method` | `VARCHAR(50)` | NOT NULL |
+| `next_billing_date` | `DATE` | NULL |
+| `subscription_started` | `DATE` | NOT NULL |
+| `subscription_ended` | `DATE` | NULL |
+| `createdAt` | `DATE` | DEFAULT NOW() |
+| `updatedAt` | `DATE` | DEFAULT NOW() |
+
+### 🛠 **Table `payment_history`**
+| Champ | Type | Contraintes |
+|-------|------|------------|
+| `id` | `UUID` | PRIMARY KEY, UNIQUE |
+| `subscription_id` | `UUID` | FOREIGN KEY → `subscriptions.id` (ON DELETE CASCADE) |
+| `amount` | `INTEGER` | NOT NULL |
+| `payment_date` | `DATE` | NOT NULL |
+| `payment_method` | `VARCHAR(50)` | NOT NULL |
+| `status` | `VARCHAR(50)` | NOT NULL |
+| `createdAt` | `DATE` | DEFAULT NOW() |
+
+### 🔹 **Relations entre les tables**
+- **Un utilisateur (`users`) peut avoir plusieurs abonnements (`subscriptions`).**
+- **Un abonnement (`subscriptions`) peut avoir plusieurs paiements enregistré (`payment_history`)**
+- **Lorsqu’un utilisateur est supprimé, ses abonnements sont aussi supprimés (`ON DELETE CASCADE`).**
+- **Lorsqu’un abonnement est supprimé, son historique de paiements est aussi supprimé (`ON DELETE CASCADE`).**
+
 ---
 
 ## ✅ **7. Sécurité**
