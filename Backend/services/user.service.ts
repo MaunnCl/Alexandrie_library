@@ -1,7 +1,13 @@
+import bcrypt from "bcrypt";
 import { UserRepository } from "../repository/user.repository";
 
 export class UserService {
     static async createUser(userData: any) {
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+        
+        userData.password = hashedPassword;
+
         return await UserRepository.createUser(userData);
     }
 
@@ -14,6 +20,10 @@ export class UserService {
     }
 
     static async updateUser(id: number, userData: any) {
+        if (userData.password) {
+            const saltRounds = 10;
+            userData.password = await bcrypt.hash(userData.password, saltRounds);
+        }
         return await UserRepository.updateUser(id, userData);
     }
 
