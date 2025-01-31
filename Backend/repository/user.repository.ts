@@ -12,9 +12,7 @@ export class UserRepository {
             date_of_birth: userData.date_of_birth,
             address: userData.address,
             country: userData.country,
-            zipcode: userData.zipcode,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            zipcode: userData.zipcode
         };
 
         try {
