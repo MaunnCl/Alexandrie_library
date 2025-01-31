@@ -6,29 +6,29 @@ Elle inclut également l'**authentification avec JWT**, le **hachage des mots de
 ---
 
 ## 📂 **1. Structure du projet**
-┣ 📂 config/ # Configuration de la BDD
-┃ ┣ 📜 db.ts # Connexion à PostgreSQL avec Drizzle ORM
-┣ 📂 docs/ # Dossier pour Swagger
-┃ ┗ 📜 swagger.ts # Configuration Swagger
-┣ 📂 repository/ # Requêtes SQL via Drizzle ORM
-┃ ┗ 📜 user.repository.ts
-┣ 📂 services/ # Logique métier
-┃ ┣ 📜 auth.service.ts # Authentification et JWT
-┃ ┗ 📜 user.service.ts
-┣ 📂 controllers/ # Gestion des requêtes HTTP
-┃ ┣ 📜 auth.controller.ts
-┃ ┗ 📜 user.controller.ts
-┣ 📂 middlewares/ # Middleware pour protéger les routes avec JWT
-┃ ┗ 📜 auth.middleware.ts
-┣ 📂 routes/ # Définition des endpoints Express
-┃ ┣ 📜 auth.routes.ts
-┃ ┗ 📜 user.routes.ts
-┣ 📂 schemas/ # Schémas Drizzle ORM pour PostgreSQL
-┃ ┗ 📜 user.ts
-┃ ┗ 📜 subscription.ts
-┃ ┗ 📜 payment.ts
-┣ 📜 server.ts # Point d'entrée du serveur Express
-┗ 📜 .env # Fichier de configuration environnementale
+┣ 📂 config/ # Configuration de la BDD  
+┃ ┣ 📜 db.ts # Connexion à PostgreSQL avec Drizzle ORM  
+┣ 📂 docs/ # Dossier pour Swagger  
+┃ ┗ 📜 swagger.ts # Configuration Swagger  
+┣ 📂 repository/ # Requêtes SQL via Drizzle ORM  
+┃ ┗ 📜 user.repository.ts  
+┣ 📂 services/ # Logique métier  
+┃ ┣ 📜 auth.service.ts # Authentification et JWT  
+┃ ┗ 📜 user.service.ts  
+┣ 📂 controllers/ # Gestion des requêtes HTTP  
+┃ ┣ 📜 auth.controller.ts  
+┃ ┗ 📜 user.controller.ts  
+┣ 📂 middlewares/ # Middleware pour protéger les routes avec JWT  
+┃ ┗ 📜 auth.middleware.ts  
+┣ 📂 routes/ # Définition des endpoints Express  
+┃ ┣ 📜 auth.routes.ts  
+┃ ┗ 📜 user.routes.ts  
+┣ 📂 schemas/ # Schémas Drizzle ORM pour PostgreSQL  
+┃ ┗ 📜 user.ts  
+┃ ┗ 📜 subscription.ts  
+┃ ┗ 📜 payment.ts  
+┣ 📜 server.ts # Point d'entrée du serveur Express  
+┗ 📜 .env # Fichier de configuration environnementale  
 
 ---
 
