@@ -11,13 +11,13 @@ dotenv.config();
 // 📌 1️⃣ Inscription (Create)
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { firstName, lastName, username, email, password } = req.body;
 
     const existingUser = await db.select().from(userTable).where(eq(userTable.email, email));
     if (existingUser) return res.status(400).json({ message: "Email déjà utilisé" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await db.insert(userTable).values({ email: email, password: hashedPassword });
+    const newUser = await db.insert(userTable).values({ email: email, password: hashedPassword, username: username, firstname: firstName, lastname: lastName });
 
     res.status(201).json({ message: "Utilisateur créé", user: newUser });
   } catch (error) {
@@ -26,15 +26,21 @@ export const register = async (req: Request, res: Response) => {
 };
 
 // 📌 2️⃣ Connexion (Read)
-export const Login: RequestHandler = async (req: Request, res: Response) => {
+export const Login: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     const user = await db.select().from(userTable).where(eq(userTable.email, email));
-    if (!user) return res.status(400).json({ message: "Utilisateur non trouvé" });
+    if (!user) {
+      res.status(400).json({ message: "Utilisateur non trouvé" });
+      return;
+    }
 
     const isMatch = await bcrypt.compare(password, user[0].password);
-    if (!isMatch) return res.status(400).json({ message: "Mot de passe incorrect" });
+    if (!isMatch) {
+      res.status(400).json({ message: "Mot de passe incorrect" });
+      return;
+    }
 
     const token = jwt.sign({ id: user[0].id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
 
