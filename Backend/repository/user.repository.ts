@@ -7,7 +7,7 @@ export class UserRepository {
         const user = {
             firstname: userData.firstname,
             lastname: userData.lastname,
-            email: userData.email,
+            email: (userData.email as string).toLowerCase(),
             password: userData.password,
             date_of_birth: userData.date_of_birth,
             address: userData.address,
