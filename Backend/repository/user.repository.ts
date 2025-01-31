@@ -4,7 +4,16 @@ import { eq } from "drizzle-orm";
 
 export class UserRepository {
     static async createUser(userData: any) {
-        return db.insert(userTable).values(userData).returning();
+        return (await db.insert(userTable).values({
+            firstname: userData.firstname,
+            lastname: userData.lastname,
+            email: userData.email,
+            password: userData.password,
+            date_of_birth: userData.date_of_birth,
+            address: userData.address,
+            zipcode: userData.zipcode,
+            country: userData.country
+        }).returning());
     }
 
     static async getAllUsers() {

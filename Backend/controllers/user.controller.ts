@@ -23,7 +23,10 @@ export class UserController {
     static async getUserById(req: Request, res: Response) {
         try {
             const user = await UserService.getUserById(Number(req.params.id));
-            if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+            if (!user)  {
+                res.status(404).json({ message: "Utilisateur non trouvé" });
+                return;
+            }
             res.status(200).json(user);
         } catch (error) {
             res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur", error });

@@ -9,13 +9,16 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
-    "db:push": "npx drizzle-kit push"
+    "db:push": "npx drizzle-kit push",
+    "bun:dev": "bun --watch server.ts",
+    "bun:prod": "bun run server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/cors": "^2.8.17",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
