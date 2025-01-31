@@ -37,6 +37,7 @@
 .grid-item p {
     font-size: 14px;
     color: #cccccc;
+    cursor: pointer;
 }
 
 .details {

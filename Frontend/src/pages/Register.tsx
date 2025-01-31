@@ -15,6 +15,8 @@ function Register() {
     const [expiration, setExpiration] = useState('');
     const [cvv, setCvv] = useState('');
     const [step, setStep] = useState(1);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
     const handleBirthDateChange = (e: ChangeEvent<HTMLInputElement>) => {
         const inputDate = new Date(e.target.value);
@@ -39,11 +41,41 @@ function Register() {
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Form submitted! (Step 3 completed)');
+        setError('');
+        setSuccess(false);
+    
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+    
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    firstname: firstName,
+                    lastname: lastName,
+                    email,
+                    password
+                })
+            });
+    
+            if (response.ok) {
+                setSuccess(true);
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Registration failed. Please try again.');
+            }
+        } catch (err) {
+            setError('Network error. Please try again.');
+        }
     };
-
+    
     const showStep1 = step === 1;
     const showStep2 = step === 2;
     const showStep3 = step === 3;
