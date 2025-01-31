@@ -4,16 +4,27 @@ import { eq } from "drizzle-orm";
 
 export class UserRepository {
     static async createUser(userData: any) {
-        return (await db.insert(userTable).values({
+        const user = {
             firstname: userData.firstname,
             lastname: userData.lastname,
             email: userData.email,
             password: userData.password,
             date_of_birth: userData.date_of_birth,
             address: userData.address,
+            country: userData.country,
             zipcode: userData.zipcode,
-            country: userData.country
-        }).returning());
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+
+        try {
+            const result = await db.insert(userTable).values(user).returning();
+            if (result.length > 0) return result[0];
+            console.log("⚠️ User not created.");
+        } catch (error) {
+            console.error("❌ Database Insert Error:", error);
+            return null;
+        }
     }
 
     static async getAllUsers() {

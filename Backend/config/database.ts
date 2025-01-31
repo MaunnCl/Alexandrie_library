@@ -1,4 +1,5 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from "postgres";
 import 'dotenv/config';
 
 const dbName = process.env.DB_NAME as string;
@@ -8,4 +9,4 @@ const dbHost = process.env.DB_HOST as string;
 
 const dbUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}/${dbName}`;
 
-export const db = drizzle(process.env.DATABASE_URL!);
+export const db = drizzle(postgres(dbUrl as string));
