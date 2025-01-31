@@ -1,5 +1,5 @@
 import { userTable } from "../config/schema";
-import { Request, Response } from "express";
+import { Request, Response, RequestHandler } from "express";
 import { db } from "../config/database";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
@@ -26,7 +26,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 // 📌 2️⃣ Connexion (Read)
-export const login = async (req: Request, res: Response) => {
+export const Login: RequestHandler = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 

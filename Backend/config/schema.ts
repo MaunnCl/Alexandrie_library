@@ -3,8 +3,9 @@ import { uuid, varchar, pgTable, date, integer, serial } from "drizzle-orm/pg-co
 // Defining user table
 export const userTable = pgTable("users", {
     id: serial("id").primaryKey().unique(),
-    name: varchar("name"),
-    lastName: varchar("lastName"),
+    firstname: varchar("firstname", {length: 255}),
+    lastname: varchar("lastname", {length: 255}),
+    username: varchar("username", {length: 255}).notNull().unique(),
     email: varchar("email", {length: 255}).notNull().unique(),
     password: varchar("password").notNull(),
     phone: varchar("phone"),

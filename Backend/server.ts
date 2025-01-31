@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import { connectDB } from "./config/database";
 import userRoutes from "./routes/user";
+import { Login } from "./controllers/user";
 
 
 dotenv.config();
@@ -17,9 +17,11 @@ app.get("/test", (req, res) => {
     res.json({ message: "Hello World" });
 });
 
+app.post("/login", Login);
+
 // Lancer le serveur
+//server automatically connected to the database when it starts
 async function startServer() {
-    await connectDB();
     //await sequelize.sync({ alter: true });
     app.listen(port, () => console.log(`🚀 Serveur démarré sur http://localhost:${port}`));
 }
