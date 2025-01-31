@@ -3,7 +3,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background-color: #181818;
+    background-color: #252525;
     position: sticky;
     top: 0;
     z-index: 10;
@@ -43,7 +43,7 @@
     border: 1px solid #444;
     border-radius: 20px 0 0 20px;
     outline: none;
-    background-color: #1f1f1f;
+    background-color: #2a2a2a;
     color: #fff;
     transition: width 0.3s;
 }

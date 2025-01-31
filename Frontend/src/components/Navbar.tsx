@@ -16,7 +16,7 @@ function Navbar() {
         <a href="#">Home</a>
         <a href="#">Live Events</a>
         <a href="#">Categories</a>
-        <a href="#">Login</a>
+        <a href="/login">Login</a>
         <form className="search-bar" onSubmit={handleSubmit}>
           <input
             type="text"

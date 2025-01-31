@@ -28,7 +28,7 @@
     box-sizing: border-box;
     text-align: center;
     padding: 20px;
-    background-color: #181818;
+    background-color: #252525;
     position: relative;
 }
 
@@ -78,6 +78,7 @@
     background-color: rgba(0, 0, 0, 0.8);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
     .carousel-title {
         font-size: 24px;

@@ -1,5 +1,5 @@
 .login-page {
-    background-color: #0e0e0e;
+    background-color: #1a1a1a;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -9,7 +9,7 @@
 }
 
 .login-container {
-    background-color: #181818;
+    background-color: #252525;
     padding: 40px;
     border-radius: 8px;
     width: 100%;
@@ -39,7 +39,7 @@
     margin-bottom: 20px;
     border: 1px solid #444;
     border-radius: 4px;
-    background-color: #1f1f1f;
+    background-color: #2a2a2a;
     color: #fff;
 }
 
