@@ -11,6 +11,10 @@ export class UserRepository {
         return db.select().from(userTable);
     }
 
+    static async getUserByEmail(email: string) {
+        return db.select().from(userTable).where(eq(userTable.email, email)).then(users => users[0]);
+    }
+
     static async getUserById(id: number) {
         return db.select().from(userTable).where(eq(userTable.id, id));
     }
