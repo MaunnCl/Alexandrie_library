@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { subscriptionTable } from "./subscription";
-import { pgTable, serial, varchar, date, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, date, timestamp, integer, uuid } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("users", {
     id: serial("id").primaryKey().unique().notNull(),
@@ -22,3 +22,23 @@ export const userRelations = relations(userTable, ({ one }) => ({
         references: [subscriptionTable.user_id]
     }),
 }))
+
+export const userProfile = pgTable("usersProfiles", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
+    profile_picture: varchar("profile_picture", {length: 255}).notNull(),
+    bio: varchar("bio", {length: 500}).notNull(),
+    preferences: varchar("preferences", {length: 255}).notNull()
+})
+
+export const roleList = pgTable("roleList", {
+    id: serial("id").primaryKey().unique().notNull(),
+    role_name: varchar("role_name", {length: 255}).notNull(),
+    description: varchar("description", {length: 255}).notNull()
+})
+
+export const usersRoles = pgTable("usersRoles", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
+    role_id: integer("role_id").notNull().references(() => roleList.id, { onDelete: "cascade" }),
+})
