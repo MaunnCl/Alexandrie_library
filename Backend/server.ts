@@ -3,6 +3,10 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/user.route";
+import userProfileRoutes from "./routes/userProfile.route";
+import roleRoutes from "./routes/roleList.route";
+import usersRolesRoutes from "./routes/userRole.route";
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
@@ -19,7 +23,10 @@ app.use((req: express.Request, res, next) =>{
     next();
 });
 app.use("/api", authRoutes);
-
+app.use("/users", userRoutes);
+app.use("/profiles", userProfileRoutes);
+app.use("/roles", roleRoutes);
+app.use("/users-roles", usersRolesRoutes);
 // Ajout de Swagger
 setupSwagger(app);
 

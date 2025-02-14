@@ -32,7 +32,7 @@ export const userProfile = pgTable("usersProfiles", {
 })
 
 export const roleList = pgTable("roleList", {
-    id: serial("id").primaryKey().unique().notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
     role_name: varchar("role_name", {length: 255}).notNull(),
     description: varchar("description", {length: 255}).notNull()
 })
