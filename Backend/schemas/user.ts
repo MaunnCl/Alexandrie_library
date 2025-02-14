@@ -3,7 +3,7 @@ import { subscriptionTable } from "./subscription";
 import { pgTable, serial, varchar, date, timestamp, integer, uuid } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("users", {
-    id: serial("id").primaryKey().unique().notNull(),
+    id: integer("id").primaryKey().unique().notNull(),
     firstname: varchar("firstname", { length: 255 }).notNull(),
     lastname: varchar("lastname", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull().unique(),
@@ -40,5 +40,5 @@ export const roleList = pgTable("roleList", {
 export const usersRoles = pgTable("usersRoles", {
     id: uuid("id").primaryKey().defaultRandom(),
     user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
-    role_id: integer("role_id").notNull().references(() => roleList.id, { onDelete: "cascade" }),
+    role_id: uuid("role_id").notNull().references(() => roleList.id, { onDelete: "cascade" }),
 })
