@@ -11,7 +11,7 @@ function Navbar() {
 
   return (
     <div className="navbar">
-      <h1>MedStream</h1>
+      <h1>Great Alexandrie library</h1>
       <nav>
         <a href="#">Home</a>
         <a href="#">Live Events</a>
