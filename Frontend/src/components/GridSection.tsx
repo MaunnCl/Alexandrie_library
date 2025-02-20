@@ -11,7 +11,6 @@ interface EventData {
 }
 
 function GridSection() {
-  // Données d'exemple
   const events: EventData[] = [
     {
       img: 'https://via.placeholder.com/800x450',
@@ -73,7 +72,6 @@ function GridSection() {
         ))}
       </div>
 
-      {/* Modale Netflix-like */}
       <EventModal
         show={showModal}
         onClose={handleCloseModal}

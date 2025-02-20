@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
+import StepIndicator from '../components/StepIndicator';
 import '../styles/Register.css';
 
 function Register() {
@@ -84,6 +85,8 @@ function Register() {
         <div className="register-page">
             <div className="register-container">
                 <h2 className="register-title">Create Account</h2>
+                
+                <StepIndicator currentStep={step} totalSteps={3} />
 
                 <form className="register-form" onSubmit={handleSubmit}>
                     {showStep1 && (
@@ -273,6 +276,10 @@ function Register() {
                             </button>
                         )}
                     </div>
+
+                    {error && <p className="error-message">{error}</p>}
+                    {success && <p style={{ color: '#00d4ff' }}>Registration successful!</p>}
+
                 </form>
             </div>
         </div>
