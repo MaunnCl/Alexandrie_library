@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { UserRepository } from "../repository/user.repository";
+import jwt, { SignOptions } from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -21,8 +21,8 @@ export class AuthService {
         // Générer un token JWT
         const token = jwt.sign(
             { id: user.id, email: user.email },
-            process.env.JWT_SECRET as string,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            process.env.JWT_SECRET as string || '',
+            { expiresIn: process.env.JWT_EXPIRES_IN } as SignOptions
         );
 
         return { token, user };
