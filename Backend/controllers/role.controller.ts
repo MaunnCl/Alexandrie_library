@@ -52,3 +52,4 @@ class RoleController {
 }
 
 export default RoleController;
+export { RoleController };
