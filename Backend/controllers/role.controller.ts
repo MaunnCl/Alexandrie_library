@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { RoleService } from "../services/role.service";
 
-export class RoleController {
-    static async createRole(req: Request, res: Response) {
+class RoleController {
+    static async createRole(req: Request, res: Response): Promise<void> {
         try {
             const role = await RoleService.createRole(req.body);
             res.status(201).json(role);
@@ -11,7 +11,7 @@ export class RoleController {
         }
     }
 
-    static async getAllRoles(req: Request, res: Response) {
+    static async getAllRoles(req: Request, res: Response): Promise<void> {
         try {
             const roles = await RoleService.getAllRoles();
             res.status(200).json(roles);
@@ -20,19 +20,19 @@ export class RoleController {
         }
     }
 
-    static async getRoleById(req: Request, res: Response) {
+    static async getRoleById(req: Request, res: Response): Promise<void> {
         let id =  parseInt(req.params.id);
-        if (!id) return res.status(400).json({ message: "ID du rôle manquant" });
+        if (!id) res.status(400).json({ message: "ID du rôle manquant" });
         try {
             const role = await RoleService.getRoleById(id);
-            if (!role) return res.status(404).json({ message: "Rôle non trouvé" });
+            if (!role) res.status(404).json({ message: "Rôle non trouvé" });
             res.status(200).json(role);
         } catch (error) {
             res.status(500).json({ message: "Erreur lors de la récupération du rôle", error });
         }
     }
 
-    static async updateRole(req: Request, res: Response) {
+    static async updateRole(req: Request, res: Response): Promise<void> {
         try {
             const role = await RoleService.updateRole(parseInt(req.params.id), req.body);
             res.status(200).json(role);
@@ -41,7 +41,7 @@ export class RoleController {
         }
     }
 
-    static async deleteRole(req: Request, res: Response) {
+    static async deleteRole(req: Request, res: Response): Promise<void> {
         try {
             await RoleService.deleteRole(parseInt(req.params.id));
             res.status(200).json({ message: "Rôle supprimé avec succès" });
@@ -50,3 +50,5 @@ export class RoleController {
         }
     }
 }
+
+export default RoleController;
