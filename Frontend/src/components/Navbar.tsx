@@ -1,7 +1,6 @@
 import React, { FormEvent, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi'; 
-// Notice we removed FiSearch since it's not used anymore
+import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import '../styles/Navbar.css';
 
 function Navbar() {
@@ -28,8 +27,6 @@ function Navbar() {
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // You can open a "popup" or do progressive searching here
-    // For now, we'll just alert
     alert(`Searching for: ${query}`);
   };
 
@@ -59,7 +56,6 @@ function Navbar() {
         <Link to="/categories">Categories</Link>
       </nav>
 
-      {/* Centered search input (no icon) */}
       <div className="search-wrapper">
         <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input
@@ -68,18 +64,12 @@ function Navbar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          {/* Removed the button entirely - 
-              if you'd like a button, you can re-add it */}
         </form>
       </div>
 
       <div className="profile-section" ref={profileRef}>
         <div className="profile-toggle" onClick={handleProfileClick}>
-          <img
-            src="https://via.placeholder.com/40"
-            alt="User Avatar"
-            className="avatar"
-          />
+          <img src="/avatar.png" alt="User Avatar" className="avatar" />
           <span className="profile-name">John Doe</span>
           <span className="arrow-down">▼</span>
         </div>
@@ -87,11 +77,7 @@ function Navbar() {
         {profileOpen && (
           <div className="profile-card animate-slideDown">
             <div className="profile-card-header">
-              <img
-                src="https://via.placeholder.com/60"
-                alt="User Avatar"
-                className="avatar-large"
-              />
+              <img src="/avatar.png" alt="User Avatar" className="avatar" />
               <div>
                 <h4>John Doe</h4>
                 <p>john.doe@example.com</p>
