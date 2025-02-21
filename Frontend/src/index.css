@@ -24,12 +24,11 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
   background-color: #1a1a1a;
   color: #f0f0f0;
+  overflow-x: hidden; /* Prevents horizontal scrollbar */
 }
 
 h1 {
@@ -37,6 +36,14 @@ h1 {
   line-height: 1.1;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Base button styling */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -57,6 +64,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light mode preferences */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

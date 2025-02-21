@@ -1,16 +1,11 @@
 import React, { FormEvent, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  FiSearch,
-  FiUser,
-  FiSettings,
-  FiLogOut
-} from 'react-icons/fi';
+import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi'; 
+// Notice we removed FiSearch since it's not used anymore
 import '../styles/Navbar.css';
 
 function Navbar() {
   const [query, setQuery] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -33,6 +28,8 @@ function Navbar() {
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
+    // You can open a "popup" or do progressive searching here
+    // For now, we'll just alert
     alert(`Searching for: ${query}`);
   };
 
@@ -62,25 +59,18 @@ function Navbar() {
         <Link to="/categories">Categories</Link>
       </nav>
 
+      {/* Centered search input (no icon) */}
       <div className="search-wrapper">
-        <form className={`search-bar ${showSearch ? 'active' : ''}`} onSubmit={handleSearchSubmit}>
+        <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input
             type="text"
             placeholder="Search events..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit">
-            <FiSearch />
-          </button>
+          {/* Removed the button entirely - 
+              if you'd like a button, you can re-add it */}
         </form>
-        <button
-          type="button"
-          className="search-toggle"
-          onClick={() => setShowSearch((prev) => !prev)}
-        >
-          <FiSearch />
-        </button>
       </div>
 
       <div className="profile-section" ref={profileRef}>

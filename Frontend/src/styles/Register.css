@@ -1,168 +1,184 @@
 .register-page {
-    background-color: #1a1a1a;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-    color: #fff;
+  background-color: #1a1a1a;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #fff;
+}
+
+.register-container {
+  background-color: #252525;
+  padding: 50px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 620px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.register-title {
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #00d4ff;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.step-content {
+  margin-bottom: 30px;
+}
+
+.animate-slide {
+  animation: fadeInRight 0.4s ease;
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
   }
-  
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.register-form label {
+  margin-bottom: 6px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 16px;
+}
+
+.two-fields-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.two-fields-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.password-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.password-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: -5px;
+  margin-bottom: 15px;
+}
+
+.payment-title {
+  margin-bottom: 24px;
+  font-size: 22px;
+  color: #fff;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.back-button,
+.next-button,
+.register-button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-button {
+  background-color: #555;
+  color: #fff;
+}
+
+.back-button:hover {
+  background-color: #777;
+}
+
+.next-button {
+  background-color: #00d4ff;
+  color: #0e0e0e;
+  margin-left: auto;
+}
+
+.next-button:hover {
+  background-color: #00b0d4;
+}
+
+.next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.register-button {
+  background-color: #00d4ff;
+  color: #0e0e0e;
+  margin-left: 20px;
+}
+
+.register-button:hover {
+  background-color: #00b0d4;
+}
+
+.register-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
   .register-container {
-    background-color: #252525;
-    padding: 50px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 620px;
-    text-align: center;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    padding: 30px;
   }
-  
+
   .register-title {
-    font-size: 36px;
-    margin-bottom: 30px;
-    color: #00d4ff;
-  }
-  
-  .register-form {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-  
-  .step-content {
-    margin-bottom: 30px;
-  }
-  
-  .animate-slide {
-    animation: fadeInRight 0.4s ease;
-  }
-  
-  @keyframes fadeInRight {
-    0% {
-      opacity: 0;
-      transform: translateX(40px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .register-form label {
-    margin-bottom: 6px;
-    font-weight: bold;
-    display: inline-block;
-  }
-  .register-form input {
-    width: 100%;
-    padding: 12px 14px;
+    font-size: 24px;
     margin-bottom: 20px;
-    border: 1px solid #444;
-    border-radius: 4px;
-    background-color: #2a2a2a;
-    color: #fff;
-    font-size: 16px;
   }
-  
+
   .two-fields-row {
     display: flex;
     gap: 15px;
-    margin-bottom: 20px;
+    justify-content: space-between;
   }
+
   .two-fields-item {
     flex: 1;
     display: flex;
     flex-direction: column;
   }
-  
-  .password-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
-  .password-field {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .error-message {
-    color: #ff4d4d;
-    font-size: 14px;
-    margin-top: -5px;
-    margin-bottom: 15px;
-  }
-  
-  .payment-title {
-    margin-bottom: 24px;
-    font-size: 22px;
-    color: #fff;
-  }
-  
-  .navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  .back-button,
-  .next-button,
-  .register-button {
-    padding: 14px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .back-button {
-    background-color: #555;
-    color: #fff;
-  }
-  .back-button:hover {
-    background-color: #777;
-  }
-  
-  .next-button {
-    background-color: #00d4ff;
-    color: #0e0e0e;
-    margin-left: auto; 
-  }
-  .next-button:hover {
-    background-color: #00b0d4;
-  }
-  .next-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  .register-button {
-    background-color: #00d4ff;
-    color: #0e0e0e;
-    margin-left: 20px;
-  }
-  .register-button:hover {
-    background-color: #00b0d4;
-  }
-  .register-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  @media (max-width: 480px) {
-    .register-container {
-      padding: 30px;
-    }
-  
-    .register-title {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-  
-    .two-fields-row,
-    .password-row {
-      flex-direction: column;
-    }
-  }
+}

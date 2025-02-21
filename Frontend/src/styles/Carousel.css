@@ -1,10 +1,10 @@
 .carousel-section {
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     margin: 50px auto;
     position: relative;
+    overflow-x: hidden;
 }
-
 .carousel-title {
     text-align: center;
     font-size: 28px;
