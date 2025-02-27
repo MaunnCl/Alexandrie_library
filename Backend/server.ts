@@ -8,6 +8,7 @@ import userProfileRoutes from "./routes/userProfile.route";
 import roleRoutes from "./routes/roleList.route";
 import usersRolesRoutes from "./routes/userRole.route";
 import contentRoutes from "./routes/content.route"
+import historyRoutes from "./routes/history.route"
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use("/profiles", userProfileRoutes);
 app.use("/roles", roleRoutes);
 app.use("/users-roles", usersRolesRoutes);
 app.use("/contents", contentRoutes);
+app.use("/history", historyRoutes);
 
 // Ajout de Swagger
 setupSwagger(app);
