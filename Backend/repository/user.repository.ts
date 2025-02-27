@@ -9,14 +9,15 @@ export class UserRepository {
             lastname: userData.lastname,
             email: (userData.email as string).toLowerCase(),
             password: userData.password,
-            date_of_birth: userData.date_of_birth,
+            date_of_birth: userData.birthDate,
             address: userData.address,
             country: userData.country,
+            phone: userData.phone,
             zipcode: userData.zipcode
         };
 
         try {
-            const result = await db.insert(userTable).values(user as any).returning();
+            const result = await db.insert(userTable).values(user).returning();
             if (result.length > 0) return result[0];
             console.log("⚠️ User not created.");
         } catch (error) {
