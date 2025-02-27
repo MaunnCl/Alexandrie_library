@@ -19,7 +19,7 @@ function Navbar() {
 
         if (!token || !userId) {
           console.error('No token or userId found in localStorage');
-          navigate('/login'); // Redirect to login if not authenticated
+          navigate('/login');
           return;
         }
 
@@ -30,7 +30,7 @@ function Navbar() {
         });
 
         console.log("User data received:", response.data);
-        setUser(response.data[0]); // Ensure extracting first object
+        setUser(response.data[0]);
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate('/login');
