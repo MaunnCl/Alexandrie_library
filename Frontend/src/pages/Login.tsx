@@ -12,7 +12,7 @@ function Login() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError('');
-
+    
         try {
             const response = await fetch('/api/login', {
                 method: 'POST',
@@ -21,22 +21,21 @@ function Login() {
                 },
                 body: JSON.stringify({ email, password })
             });
-
+    
+            const data = await response.json();
+            
             if (response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.user.id);
                 navigate('/');
             } else {
-                const data = await response.json();
-                if (data.message) {
-                    setError(data.message);
-                } else {
-                    setError('Invalid email or password. Please try again.');
-                }
+                setError(data.message || 'Invalid email or password. Please try again.');
             }
         } catch (err) {
             setError('Network error. Please try again.');
         }
     };
-
+        
     return (
         <div className="login-page">
             <div className="login-container">

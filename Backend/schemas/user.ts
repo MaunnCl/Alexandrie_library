@@ -12,6 +12,7 @@ export const userTable = pgTable("users", {
     address: varchar("address", { length: 255 }),
     country: varchar("country", { length: 255 }),
     zipcode: varchar("zipcode", { length: 10 }),
+    phone: varchar("phone", { length: 20 }),
     createdAt: date("createdAt").notNull().defaultNow(),
     updatedAt: date("updatedAt").notNull().defaultNow()
 });
