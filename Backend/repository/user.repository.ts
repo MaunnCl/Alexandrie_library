@@ -16,7 +16,7 @@ export class UserRepository {
         };
 
         try {
-            const result = await db.insert(userTable).values(user).returning();
+            const result = await db.insert(userTable).values(user as any).returning();
             if (result.length > 0) return result[0];
             console.log("⚠️ User not created.");
         } catch (error) {
