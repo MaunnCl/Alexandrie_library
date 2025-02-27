@@ -3,13 +3,128 @@ import { CategoriesController, ContentCategoryController } from "../controllers/
 
 const router = Router();
 
+/**
+ * @swagger
+ *   /categories:
+ *   post:
+ *       summary: Create a new category
+ *       description: Add a new category to the system
+ *       tags: [Categories]
+ *   responses:
+ *     201:
+ *       description: Category created successfully
+ *     400:
+ *       description: Bad request
+*/
 router.post("/categories", CategoriesController.create);
+
+/**
+ *  @swagger
+ *  /categories:
+ *  get:
+ *      summary: Get all categories
+ *      tags: [Categories]
+ *      description: Retrieve a list of all categories
+ *      responses:
+ *        200:
+ *          description: Successful retrieval
+*/
 router.get("/categories", CategoriesController.getAll);
+
+/**
+ *  @swagger
+ *  /categories/{id}:
+ *  get:
+ *      summary: Get category by ID
+ *      tags: [Categories]
+ *      description: Retrieve a specific category
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: ID of the category
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Successful retrieval
+ *        404:
+ *          description: Category not found
+*/ 
 router.get("/categories/:id", CategoriesController.getById);
+
+/**
+ *  @swagger
+ *  /categories/{id}:
+ *  delete:
+ *      summary: Delete a category
+ *      tags: [Categories]
+ *      description: Remove a category from the system
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          required: true
+ *          description: ID of the category to delete
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        204:
+ *          description: Successfully deleted
+ *        404:
+ *          description: Category not found
+*/
 router.delete("/categories/:id", CategoriesController.delete);
 
+/**
+ *  @swagger
+ *  /content-category:
+ *  post:
+ *      summary: Associate content with a category
+ *      tags: [Content-Category]
+ *      description: Link a content entry to a category
+ *      responses:
+ *       201:
+ *          description: Association created successfully
+ *       400:
+ *          description: Bad request
+*/
 router.post("/content-category", ContentCategoryController.associate);
+
+/**
+ *  @swagger
+ *  /content-category/{contentId}:
+ *  get:
+ *      summary: Get categories for a content
+ *      tags: [Content-Category]
+ *      description: Retrieve all categories linked to a specific content entry
+ *      parameters:
+ *        - in: path
+ *          name: contentId
+ *          required: true
+ *          description: ID of the content entry
+ *          schema:
+ *            type: integer
+ *      responses:
+ *        200:
+ *          description: Successful retrieval
+ *        404:
+ *          description: Content not found
+*/
 router.get("/content-category/:contentId", ContentCategoryController.getByContent);
+
+/**
+ *  @swagger
+ *  /content-category:
+ *  delete:
+ *      summary: Remove a content-category association
+ *      tags: [Content-Category]
+ *      description: Delete an association between a content entry and a category
+ *      responses:
+ *        204:
+ *          description: Successfully deleted
+ *        400:
+ *          description: Bad request
+*/
 router.delete("/content-category", ContentCategoryController.remove);
 
 export default router;
