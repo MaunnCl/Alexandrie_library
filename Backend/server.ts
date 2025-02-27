@@ -7,8 +7,9 @@ import userRoutes from "./routes/user.route";
 import userProfileRoutes from "./routes/userProfile.route";
 import roleRoutes from "./routes/roleList.route";
 import usersRolesRoutes from "./routes/userRole.route";
-import contentRoutes from "./routes/content.route"
-import historyRoutes from "./routes/history.route"
+import contentRoutes from "./routes/content.route";
+import historyRoutes from "./routes/history.route";
+import categoriesRoutes from "./routes/categories.route"
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
@@ -25,12 +26,13 @@ app.use((req: express.Request, res, next) =>{
     next();
 });
 app.use("/api", authRoutes);
-app.use("/users", userRoutes);
-app.use("/profiles", userProfileRoutes);
-app.use("/roles", roleRoutes);
-app.use("/users-roles", usersRolesRoutes);
-app.use("/contents", contentRoutes);
-app.use("/history", historyRoutes);
+app.use("/api", userRoutes);
+app.use("/api", userProfileRoutes);
+app.use("/api", roleRoutes);
+app.use("/api", usersRolesRoutes);
+app.use("/api", contentRoutes);
+app.use("/api", historyRoutes);
+app.use("/api", categoriesRoutes);
 
 // Ajout de Swagger
 setupSwagger(app);

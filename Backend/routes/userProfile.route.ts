@@ -3,10 +3,10 @@ import { UserProfileController } from "../controllers/userProfile.controller";
 
 const router = express.Router();
 
-router.post("/", UserProfileController.createUserProfile);
-router.get("/", UserProfileController.getAllUserProfiles);
-router.get("/:id", UserProfileController.getUserProfileById);
-router.put("/:id", UserProfileController.updateUserProfile);
-router.delete("/:id", UserProfileController.deleteUserProfile);
+router.post("/profiles", UserProfileController.createUserProfile);
+router.get("/profiles", UserProfileController.getAllUserProfiles);
+router.get("/profiles/:id", UserProfileController.getUserProfileById);
+router.put("/profiles/:id", UserProfileController.updateUserProfile);
+router.delete("/profiles/:id", UserProfileController.deleteUserProfile);
 
 export default router;

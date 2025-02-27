@@ -3,10 +3,10 @@ import { ContentController } from "../controllers/content.controller";
 
 const router = Router();
 
-router.post("/", ContentController.create);
-router.get("/", ContentController.getAll);
-router.get("/:id", ContentController.getById);
-router.put("/:id", ContentController.update);
-router.delete("/:id", ContentController.delete);
+router.post("/contents", ContentController.create);
+router.get("/contents", ContentController.getAll);
+router.get("/contents/:id", ContentController.getById);
+router.put("/contents/:id", ContentController.update);
+router.delete("/contents/:id", ContentController.delete);
 
 export default router;

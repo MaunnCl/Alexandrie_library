@@ -3,9 +3,9 @@ import { RoleController } from "../controllers/role.controller";
 
 const router = express.Router();
 
-router.post("/", RoleController.createRole);
-router.get("/", RoleController.getAllRoles);
-router.get("/:id", RoleController.getRoleById);
-router.delete("/:id", RoleController.deleteRole);
+router.post("/users-roles", RoleController.createRole);
+router.get("/users-roles", RoleController.getAllRoles);
+router.get("/users-roles/:id", RoleController.getRoleById);
+router.delete("/users-roles/:id", RoleController.deleteRole);
 
 export default router;
