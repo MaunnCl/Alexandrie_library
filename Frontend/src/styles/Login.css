@@ -20,7 +20,7 @@
 .login-title {
     font-size: 32px;
     margin-bottom: 20px;
-    color: #00d4ff;
+    color: red; /* already red */
 }
 
 .login-form {
@@ -45,7 +45,7 @@
 
 .login-button {
     padding: 12px;
-    background-color: #00d4ff;
+    background-color: red; /* already red */
     border: none;
     border-radius: 4px;
     color: #0e0e0e;
@@ -56,7 +56,7 @@
 }
 
 .login-button:hover {
-    background-color: #00b0d4;
+    background-color: red; /* keep consistent */
 }
 
 .login-divider {
@@ -65,19 +65,51 @@
     font-size: 14px;
 }
 
-.signup-button {
+.google-login-button {
     padding: 12px;
-    background-color: transparent;
-    color: #00d4ff;
-    border: 2px solid #00d4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #0e0e0e;
+    border: none;
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
     font-weight: bold;
+    margin-top: 10px;
+    width: 100%;
+    gap: 10px;
+}
+
+.google-icon {
+    font-size: 20px;
+}
+
+.google-info-text {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.google-login-button:hover {
+    background-color: #f1f1f1;
+}
+
+.signup-button {
+    padding: 12px;
+    background-color: transparent;
+    color: red;
+    border: 2px solid red;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
 .signup-button:hover {
-    background-color: #00d4ff;
+    background-color: red;
     color: #0e0e0e;
 }
 

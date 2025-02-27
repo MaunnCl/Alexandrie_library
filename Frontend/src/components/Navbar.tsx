@@ -46,15 +46,15 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <Link to="/" className="logo">
-        MedStream
-      </Link>
-
-      <nav className="nav-links">
+      <nav className="nav-links left-nav">
         <Link to="/">Home</Link>
         <Link to="/live">Live Events</Link>
         <Link to="/categories">Categories</Link>
       </nav>
+
+      <Link to="/" className="logo-link">
+        <img src="/logo_transparent.png" alt="Logo" className="logo" />
+      </Link>
 
       <div className="search-wrapper">
         <form className="search-bar" onSubmit={handleSearchSubmit}>

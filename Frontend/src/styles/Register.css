@@ -21,7 +21,7 @@
 .register-title {
   font-size: 36px;
   margin-bottom: 30px;
-  color: #00d4ff;
+  color: #ff0000;
 }
 
 .register-form {
@@ -92,7 +92,7 @@
 }
 
 .error-message {
-  color: #ff4d4d;
+  color: #ff0000;
   font-size: 14px;
   margin-top: -5px;
   margin-bottom: 15px;
@@ -131,13 +131,13 @@
 }
 
 .next-button {
-  background-color: #00d4ff;
+  background-color: #ff0000;
   color: #0e0e0e;
   margin-left: auto;
 }
 
 .next-button:hover {
-  background-color: #00b0d4;
+  background-color: #ff0000;
 }
 
 .next-button:disabled {
@@ -146,13 +146,13 @@
 }
 
 .register-button {
-  background-color: #00d4ff;
+  background-color: #ff0000;
   color: #0e0e0e;
   margin-left: 20px;
 }
 
 .register-button:hover {
-  background-color: #00b0d4;
+  background-color: #ff0000;
 }
 
 .register-button:disabled {

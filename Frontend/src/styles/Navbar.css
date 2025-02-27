@@ -1,66 +1,53 @@
-/* navbar.css */
-/* (Removed the body { ... } block, as it duplicates global styling) */
-
-/* Navbar container */
 .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px 40px;
-  
-    /* Futuristic gradient with a more subtle border glow */
+    height: 140px;
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
     background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
-    border: 1px solid rgba(0,212,255, 0.15);
-    box-shadow:
-      0 0 5px rgba(0,212,255,0.15),
-      inset 0 0 5px rgba(0,212,255,0.1);
-    
-    /* Optional: slight 3D tilt. Remove if you prefer flat. */
-    transform: perspective(1000px) rotateX(2deg);
-    transform-origin: top;
-  }
-  
-  /* Reduced intensity for the radial hover highlight */
-  .navbar::before {
+    border: 1px solid rgba(255, 0, 0, 0.15); /* was rgba(0, 212, 255, 0.15) */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.15), inset 0 0 5px rgba(255, 0, 0, 0.1);
+}
+
+.navbar::before {
     content: "";
     position: absolute;
-    top: 0; 
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: radial-gradient(circle at 10% 10%, rgba(0,212,255,0.1), transparent 60%);
+    background: radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.1), transparent 60%);
     opacity: 0.3;
     transition: transform 0.5s ease;
     z-index: -1;
-  }
-  
-  .navbar:hover::before {
+}
+
+.navbar:hover::before {
     transform: scale(1.05);
-  }
-  
-  /* Logo styles */
-  .logo {
-    color: #00d4ff;
-    font-size: 24px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-right: 20px;
-    text-transform: uppercase;
-    position: relative;
-    transition: color 0.3s, text-shadow 0.3s;
-  }
-  
-  .logo:hover {
-    color: #00b0d4;
-    text-shadow: 0 0 5px #00d4ff;
-  }
-  
-  /* Hamburger (for mobile) */
-  .hamburger {
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.logo {
+    height: 100px;
+    object-fit: contain;
+}
+
+.logo:hover {
+    color: #ff0000;
+    text-shadow: 0 0 5px red;
+}
+
+.hamburger {
     display: none;
     background: none;
     border: none;
@@ -70,20 +57,20 @@
     outline: none;
     position: relative;
     transition: color 0.3s;
-  }
-  .hamburger:hover {
-    color: #00d4ff;
+}
+
+.hamburger:hover {
+    color: red;
     text-shadow: none;
-  }
-  
-  /* Nav links */
-  .nav-links {
+}
+
+.nav-links {
     display: flex;
     align-items: center;
     gap: 20px;
-    margin-left: 20px;
-  }
-  .nav-links a {
+}
+
+.nav-links a {
     color: #ffffff;
     text-decoration: none;
     font-size: 18px;
@@ -92,34 +79,48 @@
     position: relative;
     overflow: hidden;
     transition: color 0.3s;
-  }
-  .nav-links a::before {
+}
+
+.nav-links a::before {
     content: "";
     position: absolute;
     bottom: -2px;
     left: 50%;
     width: 0;
     height: 2px;
-    background: #00d4ff;
+    background: #ff0000;
     transition: 0.3s;
     transform: translateX(-50%);
-  }
-  .nav-links a:hover {
-    color: #00d4ff;
+}
+
+.nav-links a:hover {
+    color: red;
     text-shadow: none;
-  }
-  .nav-links a:hover::before {
+}
+
+.nav-links a:hover::before {
     width: 100%;
-  }
-  
-  /* Search (no icon) */
-  .search-wrapper {
+}
+
+.left-nav {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper {
     flex: 1;
     display: flex;
     justify-content: center;
     position: relative;
-  }
-  .search-bar {
+}
+
+.search-bar {
     display: flex;
     align-items: center;
     backdrop-filter: blur(10px);
@@ -128,10 +129,11 @@
     border-radius: 8px;
     width: 300px;
     padding: 5px 10px;
-    box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.2);
+    box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.2);
     transition: background-color 0.3s;
-  }
-  .search-bar input {
+}
+
+.search-bar input {
     border: none;
     background-color: transparent;
     color: #fff;
@@ -139,19 +141,20 @@
     flex: 1;
     font-size: 16px;
     padding: 5px;
-  }
-  .search-bar input::placeholder {
+}
+
+.search-bar input::placeholder {
     color: #888;
-  }
-  
-  /* Profile section */
-  .profile-section {
+}
+
+.profile-section {
     position: relative;
     display: flex;
     align-items: center;
     margin-left: 20px;
-  }
-  .profile-toggle {
+}
+
+.profile-toggle {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -159,33 +162,37 @@
     border: none;
     position: relative;
     transition: text-shadow 0.3s;
-  }
-  .profile-toggle:hover {
+}
+
+.profile-toggle:hover {
     text-shadow: none;
-  }
-  .avatar {
+}
+
+.avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 8px;
     transition: box-shadow 0.3s;
-  }
-  .profile-toggle:hover .avatar {
-    box-shadow: 0 0 5px #00d4ff;
-  }
-  .profile-name {
+}
+
+.profile-toggle:hover .avatar {
+    box-shadow: 0 0 5px red;
+}
+
+.profile-name {
     font-size: 16px;
     margin-right: 6px;
     color: #ffffff;
-  }
-  .arrow-down {
+}
+
+.arrow-down {
     font-size: 10px;
     color: #cccccc;
-  }
-  
-  /* Profile Card */
-  .profile-card {
+}
+
+.profile-card {
     position: absolute;
     top: 60px;
     right: 0;
@@ -194,36 +201,41 @@
     z-index: 999;
     background: rgba(42, 42, 42, 0.6);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     box-shadow:
-      0 0 10px rgba(0, 0, 0, 0.5),
-      0 0 12px rgba(0, 212, 255, 0.2);
+        0 0 10px rgba(0, 0, 0, 0.5),
+        0 0 12px rgba(255, 0, 0, 0.2);
     animation: slideDown 0.3s ease forwards;
-  }
-  .profile-card-header {
+}
+
+.profile-card-header {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
-  }
-  .avatar-large {
+}
+
+.avatar-large {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     margin-right: 12px;
     transition: box-shadow 0.3s;
-  }
-  .profile-card-header h4 {
+}
+
+.profile-card-header h4 {
     margin: 0 0 4px;
     color: #ffffff;
     font-size: 16px;
-  }
-  .profile-card-header p {
+}
+
+.profile-card-header p {
     margin: 0;
     color: #bbbbbb;
     font-size: 14px;
-  }
-  .profile-card button {
+}
+
+.profile-card button {
     display: flex;
     align-items: center;
     background: none;
@@ -236,71 +248,72 @@
     font-size: 15px;
     transition: color 0.3s, text-shadow 0.3s;
     gap: 8px;
-  }
-  .profile-card button:hover {
-    color: #00d4ff;
+}
+
+.profile-card button:hover {
+    color: #ff0000;
     text-shadow: none;
-  }
-  
-  /* Slide down animation */
-  @keyframes slideDown {
+}
+
+@keyframes slideDown {
     0% {
-      opacity: 0;
-      transform: translateY(-8px);
+        opacity: 0;
+        transform: translateY(-8px);
     }
+
     100% {
-      opacity: 1;
-      transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
-  }
-  
-  /* Responsive styling */
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .navbar {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 15px;
-      transform: none;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+        transform: none;
     }
-  
+
     .hamburger {
-      display: block;
+        display: block;
     }
-  
+
     .nav-links {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      gap: 10px;
-      background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
-      padding: 15px 0;
-      margin: 10px 0;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-left: 0;
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
+        padding: 15px 0;
+        margin: 10px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-left: 0;
     }
+
     .nav-links.open {
-      display: flex;
+        display: flex;
     }
-  
+
     .search-wrapper {
-      order: 3;
-      margin: 10px 0;
-      width: 100%;
-      justify-content: flex-end;
+        order: 3;
+        margin: 10px 0;
+        width: 100%;
+        justify-content: flex-end;
     }
+
     .search-bar {
-      width: 100%;
-      max-width: 100%;
-      border-radius: 6px;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 6px;
     }
-  
+
     .profile-section {
-      order: 4;
-      margin-bottom: 10px;
-      width: 100%;
-      justify-content: flex-end;
-      margin-left: 0;
+        order: 4;
+        margin-bottom: 10px;
+        width: 100%;
+        justify-content: flex-end;
+        margin-left: 0;
     }
-  }
-  
+}

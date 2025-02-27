@@ -8,15 +8,15 @@
 .sidebar {
     width: 280px;
     background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
-    border-right: 1px solid rgba(0, 212, 255, 0.15);
+    border-right: 1px solid rgba(255, 0, 0, 0.15);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 30px 20px;
     position: relative;
     box-shadow:
-        0 0 5px rgba(0, 212, 255, 0.15),
-        inset 0 0 5px rgba(0, 212, 255, 0.1);
+        0 0 5px rgba(255, 0, 0, 0.15),
+        inset 0 0 5px rgba(255, 0, 0, 0.1);
 }
 
 .user-top {
@@ -31,7 +31,7 @@
     object-fit: cover;
     margin-bottom: 8px;
     transition: box-shadow 0.3s;
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    border: 2px solid rgba(255, 0, 0, 0.3);
 }
 
 .user-top h3 {
@@ -46,11 +46,11 @@
 }
 
 .user-top:hover .avatar {
-    box-shadow: 0 0 8px #00d4ff;
+    box-shadow: 0 0 8px #ff0000;
 }
 
 .user-top:hover h3 {
-    color: #00d4ff;
+    color: #ff0000;
 }
 
 .sidebar-nav {
@@ -81,12 +81,12 @@
 }
 
 .nav-item:hover {
-    color: #00d4ff;
+    color: #ff0000;
     text-shadow: none;
 }
 
 .nav-item.active {
-    background-color: rgba(0, 212, 255, 0.15);
+    background-color: rgba(255, 0, 0, 0.15);
 }
 
 .sidebar-actions {
@@ -97,7 +97,7 @@
 }
 
 .edit-btn {
-    background: #00d4ff;
+    background: #ff0000;
     color: #0e0e0e;
     font-weight: bold;
     font-size: 16px;
@@ -110,7 +110,7 @@
 }
 
 .edit-btn:hover {
-    background-color: #00b0d4;
+    background-color: #ff0000;
 }
 
 .profile-main {
@@ -165,7 +165,7 @@
 
 .section-content input:focus,
 .section-content textarea:focus {
-    border-color: #00d4ff;
+    border-color: #ff0000;
     outline: none;
 }
 
@@ -182,8 +182,8 @@
 }
 
 .profile-btn:hover {
-    color: #00d4ff;
-    border-color: #00d4ff;
+    color: #ff0000;
+    border-color: #ff0000;
 }
 
 .overview-box {
@@ -211,7 +211,7 @@
 }
 
 .save-btn {
-    background: #008dc9;
+    background: #ff0000;
     color: #fff;
     font-weight: bold;
     font-size: 16px;
@@ -224,7 +224,7 @@
 }
 
 .save-btn:hover {
-    background-color: #0072a1;
+    background-color: #ff0000;
 }
 
 .back-btn {
@@ -243,7 +243,7 @@
 
 .back-btn:hover {
     background-color: #444;
-    color: #00d4ff;
+    color: #ff0000;
 }
 
 @media (max-width: 768px) {
@@ -254,7 +254,7 @@
     .sidebar {
         width: 100%;
         border-right: none;
-        border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+        border-bottom: 1px solid rgba(255, 0, 0, 0.15);
         flex-direction: row;
         justify-content: flex-start;
         overflow-x: auto;
