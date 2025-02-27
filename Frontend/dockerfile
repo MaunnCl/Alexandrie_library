@@ -1,0 +1,24 @@
+FROM ubuntu:22.04
+
+# Update packages
+RUN apt-get update && apt-get upgrade -y
+
+# Install packages
+RUN apt-get install -y nodejs npm git curl
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all files
+COPY . .
+
+# Expose port
+EXPOSE 5173
+
+# Start the app
+CMD ["npm", "run", "dev"]
