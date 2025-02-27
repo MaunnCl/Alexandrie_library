@@ -10,16 +10,19 @@ function ProfileCreation() {
   const { planName } = (location.state as { planName?: string }) || {};
 
   const placeholderImages = [
-    'https://via.placeholder.com/150?text=Avatar+1',
+    '/avatar.png',
     'https://via.placeholder.com/150?text=Avatar+2',
     'https://via.placeholder.com/150?text=Avatar+3',
     'https://via.placeholder.com/150?text=Avatar+4'
   ];
 
-  const [photoURL, setPhotoURL] = useState('');
+  const [profile_picture, setPhotoURL] = useState('');
   const [bio, setBio] = useState('');
   const [preferences, setPreferences] = useState('');
   const [error, setError] = useState('');
+
+  const storedUserId = localStorage.getItem('userId'); 
+  const user_id = storedUserId ? parseInt(storedUserId, 10) : null;
 
   const handleSelectPlaceholder = (image: string) => {
     setPhotoURL(image);
@@ -29,8 +32,13 @@ function ProfileCreation() {
     e.preventDefault();
     setError('');
 
-    if (!photoURL || !bio || !preferences) {
-      setError('Please fill in all fields (including selecting/providing a photo) to complete your profile.');
+    if (!profile_picture || !bio || !preferences) {
+      setError('Please fill in all fields (including selecting/providing a photo).');
+      return;
+    }
+
+    if (!user_id) {
+      setError('No valid user ID found. Please log in or register first.');
       return;
     }
 
@@ -39,8 +47,8 @@ function ProfileCreation() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          plan: planName,
-          photoURL,
+          user_id,
+          profile_picture,
           bio,
           preferences,
         }),
@@ -51,7 +59,7 @@ function ProfileCreation() {
         throw new Error(errorData.message || 'Error creating profile');
       }
 
-      navigate('/dashboard');
+      navigate('/');
     } catch (err: any) {
       setError(err.message || 'An unknown error occurred');
     }
@@ -72,7 +80,7 @@ function ProfileCreation() {
             {placeholderImages.map((img) => (
               <div
                 key={img}
-                className={`placeholder-image ${photoURL === img ? 'selected' : ''}`}
+                className={`placeholder-image ${profile_picture === img ? 'selected' : ''}`}
                 onClick={() => handleSelectPlaceholder(img)}
                 style={{ backgroundImage: `url(${img})` }}
               />
