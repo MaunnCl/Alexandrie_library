@@ -1,47 +1,80 @@
 import React, { FormEvent, useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import axios from 'axios';
 import '../styles/Navbar.css';
 
 function Navbar() {
   const [query, setQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
-
+  const [user, setUser] = useState(null);
+  const profileRef = useRef(null);
   const navigate = useNavigate();
-  const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+    async function fetchUserData() {
+      try {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        if (!token || !userId) {
+          console.error('No token or userId found in localStorage');
+          return;
+        }
+
+        const response = await axios.get(`/api/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log("User data received:", response.data);
+        setUser(response.data[0]); // Ensure extracting first object
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setProfileOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearchSubmit = (e: FormEvent) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     alert(`Searching for: ${query}`);
   };
 
-  const handleProfileClick = () => {
-    setProfileOpen((prev) => !prev);
-  };
+  const handleProfileClick = () => setProfileOpen((prev) => !prev);
 
-  const handleNavigate = (path: string) => {
+  const handleNavigate = (path) => {
     setProfileOpen(false);
     navigate(path);
   };
 
-  const handleLogout = () => {
-    setProfileOpen(false);
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      setProfileOpen(false);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -67,38 +100,40 @@ function Navbar() {
         </form>
       </div>
 
-      <div className="profile-section" ref={profileRef}>
-        <div className="profile-toggle" onClick={handleProfileClick}>
-          <img src="/avatar.png" alt="User Avatar" className="avatar" />
-          <span className="profile-name">John Doe</span>
-          <span className="arrow-down">▼</span>
-        </div>
-
-        {profileOpen && (
-          <div className="profile-card animate-slideDown">
-            <div className="profile-card-header">
-              <img src="/avatar.png" alt="User Avatar" className="avatar" />
-              <div>
-                <h4>John Doe</h4>
-                <p>john.doe@example.com</p>
-              </div>
-            </div>
-            <hr />
-            <button onClick={() => handleNavigate('/profile')}>
-              <FiUser />
-              <span>My Profile</span>
-            </button>
-            <button onClick={() => handleNavigate('/settings')}>
-              <FiSettings />
-              <span>Settings</span>
-            </button>
-            <button onClick={handleLogout}>
-              <FiLogOut />
-              <span>Logout</span>
-            </button>
+      {user && (
+        <div className="profile-section" ref={profileRef}>
+          <div className="profile-toggle" onClick={handleProfileClick}>
+            <img src={user.avatar || '/avatar.png'} alt="User Avatar" className="avatar" />
+            <span className="profile-name">{user.firstname} {user.lastname}</span>
+            <span className="arrow-down">▼</span>
           </div>
-        )}
-      </div>
+
+          {profileOpen && (
+            <div className="profile-card animate-slideDown">
+              <div className="profile-card-header">
+                <img src={user.avatar || '/avatar.png'} alt="User Avatar" className="avatar" />
+                <div>
+                  <h4>{user.firstname} {user.lastname}</h4>
+                  <p>{user.email}</p>
+                </div>
+              </div>
+              <hr />
+              <button onClick={() => handleNavigate('/profile')}>
+                <FiUser />
+                <span>My Profile</span>
+              </button>
+              <button onClick={() => handleNavigate('/settings')}>
+                <FiSettings />
+                <span>Settings</span>
+              </button>
+              <button onClick={handleLogout}>
+                <FiLogOut />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </header>
   );
 }
