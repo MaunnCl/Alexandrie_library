@@ -3,7 +3,7 @@ import { subscriptionTable } from "./subscription";
 import { pgTable, serial, varchar, date, timestamp, integer, uuid } from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("users", {
-    id: integer("id").primaryKey().unique().notNull(),
+    id: serial("id").primaryKey().unique().notNull(),
     firstname: varchar("firstname", { length: 255 }).notNull(),
     lastname: varchar("lastname", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).notNull().unique(),
@@ -25,7 +25,7 @@ export const userRelations = relations(userTable, ({ one }) => ({
 
 export const userProfile = pgTable("usersProfiles", {
     id: uuid("id").primaryKey().defaultRandom(),
-    user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
+    user_id: serial("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
     profile_picture: varchar("profile_picture", {length: 255}).notNull(),
     bio: varchar("bio", {length: 500}).notNull(),
     preferences: varchar("preferences", {length: 255}).notNull()
@@ -39,6 +39,6 @@ export const roleList = pgTable("roleList", {
 
 export const usersRoles = pgTable("usersRoles", {
     id: uuid("id").primaryKey().defaultRandom(),
-    user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
+    user_id: serial("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
     role_id: uuid("role_id").notNull().references(() => roleList.id, { onDelete: "cascade" }),
 })

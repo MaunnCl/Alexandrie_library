@@ -1,11 +1,11 @@
-import { pgTable, uuid, varchar, date, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, date, integer, serial } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { paymentHistoryTable } from "./payment";
 import { userTable } from "./user";
 
 export const subscriptionTable = pgTable("subscriptions", {
     id: uuid("id").primaryKey().defaultRandom(),
-    user_id: integer("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
+    user_id: serial("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
     status: varchar("status", { length: 50 }).notNull(),
     plan: varchar("plan", { length: 100 }).notNull(),
     price: integer("price").notNull(),
