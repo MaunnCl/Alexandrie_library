@@ -11,7 +11,7 @@ function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
 
   return (
     <div className="step-indicator">
-      {steps.map(stepNumber => (
+      {steps.map((stepNumber) => (
         <div
           key={stepNumber}
           className={`step ${stepNumber <= currentStep ? 'active' : ''}`}

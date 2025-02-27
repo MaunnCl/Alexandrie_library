@@ -43,7 +43,6 @@
     opacity: 0;
     transform: translateX(40px);
   }
-
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -67,18 +66,6 @@
   font-size: 16px;
 }
 
-.two-fields-row {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.two-fields-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
 .password-row {
   display: flex;
   gap: 15px;
@@ -91,17 +78,21 @@
   flex-direction: column;
 }
 
-.error-message {
-  color: #ff0000;
-  font-size: 14px;
-  margin-top: -5px;
-  margin-bottom: 15px;
+.two-fields-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-.payment-title {
-  margin-bottom: 24px;
-  font-size: 22px;
-  color: #fff;
+.two-fields-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: #ff0000;
+  margin-bottom: 20px;
 }
 
 .navigation-buttons {
@@ -138,6 +129,7 @@
 
 .next-button:hover {
   background-color: #ff0000;
+  opacity: 0.9;
 }
 
 .next-button:disabled {
@@ -153,6 +145,7 @@
 
 .register-button:hover {
   background-color: #ff0000;
+  opacity: 0.9;
 }
 
 .register-button:disabled {
@@ -171,14 +164,6 @@
   }
 
   .two-fields-row {
-    display: flex;
-    gap: 15px;
-    justify-content: space-between;
-  }
-
-  .two-fields-item {
-    flex: 1;
-    display: flex;
     flex-direction: column;
   }
 }
