@@ -8,8 +8,7 @@ RUN apt-get install -y nodejs npm
 
 RUN npm i -g bun
 
-
-COPY package.json .
+COPY package.json package-lock.json
 
 RUN bun i
 
