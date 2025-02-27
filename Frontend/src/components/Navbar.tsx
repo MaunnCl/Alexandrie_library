@@ -1,4 +1,4 @@
-import React, { FormEvent, useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import axios from 'axios';
@@ -19,6 +19,7 @@ function Navbar() {
 
         if (!token || !userId) {
           console.error('No token or userId found in localStorage');
+          navigate('/login'); // Redirect to login if not authenticated
           return;
         }
 
@@ -32,11 +33,12 @@ function Navbar() {
         setUser(response.data[0]); // Ensure extracting first object
       } catch (error) {
         console.error("Error fetching user data:", error);
+        navigate('/login');
       }
     }
 
     fetchUserData();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -60,21 +62,16 @@ function Navbar() {
     navigate(path);
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post('/api/logout', {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+  const handleLogout = () => {
+    console.log("Token before logout:", localStorage.getItem('token'));
 
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
-      setProfileOpen(false);
-      navigate('/login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+
+    console.log("Token after logout:", localStorage.getItem('token'));
+
+    setProfileOpen(false);
+    navigate('/login');
   };
 
   return (
