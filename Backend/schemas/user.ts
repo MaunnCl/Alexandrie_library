@@ -27,9 +27,9 @@ export const userRelations = relations(userTable, ({ one }) => ({
 export const userProfile = pgTable("usersProfiles", {
     id: uuid("id").primaryKey().defaultRandom(),
     user_id: serial("user_id").notNull().references(() => userTable.id, { onDelete: "cascade" }),
-    profile_picture: varchar("profile_picture", {length: 255}).notNull(),
+    profile_picture: varchar("profile_picture", {length: 255}),
     bio: varchar("bio", {length: 500}).notNull(),
-    preferences: varchar("preferences", {length: 255}).notNull()
+    preferences: varchar("preferences", {length: 255})
 })
 
 export const roleList = pgTable("roleList", {
