@@ -31,7 +31,7 @@ function ProfilePage() {
           navigate('/login');
           return;
         }
-        const userResponse = await axios.get(`/api/users/${userId}`, {
+        const userResponse = await  (`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

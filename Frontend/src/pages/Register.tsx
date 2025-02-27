@@ -41,9 +41,9 @@ function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
+  
     if (!canFinishRegistration()) return;
-
+  
     try {
       const response = await fetch('/api/users', {
         method: 'POST',
@@ -57,18 +57,19 @@ function Register() {
           birthDate,
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error creating user');
       }
-
+      const createdUser = await response.json();
+      localStorage.setItem('userId', createdUser.id);
       navigate('/plans');
     } catch (err: any) {
       setError(err.message || 'An unknown error occurred');
     }
   };
-
+  
   return (
     <div className="register-page">
       <div className="register-container">
