@@ -20,10 +20,10 @@ export class UserProfileController {
         }
     }
 
-    static async getUserProfileById(req: Request, res: Response) {
+    static async getUserProfileById(req: Request, res: Response): Promise<void> {
         try {
             const profile = await UserProfileService.getUserProfileById(req.params.id);
-            if (!profile) return res.status(404).json({ message: "Profil non trouvé" });
+            if (!profile) res.status(404).json({ message: "Profil non trouvé" });
             res.status(200).json(profile);
         } catch (error) {
             res.status(500).json({ message: "Erreur lors de la récupération du profil", error });
