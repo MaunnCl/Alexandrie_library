@@ -128,11 +128,10 @@ function ProfilePage() {
 
   return (
     <div className="profile-page-container">
-      {/* Sidebar */}
       <aside className="sidebar">
         <div className="user-top">
           <img
-            src={user.avatar || '/avatar.png'}
+            src={profile?.profile_picture}
             alt="Profile"
             className="avatar"
           />
@@ -173,7 +172,6 @@ function ProfilePage() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="profile-main">
         {activeCategory === 'Personal Info' && (
           <div className="section-content">
@@ -247,23 +245,6 @@ function ProfilePage() {
               value={profile.preferences || ''}
               onChange={handleProfileChange}
             />
-            <label>Profile Picture URL</label>
-            <input
-              type="text"
-              name="profile_picture"
-              disabled={!isEditing}
-              value={profile.profile_picture || ''}
-              onChange={handleProfileChange}
-            />
-            {profile.profile_picture && (
-              <div className="profile-picture-preview">
-                <img
-                  src={profile.profile_picture}
-                  alt="Profile Preview"
-                  style={{ maxWidth: '100px' }}
-                />
-              </div>
-            )}
           </div>
         )}
 

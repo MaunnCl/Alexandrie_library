@@ -8,6 +8,7 @@ function Navbar() {
   const [query, setQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
@@ -23,16 +24,33 @@ function Navbar() {
           return;
         }
 
-        const response = await axios.get(`/api/users/${userId}`, {
+        // Fetch user data
+        const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log("User data received:", response.data);
-        setUser(response.data[0]);
+        const userData = Array.isArray(userResponse.data)
+          ? userResponse.data[0]
+          : userResponse.data;
+
+        setUser(userData);
+
+        // Fetch profile using the same userId
+        const profileResponse = await axios.get(`/api/profiles/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const profileData = Array.isArray(profileResponse.data)
+          ? profileResponse.data[0]
+          : profileResponse.data;
+
+        setProfile(profileData);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching user or profile data:", error);
         navigate('/login');
       }
     }
@@ -63,29 +81,19 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    console.log("Token before logout:", localStorage.getItem('token'));
-
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
-
-    console.log("Token after logout:", localStorage.getItem('token'));
-
     setProfileOpen(false);
     navigate('/login');
   };
 
   return (
     <header className="navbar">
-      <nav className="nav-links left-nav">
-        <Link to="/">Home</Link>
-        <Link to="/live">Live Events</Link>
-        <Link to="/categories">Categories</Link>
-      </nav>
-
       <Link to="/" className="logo-link">
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
 
+      {/* Centered Search Bar */}
       <div className="search-wrapper">
         <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input
@@ -97,10 +105,11 @@ function Navbar() {
         </form>
       </div>
 
-      {user && (
+      {/* Profile Section */}
+      {user && profile && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
-            <img src={user.avatar || '/avatar.png'} alt="User Avatar" className="avatar" />
+            <img src={profile.profile_picture} alt="User Avatar" className="avatar" />
             <span className="profile-name">{user.firstname} {user.lastname}</span>
             <span className="arrow-down">▼</span>
           </div>
@@ -108,7 +117,7 @@ function Navbar() {
           {profileOpen && (
             <div className="profile-card animate-slideDown">
               <div className="profile-card-header">
-                <img src={user.avatar || '/avatar.png'} alt="User Avatar" className="avatar" />
+                <img src={profile.profile_picture} alt="User Avatar" className="avatar" />
                 <div>
                   <h4>{user.firstname} {user.lastname}</h4>
                   <p>{user.email}</p>
