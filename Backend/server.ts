@@ -10,8 +10,13 @@ import contentRoutes from "./routes/content.route";
 import historyRoutes from "./routes/history.route";
 import categoriesRoutes from "./routes/categories.route"
 import { setupSwagger } from "./docs/swagger";
+import multer from "multer";
 
 dotenv.config();
+
+
+const storage = multer.diskStorage({});
+export const uploadM = multer({ storage });
 
 const app = express();
 const PORT = process.env.PORT || 5000;

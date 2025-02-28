@@ -1,23 +1,22 @@
-FROM ubuntu:22.04
-
-# Update packages
-RUN apt-get update && apt-get upgrade -y
-
-# Install packages
-RUN apt-get install -y nodejs npm git curl
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy only package.json first for better caching
+COPY package.json package-lock.json ./
+
+# Ensure Vite and dependencies are installed
+COPY bun.lock .
+
+RUN npm i -g bun
 
 # Install dependencies
 RUN npm install
 
-# Copy all files
+# Copy the rest of the app
 COPY . .
 
-# Expose port
+# Expose Vite port
 EXPOSE 5173
 
 # Start the app

@@ -58,7 +58,3 @@ export async function getSignedUrlForStreaming(key: string) {
     return url;
 }
 
-// const LOCAL_FILE_PATH = "/Users/rafaelsapaloesteves/Downloads/Bassez Video.mp4";
-// const REMOTE_FILE_KEY = Bun.env.BUCKET_FILE_NAME as string;
-
-// uploadFile(Bun.env.BUCKET_NAME as string, LOCAL_FILE_PATH, REMOTE_FILE_KEY);

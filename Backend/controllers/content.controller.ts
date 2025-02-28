@@ -4,7 +4,12 @@ import { getSignedUrlForStreaming } from "@utils/aws.utils";
 
 export class ContentController {
     static async create(req: Request, res: Response) {
+        const { title, description } = req.body;
+        const file = req.file;
         try {
+            if (!file) {
+                res.status(400).json({ message: "No file uploaded" });
+            }
             const content = await ContentService.createContent(req.body);
             res.status(201).json(content);
         } catch (error) {
@@ -13,11 +18,11 @@ export class ContentController {
     }
 
     static async getAll(req: Request, res: Response) {
+        const videoKey = req.query.videoKey as string;
         try {
-            const videoKey = req.query.videoKey as string;
-            const url = await getSignedUrlForStreaming(videoKey);
-            //const contents = await ContentService.getAllContents();
-            res.status(200).json(url);
+            //const url = await getSignedUrlForStreaming(videoKey);
+            const contents = await ContentService.getAllContents();
+            res.status(200).json(contents);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

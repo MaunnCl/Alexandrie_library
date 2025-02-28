@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { ContentController } from "../controllers/content.controller";
+import multer from "multer";
+import { uploadM } from "server";
 
 const router = Router();
 
@@ -16,7 +18,7 @@ const router = Router();
  *       400:
  *         description: Bad request
  */
-router.post("/contents", ContentController.create);
+router.post("/contents", uploadM.single("file"), ContentController.create);
 
 /**
  * @swagger
