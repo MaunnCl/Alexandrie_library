@@ -11,8 +11,8 @@ export class UserProfileRepository {
         return db.select().from(userProfile);
     }
 
-    static async getUserProfileById(id: string) {
-        return db.select().from(userProfile).where(eq(userProfile.id, id)).then(res => res[0]);
+    static async getUserProfileById(id: number) {
+        return db.select().from(userProfile).where(eq(userProfile.user_id, id)).then(res => res[0]);
     }
 
     static async updateUserProfile(id: string, profileData: any) {
