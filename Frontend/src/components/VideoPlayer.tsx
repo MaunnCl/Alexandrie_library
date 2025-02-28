@@ -1,10 +1,4 @@
-import React, {
-    useRef,
-    useState,
-    useEffect,
-    MouseEvent,
-    SyntheticEvent
-} from 'react';
+import React, { useRef, useState, useEffect, MouseEvent, SyntheticEvent } from 'react';
 import '../styles/VideoPlayer.css';
 import {
     FiPlay,
@@ -18,22 +12,29 @@ import {
 interface VideoPlayerProps {
     src: string;
     poster?: string;
+    title?: string;
+    description?: string;
+    releaseYear?: string;
+    duration?: string;
 }
 
-function VideoPlayer({ src, poster }: VideoPlayerProps) {
+function VideoPlayer({
+    src,
+    poster,
+    title = "Fake Movie Title",
+    description = "This is a placeholder description for the video. The real description will be dynamically loaded later.",
+    releaseYear = "2025",
+    duration = "2h 15min"
+}: VideoPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(false);
     const [showControls, setShowControls] = useState(true);
-
     const [progress, setProgress] = useState(0);
-    const [duration, setDuration] = useState(0);
-
+    const [videoDuration, setVideoDuration] = useState(0);
     const [volume, setVolume] = useState(1);
-
     const [isFullscreen, setIsFullscreen] = useState(false);
-
 
     const handleTimeUpdate = () => {
         if (videoRef.current) {
@@ -43,10 +44,9 @@ function VideoPlayer({ src, poster }: VideoPlayerProps) {
 
     const handleLoadedMetadata = () => {
         if (videoRef.current) {
-            setDuration(videoRef.current.duration);
+            setVideoDuration(videoRef.current.duration);
         }
     };
-
 
     const togglePlay = () => {
         if (!videoRef.current) return;
@@ -93,7 +93,6 @@ function VideoPlayer({ src, poster }: VideoPlayerProps) {
         setIsFullscreen(!isFullscreen);
     };
 
-
     useEffect(() => {
         const timeout = setTimeout(() => {
             setShowControls(false);
@@ -105,8 +104,7 @@ function VideoPlayer({ src, poster }: VideoPlayerProps) {
         setShowControls(true);
     };
 
-    const progressPercent = duration ? (progress / duration) * 100 : 0;
-
+    const progressPercent = videoDuration ? (progress / videoDuration) * 100 : 0;
     const volumePercent = volume * 100;
 
     return (
@@ -122,38 +120,36 @@ function VideoPlayer({ src, poster }: VideoPlayerProps) {
                 onPause={() => setIsPlaying(false)}
             />
 
+            <div className="video-overlay">
+                <div className="video-info">
+                    <h1 className="video-title">{title}</h1>
+                    <p className="video-meta">{releaseYear} • {duration}</p>
+                    <p className="video-description">{description}</p>
+                </div>
+            </div>
+
             <div className={`controls-overlay ${showControls ? 'visible' : ''}`}>
                 <button className="center-play-btn" onClick={togglePlay}>
                     {isPlaying ? <FiPause /> : <FiPlay />}
                 </button>
 
                 <div className="control-bar">
-                    <button onClick={togglePlay}>
-                        {isPlaying ? <FiPause /> : <FiPlay />}
-                    </button>
+                    <button onClick={togglePlay}>{isPlaying ? <FiPause /> : <FiPlay />}</button>
 
                     <input
                         className="progress-bar"
                         type="range"
                         min="0"
-                        max={duration}
+                        max={videoDuration}
                         step="any"
                         value={progress}
                         onChange={handleSeek}
                         style={{
-                            background: `linear-gradient(
-                  to right,
-                  #00d4ff 0%,
-                  #00d4ff ${progressPercent}%,
-                  #666 ${progressPercent}%,
-                  #666 100%
-                )`
+                            background: `linear-gradient(to right, #00d4ff 0%, #00d4ff ${progressPercent}%, #666 ${progressPercent}%, #666 100%)`
                         }}
                     />
 
-                    <button onClick={toggleMute}>
-                        {isMuted ? <FiVolumeX /> : <FiVolume2 />}
-                    </button>
+                    <button onClick={toggleMute}>{isMuted ? <FiVolumeX /> : <FiVolume2 />}</button>
 
                     <input
                         className="volume-slider"
@@ -164,19 +160,11 @@ function VideoPlayer({ src, poster }: VideoPlayerProps) {
                         value={volume}
                         onChange={handleVolumeChange}
                         style={{
-                            background: `linear-gradient(
-                  to right,
-                  #00d4ff 0%,
-                  #00d4ff ${volumePercent}%,
-                  #666 ${volumePercent}%,
-                  #666 100%
-                )`
+                            background: `linear-gradient(to right, #00d4ff 0%, #00d4ff ${volumePercent}%, #666 ${volumePercent}%, #666 100%)`
                         }}
                     />
 
-                    <button onClick={toggleFullscreen}>
-                        {isFullscreen ? <FiMinimize /> : <FiMaximize />}
-                    </button>
+                    <button onClick={toggleFullscreen}>{isFullscreen ? <FiMinimize /> : <FiMaximize />}</button>
                 </div>
             </div>
         </div>
