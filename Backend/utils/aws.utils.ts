@@ -48,6 +48,16 @@ export async function downloadFile(key: string) {
     return arrayBuffer;
 }
 
+export async function getSignedUrlForStreaming(key: string) {
+    const command = new GetObjectCommand({
+        Bucket: Bun.env.BUCKET_NAME as string,
+        Key: key
+    });
+
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+    return url;
+}
+
 const LOCAL_FILE_PATH = "/Users/rafaelsapaloesteves/Downloads/Bassez Video.mp4";
 const REMOTE_FILE_KEY = Bun.env.BUCKET_FILE_NAME as string;
 
