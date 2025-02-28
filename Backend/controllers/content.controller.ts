@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ContentService } from "../services/content.service";
+import { getSignedUrlForStreaming } from "@utils/aws.utils";
 
 export class ContentController {
     static async create(req: Request, res: Response) {
@@ -13,8 +14,10 @@ export class ContentController {
 
     static async getAll(req: Request, res: Response) {
         try {
-            const contents = await ContentService.getAllContents();
-            res.status(200).json(contents);
+            const videoKey = req.query.videoKey as string;
+            const url = await getSignedUrlForStreaming(videoKey);
+            //const contents = await ContentService.getAllContents();
+            res.status(200).json(url);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
