@@ -8,7 +8,9 @@ RUN apt-get install -y nodejs npm
 
 RUN npm i -g bun
 
-COPY package.json package-lock.json
+COPY package.json ./
+
+RUN npm rebuild bcrypt --build-from-source
 
 RUN bun i
 
