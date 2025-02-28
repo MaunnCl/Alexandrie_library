@@ -177,13 +177,13 @@
     margin-bottom: 5px;
 }
 
-
 .video-meta {
     font-size: 14px;
     color: #ff0000;
     font-weight: bold;
     margin-bottom: 8px;
 }
+
 .video-description {
     font-size: 16px;
     color: #ddd;
@@ -197,4 +197,60 @@
 .video-container:not(:hover) .video-overlay {
     opacity: 0.9;
     transition: opacity 3s ease-in-out;
+}
+
+.info-bar-overlay {
+    position: absolute;
+    bottom: 15%;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    z-index: 5;
+    transition: opacity 0.3s ease;
+}
+
+.info-bar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.row1 {
+    background: red;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.info-bar-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.info-bar-meta {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.row2 {
+    background: #fff;
+    color: red;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.info-bar-description {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.controls-overlay:not(.visible) ~ .info-bar-overlay {
+    opacity: 0.5;
 }

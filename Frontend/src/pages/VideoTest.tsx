@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import VideoPlayer from '../components/VideoPlayer';
 import axios from 'axios';
+import VideoPlayer from '../components/VideoPlayer';
+import '../styles/VideoTest.css';
+import siteLogo from '/logo.png';
 
 function VideoTest() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [videoName, setVideoName] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchVideoUrl() {
       try {
-        const response = await axios.get('http://localhost:8080/api/contents?videoKey=Video-Bassez.mp4');
-        
+        const response = await axios.get(
+          'http://localhost:8080/api/contents?videoKey=Video-Bassez.mp4'
+        );
         if (response.data && typeof response.data === 'string') {
           setVideoUrl(response.data);
+          setVideoName('Video-Bassez.mp4');
         } else {
           console.error('Invalid video URL response:', response.data);
         }
@@ -22,20 +27,30 @@ function VideoTest() {
         setLoading(false);
       }
     }
-
     fetchVideoUrl();
   }, []);
 
   return (
-    <div style={{ maxWidth: '800px', margin: 'auto', paddingTop: '50px' }}>
-      <h2 style={{ textAlign: 'center', color: '#fff' }}>Test Video Player</h2>
-
+    <div className="video-test-page">
       {loading ? (
-        <p style={{ textAlign: 'center', color: '#fff' }}>Loading video...</p>
+        <p className="loading-text">Loading video...</p>
       ) : videoUrl ? (
-        <VideoPlayer src={videoUrl} poster="https://via.placeholder.com/800x450?text=Video+Loading" />
+        <div className="video-and-logo">
+          <div className="video-wrapper">
+            <VideoPlayer
+              src={videoUrl}
+              poster="https://via.placeholder.com/800x450?text=Video+Loading"
+              title={videoName}
+            />
+          </div>
+
+          <div className="logo-section">
+            <img src={siteLogo} alt="Site Logo" className="site-logo" />
+            <p className="video-name">{videoName}</p>
+          </div>
+        </div>
       ) : (
-        <p style={{ textAlign: 'center', color: 'red' }}>Failed to load video.</p>
+        <p className="error-text">Failed to load video.</p>
       )}
     </div>
   );
