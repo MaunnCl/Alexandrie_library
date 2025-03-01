@@ -8,8 +8,6 @@ COPY package.json package-lock.json ./
 # Ensure Vite and dependencies are installed
 COPY bun.lock .
 
-RUN npm i -g bun
-
 # Install dependencies
 RUN npm install
 
