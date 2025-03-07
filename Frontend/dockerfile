@@ -1,18 +1,11 @@
-FROM node:20-alpine
+FROM node:23-alpine
 
 WORKDIR /app
 
-# Copy only package.json first for better caching
-COPY package.json package-lock.json ./
-
-# Ensure Vite and dependencies are installed
-COPY bun.lock .
+COPY . .
 
 # Install dependencies
-RUN npm install
-
-# Copy the rest of the app
-COPY . .
+RUN npm i
 
 # Expose Vite port
 EXPOSE 5173
