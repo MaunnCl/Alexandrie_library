@@ -4,19 +4,15 @@ import { ContentService } from "../services/content.service";
 export class ContentController {
   static async create(req: Request, res: Response) {
     try {
-      const { title, description, type, thumbnail_url, duration, release_date } = req.body;
+        const { title } = req.body;
 
-      if (!title || !type) {
-        return res.status(400).json({ message: "Missing required fields" });
-      }
+        if (!title) {
+          return res.status(400).json({ message: "Missing required title" });
+        }
+        
 
       const content = await ContentService.createContent({
-        title,
-        description,
-        type,
-        thumbnail_url,
-        duration: Number(duration),
-        release_date,
+        title
       });
 
       res.status(201).json(content);
