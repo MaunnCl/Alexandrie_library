@@ -10,24 +10,34 @@ function VideoTest() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchVideoUrl() {
+    async function fetchVideo() {
       try {
-        const response = await axios.get(
-          'http://localhost:8080/api/contents?videoKey=Video-Bassez.mp4'
+        const videoTitle = 'Video-Bassez.mp4';
+        const response = await axios.post(
+          'http://localhost:8080/api/contents',
+          { title: videoTitle },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
         );
-        if (response.data && typeof response.data === 'string') {
-          setVideoUrl(response.data);
-          setVideoName('Video-Bassez.mp4');
+
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const video = response.data[0];
+          setVideoUrl(video.url);
+          setVideoName(video.title);
         } else {
-          console.error('Invalid video URL response:', response.data);
+          console.error('Invalid response format:', response.data);
         }
       } catch (error) {
-        console.error('Error fetching video URL:', error);
+        console.error('Error fetching video from backend:', error);
       } finally {
         setLoading(false);
       }
     }
-    fetchVideoUrl();
+
+    fetchVideo();
   }, []);
 
   return (
