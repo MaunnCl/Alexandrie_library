@@ -10,15 +10,27 @@ const router = Router();
  * /contents:
  *   post:
  *     summary: Create a new content item
- *     description: Add a new content entry to the system
+ *     description: Add a new content entry to the system with just a title.
  *     tags: [Content]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: Video-Bassez
  *     responses:
  *       201:
  *         description: Content created successfully
  *       400:
  *         description: Bad request
  */
-router.post("/contents", uploadM.single("file"), ContentController.create);
+router.post("/contents", ContentController.create);
 
 /**
  * @swagger
