@@ -1,60 +1,66 @@
 import { Request, Response } from "express";
 import { ContentService } from "../services/content.service";
-import { getSignedUrlForStreaming } from "@utils/aws.utils";
 
 export class ContentController {
-    static async create(req: Request, res: Response) {
-        const { title, description } = req.body;
-        const file = req.file;
-        try {
-            if (!file) {
-                res.status(400).json({ message: "No file uploaded" });
-            }
-            const content = await ContentService.createContent(req.body);
-            res.status(201).json(content);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+  static async create(req: Request, res: Response) {
+    try {
+      const { title, description, type, thumbnail_url, duration, release_date } = req.body;
 
-    static async getAll(req: Request, res: Response) {
-        const videoKey = req.query.videoKey as string;
-        try {
-            //const url = await getSignedUrlForStreaming(videoKey);
-            const contents = await ContentService.getAllContents();
-            res.status(200).json(contents);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+      if (!title || !type) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
 
-    static async getById(req: Request, res: Response) {
-        try {
-            const content = await ContentService.getContentById(Number(req.params.id));
-            if (!content) {
-                return res.status(404).json({ message: "Content not found" });
-            }
-            res.status(200).json(content);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    }
+      const content = await ContentService.createContent({
+        title,
+        description,
+        type,
+        thumbnail_url,
+        duration: Number(duration),
+        release_date,
+      });
 
-    static async update(req: Request, res: Response) {
-        try {
-            const updatedContent = await ContentService.updateContent(Number(req.params.id), req.body);
-            res.status(200).json(updatedContent);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+      res.status(201).json(content);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
+  }
 
-    static async delete(req: Request, res: Response) {
-        try {
-            await ContentService.deleteContent(Number(req.params.id));
-            res.status(204).send();
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+  static async getAll(req: Request, res: Response) {
+    try {
+      const contents = await ContentService.getAllContents();
+      res.status(200).json(contents);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
+  }
+
+  static async getById(req: Request, res: Response) {
+    try {
+      const content = await ContentService.getContentById(Number(req.params.id));
+      if (!content) {
+        return res.status(404).json({ message: "Content not found" });
+      }
+      res.status(200).json(content);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async update(req: Request, res: Response) {
+    try {
+      const updatedContent = await ContentService.updateContent(Number(req.params.id), req.body);
+      res.status(200).json(updatedContent);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async delete(req: Request, res: Response) {
+    try {
+      await ContentService.deleteContent(Number(req.params.id));
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }
