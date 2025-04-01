@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { ContentController } from "../controllers/content.controller";
 import multer from "multer";
-import { uploadM } from "server";
+import { uploadM } from "../config/multerConfig";
 
 const router = Router();
 
