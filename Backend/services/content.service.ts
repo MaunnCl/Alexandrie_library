@@ -5,14 +5,20 @@ import {
 } from "../utils/aws.utils";
 
 export class ContentService {
-  static async createContent(data: any) {
-    const videoKey = buildS3KeyFromTitle(data.title);
-    const signedUrl = await getSignedUrlForStreaming(videoKey);
-    return await ContentRepository.create({
-      ...data,
-      url: signedUrl,
-    });
-  }
+    static async createContent(data: any) {
+        const videoKey = buildS3KeyFromTitle(data.title);
+        const signedUrl = await getSignedUrlForStreaming(videoKey);
+      
+        return await ContentRepository.create({
+          title: data.title,
+          url: signedUrl,
+          description: "", 
+          type: "",
+          thumbnail_url: "",
+          duration: 0,
+          release_date: new Date().toISOString(),
+        });
+      }   
 
   static async getAllContents() {
     return await ContentRepository.findAll();
