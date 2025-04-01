@@ -1,19 +1,17 @@
-FROM ubuntu:22.04
+FROM node:20-bookworm
+
+RUN curl -fsSL https://bun.sh/install | bash
+
+ENV PATH="/root/.bun/bin:$PATH"
 
 WORKDIR /app
 
-RUN apt-get update
+COPY package.json bun.lockb ./
 
-RUN apt-get install -y nodejs npm
-
-RUN npm i -g bun
-
-COPY package.json ./
-
-RUN npm rebuild bcrypt --build-from-source
-
-RUN bun i
+RUN bun install
 
 COPY . .
 
-CMD ["bun", "bun:dev"]
+RUN bun run rebuild || true
+
+CMD ["bun", "run", "bun:dev"]
