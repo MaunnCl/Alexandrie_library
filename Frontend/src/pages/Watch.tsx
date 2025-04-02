@@ -11,7 +11,7 @@ function VideoTest() {
   const [loading, setLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
-  const videoTitle = searchParams.get('title') || 'Video-Bassez.mp4';
+  const videoTitle = searchParams.get('title');
 
   useEffect(() => {
     async function fetchVideo() {
