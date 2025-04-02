@@ -3,7 +3,7 @@ import axios from 'axios';
 import VideoPlayer from '../components/VideoPlayer';
 import '../styles/Watch.css';
 import siteLogo from '/logo.png';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 function VideoTest() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -12,6 +12,8 @@ function VideoTest() {
 
   const [searchParams] = useSearchParams();
   const videoTitle = searchParams.get('title');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchVideo() {
@@ -60,7 +62,13 @@ function VideoTest() {
           </div>
 
           <div className="logo-section">
-            <img src={siteLogo} alt="Site Logo" className="site-logo" />
+            <img
+              src={siteLogo}
+              alt="Site Logo"
+              className="site-logo"
+              onClick={() => navigate('/')}
+              style={{ cursor: 'pointer' }}
+            />
             <p className="video-name">{displayTitle}</p>
           </div>
         </div>
