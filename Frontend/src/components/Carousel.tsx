@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../styles/Carousel.css';
 
 function Carousel() {
@@ -24,6 +24,8 @@ function Carousel() {
   ];
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   function updateCarouselPosition(index: number) {
     const newIndex = (index + slidesData.length) % slidesData.length;
@@ -38,16 +40,38 @@ function Carousel() {
     updateCarouselPosition(currentSlideIndex + 1);
   };
 
+  useEffect(() => {
+    if (!isHovered) {
+      intervalRef.current = setInterval(() => {
+        updateCarouselPosition(currentSlideIndex + 1);
+      }, 5000);
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [currentSlideIndex, isHovered]);
+
   return (
-    <div className="carousel-section">
+    <div
+      className="carousel-section"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <h2 className="carousel-title">Featured Events</h2>
       <div className="carousel-container">
         <button className="carousel-button prev" onClick={prevSlide}>
           &#10094;
         </button>
+
         <div
           className="carousel-track"
-          style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
+          style={{
+            transform: `translateX(-${currentSlideIndex * 100}%)`,
+            transition: 'transform 0.6s ease-in-out'
+          }}
         >
           {slidesData.map((slide, i) => (
             <div className="carousel-slide" key={i}>
@@ -57,9 +81,20 @@ function Carousel() {
             </div>
           ))}
         </div>
+
         <button className="carousel-button next" onClick={nextSlide}>
           &#10095;
         </button>
+      </div>
+
+      <div className="carousel-dots">
+        {slidesData.map((_, i) => (
+          <span
+            key={i}
+            className={`dot ${i === currentSlideIndex ? 'active' : ''}`}
+            onClick={() => setCurrentSlideIndex(i)}
+          ></span>
+        ))}
       </div>
     </div>
   );
