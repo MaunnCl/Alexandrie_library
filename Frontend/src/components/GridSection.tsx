@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../styles/GridSection.css';
 import EventModal from './EventModal';
+import axios from 'axios';
 
 interface EventData {
   img: string;
@@ -11,39 +12,60 @@ interface EventData {
 }
 
 function GridSection() {
-  const events: EventData[] = [
-    {
-      img: 'https://via.placeholder.com/800x450',
-      title: 'Advances in Cardiology',
-      description: 'Latest research and innovations in cardiovascular medicine.',
-      duration: '2h 30m',
-      speakers: 'Dr. John Doe, Dr. Jane Smith'
-    },
-    {
-      img: 'https://via.placeholder.com/800x450',
-      title: 'Neuroscience Innovations',
-      description: 'Breakthrough discoveries in brain science and neurological treatments.',
-      duration: '1h 45m',
-      speakers: 'Dr. Alice Brown, Dr. Robert Wilson'
-    },
-    {
-      img: 'https://via.placeholder.com/800x450',
-      title: 'Breakthroughs in Oncology',
-      description: 'Exploring the latest advancements in cancer research and therapy.',
-      duration: '3h 15m',
-      speakers: 'Dr. Emily White, Dr. Michael Green'
-    },
-    {
-      img: 'https://via.placeholder.com/800x450',
-      title: 'Robotic Surgery Summit',
-      description: 'How AI and robotics are revolutionizing surgical procedures.',
-      duration: '2h',
-      speakers: 'Dr. Kevin Lee, Dr. Sarah Johnson'
-    }
-  ];
-
+  const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    async function fetchVideos() {
+      try {
+        const res = await axios.get('http://localhost:8080/api/contents');
+        const data = res.data;
+
+        if (Array.isArray(data) && data.length > 0) {
+          const first = data.find((v: any) => v.title && v.thumbnail_url);
+          const realEvent: EventData = {
+            img: first?.thumbnail_url || 'https://via.placeholder.com/800x450',
+            title: first?.title.replace(/\.mp4$/i, '') || 'Unknown title',
+            description: first?.description || 'No description',
+            duration: first?.duration
+              ? `${Math.floor(first.duration / 60)} min`
+              : 'Unknown duration',
+            speakers: 'Non renseigné'
+          };
+
+          setEvents([
+            realEvent,
+            {
+              img: 'https://via.placeholder.com/800x450',
+              title: 'Neuroscience Innovations',
+              description: 'Breakthrough discoveries in brain science and neurological treatments.',
+              duration: '1h 45m',
+              speakers: 'Dr. Alice Brown, Dr. Robert Wilson'
+            },
+            {
+              img: 'https://via.placeholder.com/800x450',
+              title: 'Breakthroughs in Oncology',
+              description: 'Exploring the latest advancements in cancer research and therapy.',
+              duration: '3h 15m',
+              speakers: 'Dr. Emily White, Dr. Michael Green'
+            },
+            {
+              img: 'https://via.placeholder.com/800x450',
+              title: 'Robotic Surgery Summit',
+              description: 'How AI and robotics are revolutionizing surgical procedures.',
+              duration: '2h',
+              speakers: 'Dr. Kevin Lee, Dr. Sarah Johnson'
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Erreur chargement vidéos dynamiques :', error);
+      }
+    }
+
+    fetchVideos();
+  }, []);
 
   const handleOpenModal = (event: EventData) => {
     setSelectedEvent(event);

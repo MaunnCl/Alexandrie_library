@@ -7,7 +7,7 @@ import Plans from './pages/Plans';
 import Logout from './pages/Logout';
 import Checkout from './pages/Checkout';
 import ProfileCreation from './pages/ProfileCreation';
-import VideoTest from './pages/VideoTest';
+import VideoTest from './pages/Watch';
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/profile-creation" element={<ProfileCreation />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/video-test" element={<VideoTest />} />
+        <Route path="/watch" element={<VideoTest />} />
       </Routes>
     </Router>
   );

@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import VideoPlayer from '../components/VideoPlayer';
-import '../styles/VideoTest.css';
+import '../styles/Watch.css';
 import siteLogo from '/logo.png';
+import { useSearchParams } from 'react-router-dom';
 
 function VideoTest() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [videoName, setVideoName] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
+  const [searchParams] = useSearchParams();
+  const videoTitle = searchParams.get('title') || 'Video-Bassez.mp4';
+
   useEffect(() => {
     async function fetchVideo() {
       try {
-        const videoTitle = 'Video-Bassez.mp4';
         const response = await axios.post(
           'http://localhost:8080/api/contents',
           { title: videoTitle },
@@ -38,7 +41,9 @@ function VideoTest() {
     }
 
     fetchVideo();
-  }, []);
+  }, [videoTitle]);
+
+  const displayTitle = videoName.replace(/\.mp4$/i, '') || 'Vidéo';
 
   return (
     <div className="video-test-page">
@@ -50,13 +55,13 @@ function VideoTest() {
             <VideoPlayer
               src={videoUrl}
               poster="https://via.placeholder.com/800x450?text=Video+Loading"
-              title={videoName}
+              title={displayTitle}
             />
           </div>
 
           <div className="logo-section">
             <img src={siteLogo} alt="Site Logo" className="site-logo" />
-            <p className="video-name">{videoName}</p>
+            <p className="video-name">{displayTitle}</p>
           </div>
         </div>
       ) : (
