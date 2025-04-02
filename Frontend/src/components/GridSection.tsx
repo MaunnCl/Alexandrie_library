@@ -22,45 +22,23 @@ function GridSection() {
         const res = await axios.get('http://localhost:8080/api/contents');
         const data = res.data;
 
-        if (Array.isArray(data) && data.length > 0) {
-          const first = data.find((v: any) => v.title && v.thumbnail_url);
-          const realEvent: EventData = {
-            img: first?.thumbnail_url || 'https://via.placeholder.com/800x450',
-            title: first?.title.replace(/\.mp4$/i, '') || 'Unknown title',
-            description: first?.description || 'No description',
-            duration: first?.duration
-              ? `${Math.floor(first.duration / 60)} min`
-              : 'Unknown duration',
-            speakers: 'Non renseigné'
-          };
+        const mapped: EventData[] = data
+          .filter((v: any) => v.title && v.url)
+          .map((v: any) => ({
+            img: v.thumbnail_url || 'https://via.placeholder.com/800x450',
+            title: v.title.replace(/\.mp4$/i, ''),
+            description: v.description || 'Aucune description.',
+            duration: v.duration ? `${Math.floor(v.duration / 60)} min` : 'Durée inconnue',
+            speakers: 'Non renseigné',
+          }));
 
-          setEvents([
-            realEvent,
-            {
-              img: 'https://via.placeholder.com/800x450',
-              title: 'Neuroscience Innovations',
-              description: 'Breakthrough discoveries in brain science and neurological treatments.',
-              duration: '1h 45m',
-              speakers: 'Dr. Alice Brown, Dr. Robert Wilson'
-            },
-            {
-              img: 'https://via.placeholder.com/800x450',
-              title: 'Breakthroughs in Oncology',
-              description: 'Exploring the latest advancements in cancer research and therapy.',
-              duration: '3h 15m',
-              speakers: 'Dr. Emily White, Dr. Michael Green'
-            },
-            {
-              img: 'https://via.placeholder.com/800x450',
-              title: 'Robotic Surgery Summit',
-              description: 'How AI and robotics are revolutionizing surgical procedures.',
-              duration: '2h',
-              speakers: 'Dr. Kevin Lee, Dr. Sarah Johnson'
-            }
-          ]);
-        }
+        const unique = Array.from(
+          new Map(mapped.map((v) => [v.title, v])).values()
+        );
+
+        setEvents(unique.slice(0, 4));
       } catch (error) {
-        console.error('Erreur chargement vidéos dynamiques :', error);
+        console.error('Erreur lors du chargement des vidéos :', error);
       }
     }
 
@@ -89,7 +67,9 @@ function GridSection() {
             <img src={ev.img} alt={ev.title} />
             <h3>{ev.title}</h3>
             <p>{ev.description}</p>
-            <p className="details">Duration: {ev.duration} | Speakers: {ev.speakers}</p>
+            <p className="details">
+              Durée : {ev.duration} | Intervenants : {ev.speakers}
+            </p>
           </div>
         ))}
       </div>
