@@ -18,31 +18,25 @@ function VideoTest() {
   useEffect(() => {
     async function fetchVideo() {
       try {
-        const response = await axios.post(
-          'http://localhost:8080/api/contents',
-          { title: videoTitle },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
+        const response = await axios.get(`http://localhost:8080/api/contents/title/${videoTitle}`);
+        
         if (Array.isArray(response.data) && response.data.length > 0) {
           const video = response.data[0];
           setVideoUrl(video.url);
           setVideoName(video.title);
         } else {
-          console.error('Invalid response format:', response.data);
+          console.error('Format de réponse invalide:', response.data);
         }
       } catch (error) {
-        console.error('Error fetching video from backend:', error);
+        console.error('Erreur lors de la récupération de la vidéo depuis le backend:', error);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchVideo();
+    if (videoTitle) {
+      fetchVideo();
+    }
   }, [videoTitle]);
 
   const displayTitle = videoName.replace(/\.mp4$/i, '') || 'Vidéo';
