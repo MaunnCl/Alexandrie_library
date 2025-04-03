@@ -5,11 +5,13 @@
     position: relative;
     overflow-x: hidden;
 }
+
 .carousel-title {
     text-align: center;
     font-size: 28px;
     margin-bottom: 20px;
-    color: #ff0000; /* was #00d4ff */
+    color: #ff0000;
+    /* was #00d4ff */
 }
 
 .carousel-container {
@@ -76,6 +78,27 @@
 
 .carousel-button:hover {
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.dot {
+    height: 12px;
+    width: 12px;
+    margin: 0 6px;
+    background-color: #888;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.dot.active {
+    background-color: #ff0000;
 }
 
 @media (max-width: 768px) {
