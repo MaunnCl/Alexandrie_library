@@ -35,4 +35,9 @@ export class ContentService {
   static async deleteContent(id: number) {
     return await ContentRepository.delete(id);
   }
+
+  static async getContentByTitle(title: string) {
+    return await ContentRepository.findByTitle(title);
+  }
+
 }

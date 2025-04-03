@@ -59,4 +59,14 @@ export class ContentController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  static async getContentByTitle(req: Request, res: Response) {
+    try {
+        const title = req.params.title;
+        const content = await ContentService.getContentByTitle(title);
+        res.status(200).json(content);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 }

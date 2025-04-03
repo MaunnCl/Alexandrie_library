@@ -69,6 +69,8 @@ router.get("/contents", ContentController.getAll);
  */
 router.get("/contents/:id", ContentController.getById);
 
+router.get('/contents/title/:title', ContentController.getContentByTitle);
+
 router.put("/contents/:id", ContentController.update);
 
 /**

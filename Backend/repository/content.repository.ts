@@ -25,4 +25,8 @@ export class ContentRepository {
     static async delete(id: number) {
         return db.delete(contentTable).where(eq(contentTable.id, id)).returning();
     }
+
+    static async findByTitle(title: string) {
+        return db.select().from(contentTable).where(eq(contentTable.title, title));
+    }    
 }
