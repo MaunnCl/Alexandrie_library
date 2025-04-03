@@ -11,7 +11,7 @@
     "db:migrate": "npx drizzle-kit migrate",
     "db:push": "npx drizzle-kit push",
     "bun:dev": "bun --watch server.ts",
-    "bun:prod": "bun run server.ts"
+    "bun:prod": "bun server.ts"
   },
   "keywords": [],
   "author": "",

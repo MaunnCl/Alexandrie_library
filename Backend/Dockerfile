@@ -1,17 +1,15 @@
 FROM node:20-bookworm
 
 RUN curl -fsSL https://bun.sh/install | bash
-
 ENV PATH="/root/.bun/bin:$PATH"
 
 WORKDIR /app
 
-COPY package.json bun.lockb ./
-
+COPY bun.lockb package.json ./
 RUN bun install
 
 COPY . .
 
-RUN bun run rebuild || true
+EXPOSE 5863
 
-CMD ["bun", "run", "bun:dev"]
+CMD ["bun", "run", "bun:prod"]
