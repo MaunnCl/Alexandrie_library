@@ -69,6 +69,33 @@ router.get("/contents", ContentController.getAll);
  */
 router.get("/contents/:id", ContentController.getById);
 
+/**
+ * @swagger
+ * /contents/title/{title}:
+ *   get:
+ *     summary: Récupérer un contenu par son titre
+ *     description: Retourne les informations d’un contenu à partir de son titre.
+ *     tags:
+ *       - Contents
+ *     parameters:
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Le titre du contenu à récupérer
+ *     responses:
+ *       200:
+ *         description: Contenu trouvé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Content'
+ *       404:
+ *         description: Contenu non trouvé
+ */
 router.get('/contents/title/:title', ContentController.getContentByTitle);
 
 router.put("/contents/:id", ContentController.update);
