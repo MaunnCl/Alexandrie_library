@@ -1,15 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import axios from 'axios';
 import '../styles/Navbar.css';
 
+type User = {
+  firstname: string;
+  lastname: string;
+  email: string;
+};
+
+type Profile = {
+  profile_picture: string;
+};
+
 function Navbar() {
   const [query, setQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const profileRef = useRef(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +34,6 @@ function Navbar() {
           return;
         }
 
-        // Fetch user data
         const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +46,6 @@ function Navbar() {
 
         setUser(userData);
 
-        // Fetch profile using the same userId
         const profileResponse = await axios.get(`/api/profiles/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,23 +67,28 @@ function Navbar() {
   }, [navigate]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(`Searching for: ${query}`);
   };
 
   const handleProfileClick = () => setProfileOpen((prev) => !prev);
 
-  const handleNavigate = (path) => {
+  const handleNavigate = (path: string) => {
     setProfileOpen(false);
     navigate(path);
   };
@@ -93,7 +106,6 @@ function Navbar() {
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
 
-      {/* Centered Search Bar */}
       <div className="search-wrapper">
         <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input
@@ -105,7 +117,6 @@ function Navbar() {
         </form>
       </div>
 
-      {/* Profile Section */}
       {user && profile && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>

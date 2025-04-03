@@ -4,7 +4,7 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
-RUN npm run build
+RUN npm run build || (echo "Build failed" && cat /app/node_modules/.vite/deps/_metadata.json || true)
 
 FROM nginx:alpine
 

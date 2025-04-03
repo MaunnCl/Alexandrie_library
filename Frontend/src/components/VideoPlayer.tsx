@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, MouseEvent, SyntheticEvent } from 'react';
+import { useRef, useState, useEffect, MouseEvent, SyntheticEvent } from 'react';
 import '../styles/VideoPlayer.css';
 import {
   FiPlay,
@@ -100,7 +100,7 @@ function VideoPlayer({
     return () => clearTimeout(timeout);
   }, [showControls]);
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (_e: MouseEvent) => {
     setShowControls(true);
   };
 
