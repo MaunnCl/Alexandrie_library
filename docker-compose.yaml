@@ -7,6 +7,8 @@ services:
       - "5863:5863"
     env_file:
       - Backend/.env
+    volumes:
+      - ./Backend:/app
     networks:
       - alex_net
 
@@ -15,13 +17,17 @@ services:
       context: ./Frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "3000:3000"
+    volumes:
+      - ./Frontend:/app
     depends_on:
       alex_back:
         condition: service_started
     networks:
       - alex_net
 
+
 networks:
   alex_net:
     driver: bridge
+
