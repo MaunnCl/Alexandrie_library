@@ -75,8 +75,7 @@ router.get("/contents/:id", ContentController.getById);
  *   get:
  *     summary: Récupérer un contenu par son titre
  *     description: Retourne les informations d’un contenu à partir de son titre.
- *     tags:
- *       - Contents
+ *     tags: [Content]
  *     parameters:
  *       - in: path
  *         name: title
