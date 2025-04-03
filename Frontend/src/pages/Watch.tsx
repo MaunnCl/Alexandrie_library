@@ -8,6 +8,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 function VideoTest() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [videoName, setVideoName] = useState<string>('');
+  const [videoThumbnail, setVideoThumbnail] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
@@ -24,6 +25,9 @@ function VideoTest() {
           const video = response.data[0];
           setVideoUrl(video.url);
           setVideoName(video.title);
+          setVideoThumbnail(
+            video.video_thumbnail_url || video.orator_image_url || 'https://via.placeholder.com/800x450?text=Video+Loading'
+          );
         } else {
           console.error('Format de réponse invalide:', response.data);
         }
@@ -50,7 +54,7 @@ function VideoTest() {
           <div className="video-wrapper">
             <VideoPlayer
               src={videoUrl}
-              poster="https://via.placeholder.com/800x450?text=Video+Loading"
+              poster={videoThumbnail}
               title={displayTitle}
             />
           </div>

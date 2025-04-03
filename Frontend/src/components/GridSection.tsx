@@ -25,17 +25,14 @@ function GridSection() {
         const mapped: EventData[] = data
           .filter((v: any) => v.title && v.url)
           .map((v: any) => ({
-            img: v.thumbnail_url || 'https://via.placeholder.com/800x450',
+            img: v.video_thumbnail_url || v.orator_image_url || v.thumbnail_url || 'https://via.placeholder.com/800x450',
             title: v.title.replace(/\.mp4$/i, ''),
             description: v.description || 'Aucune description.',
             duration: v.duration ? `${Math.floor(v.duration / 60)} min` : 'Durée inconnue',
             speakers: 'Non renseigné',
           }));
 
-        const unique = Array.from(
-          new Map(mapped.map((v) => [v.title, v])).values()
-        );
-
+        const unique = Array.from(new Map(mapped.map((v) => [v.title, v])).values());
         setEvents(unique.slice(0, 4));
       } catch (error) {
         console.error('Erreur lors du chargement des vidéos :', error);
@@ -59,12 +56,10 @@ function GridSection() {
     <>
       <div className="grid">
         {events.map((ev, index) => (
-          <div
-            key={index}
-            className="grid-item"
-            onClick={() => handleOpenModal(ev)}
-          >
-            <img src={ev.img} alt={ev.title} />
+          <div key={index} className="grid-item" onClick={() => handleOpenModal(ev)}>
+            <div className="image-container">
+              <img src={ev.img} alt={ev.title} />
+            </div>
             <h3>{ev.title}</h3>
             <p>{ev.description}</p>
             <p className="details">
@@ -74,11 +69,7 @@ function GridSection() {
         ))}
       </div>
 
-      <EventModal
-        show={showModal}
-        onClose={handleCloseModal}
-        eventData={selectedEvent}
-      />
+      <EventModal show={showModal} onClose={handleCloseModal} eventData={selectedEvent} />
     </>
   );
 }

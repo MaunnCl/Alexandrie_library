@@ -19,7 +19,6 @@ function Carousel() {
   const [showModal, setShowModal] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Génère une clé de cache basée sur l'heure
   const getHourlyKey = () => {
     const now = new Date();
     return `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
@@ -41,7 +40,7 @@ function Carousel() {
         const mapped: EventData[] = data
           .filter((v: any) => v.title && v.url)
           .map((v: any) => ({
-            img: v.thumbnail_url || 'https://via.placeholder.com/800x400',
+            img: v.video_thumbnail_url || v.orator_image_url || v.thumbnail_url || 'https://via.placeholder.com/800x400',
             title: v.title.replace(/\.mp4$/i, ''),
             description: v.description || 'Aucune description.',
             duration: v.duration ? `${Math.floor(v.duration / 60)} min` : 'Durée inconnue',
@@ -75,7 +74,6 @@ function Carousel() {
         updateCarouselPosition(currentSlideIndex + 1);
       }, 5000);
     }
-
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -112,7 +110,6 @@ function Carousel() {
         >
           {slidesData.map((slide, i) => (
             <div className="carousel-slide" key={i} onClick={() => handleOpenModal(slide)}>
-              <img src={slide.img} alt={slide.title} />
               <h3>{slide.title}</h3>
               <p>{slide.description}</p>
             </div>
@@ -134,11 +131,7 @@ function Carousel() {
         ))}
       </div>
 
-      <EventModal
-        show={showModal}
-        onClose={handleCloseModal}
-        eventData={selectedEvent}
-      />
+      <EventModal show={showModal} onClose={handleCloseModal} eventData={selectedEvent} />
     </div>
   );
 }

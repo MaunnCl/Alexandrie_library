@@ -1,17 +1,16 @@
 .carousel-section {
     width: 100%;
     max-width: 1200px;
-    margin: 50px auto;
+    margin: 40px auto;
     position: relative;
     overflow-x: hidden;
 }
 
 .carousel-title {
     text-align: center;
-    font-size: 28px;
+    font-size: 26px;
     margin-bottom: 20px;
     color: #ff0000;
-    /* was #00d4ff */
 }
 
 .carousel-container {
@@ -29,25 +28,34 @@
     min-width: 100%;
     box-sizing: border-box;
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     background-color: #252525;
     position: relative;
 }
 
-.carousel-slide img {
-    max-width: 100%;
+.carousel-slide .image-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+}
+
+.carousel-slide .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .carousel-slide h3 {
     margin-top: 5px;
-    font-size: 20px;
+    font-size: 18px;
     color: #fff;
 }
 
 .carousel-slide p {
-    font-size: 16px;
+    font-size: 14px;
     color: #cccccc;
 }
 
@@ -58,7 +66,7 @@
     background-color: rgba(0, 0, 0, 0.6);
     border: none;
     color: #ffffff;
-    font-size: 30px;
+    font-size: 28px;
     cursor: pointer;
     padding: 8px 16px;
     z-index: 2;
@@ -87,9 +95,9 @@
 }
 
 .dot {
-    height: 12px;
-    width: 12px;
-    margin: 0 6px;
+    height: 10px;
+    width: 10px;
+    margin: 0 4px;
     background-color: #888;
     border-radius: 50%;
     display: inline-block;
@@ -103,6 +111,6 @@
 
 @media (max-width: 768px) {
     .carousel-title {
-        font-size: 24px;
+        font-size: 22px;
     }
 }
