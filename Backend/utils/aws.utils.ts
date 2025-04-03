@@ -71,4 +71,11 @@ import {
     const withoutExt = title.replace(/\.mp4$/i, ""); // supprime .mp4 si déjà là
     return `${withoutExt}.mp4`; // remet proprement
   }
+
+  export async function getSignedFileUrl(bucketName: string, key: string): Promise<string> {
+    const command = new GetObjectCommand({ Bucket: bucketName, Key: key });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // 1h
+    return url;
+  }
+  
   

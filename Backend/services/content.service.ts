@@ -2,23 +2,30 @@ import { ContentRepository } from "../repository/content.repository";
 import {
   getSignedUrlForStreaming,
   buildS3KeyFromTitle,
+  getSignedFileUrl,
 } from "../utils/aws.utils";
 
 export class ContentService {
-    static async createContent(data: any) {
-        const videoKey = buildS3KeyFromTitle(data.title);
-        const signedUrl = await getSignedUrlForStreaming(videoKey);
-      
-        return await ContentRepository.create({
-          title: data.title,
-          url: signedUrl,
-          description: "", 
-          type: "",
-          thumbnail_url: "",
-          duration: 0,
-          release_date: new Date().toISOString(),
-        });
-      }   
+  static async create(content: any) {
+    const { title, folder, picture_orator, thumbnail_name } = content;
+
+    const videoKey = `${folder}/${title}`;
+    const oratorKey = `${folder}/${picture_orator}`;
+    const thumbnailKey = `${folder}/${thumbnail_name}`;
+
+    const url = await getSignedFileUrl(process.env.BUCKET_NAME!, videoKey);
+    const orator_image_url = await getSignedFileUrl(process.env.BUCKET_NAME!, oratorKey);
+    const video_thumbnail_url = await getSignedFileUrl(process.env.BUCKET_NAME!, thumbnailKey);
+
+    const contentToCreate = {
+      ...content,
+      url,
+      orator_image_url,
+      video_thumbnail_url,
+    };
+
+    return await ContentRepository.create(contentToCreate);
+  } 
 
   static async getAllContents() {
     return await ContentRepository.findAll();

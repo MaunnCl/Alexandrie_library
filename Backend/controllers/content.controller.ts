@@ -3,23 +3,13 @@ import { ContentService } from "../services/content.service";
 
 export class ContentController {
   static async create(req: Request, res: Response) {
-    try {
-        const { title } = req.body;
-
-        if (!title) {
-          return res.status(400).json({ message: "Missing required title" });
-        }
-        
-
-      const content = await ContentService.createContent({
-        title
-      });
-
-      res.status(201).json(content);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      try {
+        const content = await ContentService.create(req.body);
+        res.status(201).json(content);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
     }
-  }
 
   static async getAll(req: Request, res: Response) {
     try {

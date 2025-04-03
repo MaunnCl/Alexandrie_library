@@ -3,12 +3,14 @@ import { pgTable, serial, varchar, date, timestamp, integer, uuid } from "drizzl
 export const contentTable = pgTable("content", {
     id: serial("id").primaryKey().unique().notNull(),
     title: varchar("title", { length: 255 }).notNull(),
-    description: varchar("description", { length: 255 }).notNull(),
-    type: varchar("type", { length: 255 }).notNull(),
+    folder: varchar("folder", { length: 255 }).notNull(),
+    description: varchar("description", { length: 255 }),
+    type: varchar("type", { length: 255 }),
     url: varchar("url").notNull(),
-    thumbnail_url: varchar("thumbnail_url").notNull(),
-    duration: integer("duration").notNull(),
-    release_date: date("release_date").notNull().defaultNow(),
-    createdAt: date("createdAt").notNull().defaultNow(),
-    updatedAt: date("updatedAt").notNull().defaultNow()
+    orator_image_url: varchar("orator_image_url", { length: 512 }).notNull(),
+    video_thumbnail_url: varchar("video_thumbnail_url", { length: 512 }).notNull(),
+    duration: integer("duration"),
+    release_date: date("release_date").defaultNow(),
+    createdAt: date("createdAt").defaultNow(),
+    updatedAt: date("updatedAt").defaultNow()
 });
