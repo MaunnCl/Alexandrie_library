@@ -1,7 +1,4 @@
-FROM node:20-bookworm
-
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:$PATH"
+FROM oven/bun:1.0.25
 
 WORKDIR /app
 
@@ -12,4 +9,4 @@ COPY . .
 
 EXPOSE 5863
 
-CMD ["bun", "run", "bun:prod"]
+CMD ["bun", "run", "server.ts"]
