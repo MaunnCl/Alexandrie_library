@@ -38,10 +38,28 @@ function VideoPlayer({
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      setProgress(videoRef.current.currentTime);
+      const current = videoRef.current.currentTime;
+      const duration = videoRef.current.duration;
+  
+      setProgress(current);
+  
+      if (Math.floor(current) % 5 === 0) {
+        const data = {
+          title,
+          url: src,
+          thumbnail: poster,
+          progress: current,
+          duration
+        };
+  
+        const existing = JSON.parse(localStorage.getItem("watch-history") || "[]");
+        const filtered = existing.filter((v: any) => v.title !== title);
+        filtered.unshift(data);
+        localStorage.setItem("watch-history", JSON.stringify(filtered.slice(0, 10)));
+      }
     }
   };
-
+  
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       setVideoDuration(videoRef.current.duration);
