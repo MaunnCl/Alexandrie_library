@@ -4,6 +4,7 @@ import Carousel from '../components/Carousel';
 import GridSection from '../components/GridSection';
 import Footer from '../components/Footer';
 import ContinueWatchingSection from '../components/ContinueWatchingSection';
+import WatchHistorySection from '../components/WatchHistorySection';
 
 function Home() {
   return (
@@ -12,6 +13,7 @@ function Home() {
       <Hero />
       <Carousel />
       <ContinueWatchingSection />
+      <WatchHistorySection />
       <GridSection />
       <Footer />
     </>
