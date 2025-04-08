@@ -12,9 +12,9 @@ function Home() {
       <Navbar />
       <Hero />
       <Carousel />
+      <GridSection />
       <ContinueWatchingSection />
       <WatchHistorySection />
-      <GridSection />
       <Footer />
     </>
   );

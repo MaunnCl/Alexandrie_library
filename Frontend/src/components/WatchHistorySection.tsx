@@ -3,50 +3,50 @@ import '../styles/GridSection.css';
 import { useNavigate } from 'react-router-dom';
 
 interface WatchedVideo {
-  title: string;
-  url: string;
-  thumbnail: string;
-  progress: number;
-  duration: number;
+    title: string;
+    url: string;
+    thumbnail: string;
+    progress: number;
+    duration: number;
 }
 
 function WatchHistorySection() {
-  const [videos, setVideos] = useState<WatchedVideo[]>([]);
-  const navigate = useNavigate();
+    const [videos, setVideos] = useState<WatchedVideo[]>([]);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('watch-history') || '[]');
-    setVideos(stored);
-  }, []);
+    useEffect(() => {
+        const stored = JSON.parse(localStorage.getItem('watch-history') || '[]');
+        setVideos(stored);
+    }, []);
 
-  const handleClick = (video: WatchedVideo) => {
-    navigate(`/watch?title=${encodeURIComponent(video.title)}`);
-  };
+    const handleClick = (video: WatchedVideo) => {
+        navigate(`/watch?title=${encodeURIComponent(video.title)}`);
+    };
 
-  if (videos.length === 0) return null;
+    if (videos.length === 0) return null;
 
-  return (
-    <div className="grid-section">
-      <h2 style={{ marginBottom: '1rem', color: 'white' }}>Historique de visionnage</h2>
-      <div className="grid">
-        {videos.map((v, index) => (
-          <div key={index} className="grid-item" onClick={() => handleClick(v)}>
-            <div className="image-container">
-              <img src={v.thumbnail || 'https://via.placeholder.com/800x450'} alt={v.title} />
-              <div className="progress-bar-overlay">
-                <div
-                  className="progress-fill"
-                  style={{ width: `${(v.progress / v.duration) * 100}%` }}
-                ></div>
-              </div>
+    return (
+        <div className="grid-section" style={{ paddingBottom: '4rem' }}>
+            <h2 className="section-title">Watch History</h2>
+            <div className="grid">
+                {videos.map((v, index) => (
+                    <div key={index} className="grid-item" onClick={() => handleClick(v)}>
+                        <div className="image-container">
+                            <img src={v.thumbnail || 'https://via.placeholder.com/800x450'} alt={v.title} />
+                            <div className="progress-bar-overlay">
+                                <div
+                                    className="progress-fill"
+                                    style={{ width: `${(v.progress / v.duration) * 100}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                        <h3>{v.title}</h3>
+                        <p>{v.progress >= v.duration - 5 ? 'Finished' : `Watched ${(v.progress / v.duration * 100).toFixed(0)}%`}</p>
+                    </div>
+                ))}
             </div>
-            <h3>{v.title}</h3>
-            <p>{v.progress >= v.duration - 5 ? 'Terminé' : `Visionné à ${(v.progress / v.duration * 100).toFixed(0)}%`}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default WatchHistorySection;
