@@ -25,17 +25,21 @@ function GridSection() {
         const mapped: EventData[] = data
           .filter((v: any) => v.title && v.url)
           .map((v: any) => ({
-            img: v.video_thumbnail_url || v.orator_image_url || v.thumbnail_url || 'https://via.placeholder.com/800x450',
+            img:
+              v.video_thumbnail_url ||
+              v.orator_image_url ||
+              v.thumbnail_url ||
+              'https://via.placeholder.com/800x450',
             title: v.title.replace(/\.mp4$/i, ''),
-            description: v.description || 'Aucune description.',
-            duration: v.duration ? `${Math.floor(v.duration / 60)} min` : 'Durée inconnue',
-            speakers: 'Non renseigné',
+            description: v.description || 'No description available.',
+            duration: v.duration ? `${Math.floor(v.duration / 60)} min` : 'Unknown duration',
+            speakers: 'Not specified',
           }));
 
         const unique = Array.from(new Map(mapped.map((v) => [v.title, v])).values());
         setEvents(unique.slice(0, 4));
       } catch (error) {
-        console.error('Erreur lors du chargement des vidéos :', error);
+        console.error('Error fetching videos:', error);
       }
     }
 
@@ -53,7 +57,9 @@ function GridSection() {
   };
 
   return (
-    <>
+    <div className="grid-section">
+      <h2 className="section-title">Videos</h2>
+      <hr className="section-divider" />
       <div className="grid">
         {events.map((ev, index) => (
           <div key={index} className="grid-item" onClick={() => handleOpenModal(ev)}>
@@ -63,14 +69,14 @@ function GridSection() {
             <h3>{ev.title}</h3>
             <p>{ev.description}</p>
             <p className="details">
-              Durée : {ev.duration} | Intervenants : {ev.speakers}
+              Duration: {ev.duration} | Speakers: {ev.speakers}
             </p>
           </div>
         ))}
       </div>
 
       <EventModal show={showModal} onClose={handleCloseModal} eventData={selectedEvent} />
-    </>
+    </div>
   );
 }
 

@@ -30,7 +30,8 @@ function ContinueWatchingSection() {
 
   return (
     <div className="grid-section">
-      <h2 style={{ marginBottom: '1rem', color: 'white' }}>Continuer la lecture</h2>
+      <h2 className="section-title">Continue Watching</h2>
+      <hr className="section-divider" />
       <div className="grid">
         {videos.map((v, index) => (
           <div key={index} className="grid-item" onClick={() => handleClick(v)}>
@@ -44,7 +45,7 @@ function ContinueWatchingSection() {
               </div>
             </div>
             <h3>{v.title}</h3>
-            <p>Visionné à {(v.progress / v.duration * 100).toFixed(0)}%</p>
+            <p>Watched {(v.progress / v.duration * 100).toFixed(0)}%</p>
           </div>
         ))}
       </div>
