@@ -7,8 +7,8 @@ export class ContentCategoryService {
         return ContentCategoryRepository.associateContentToCategory(contentId, categoryId);
     }
 
-    static async getCategoriesForContent(contentId: number) {
-        return ContentCategoryRepository.findCategoriesByContent(contentId);
+    static async getContentsByCategory(categoryId: number) {
+        return ContentCategoryRepository.findContentsByCategorie(categoryId);
     }
 
     static async removeAssociation(contentId: number, categoryId: number) {

@@ -92,25 +92,26 @@ router.post("/content-category", ContentCategoryController.associate);
 
 /**
  *  @swagger
- *  /content-category/{contentId}:
- *  get:
- *      summary: Get categories for a content
+ *  /content-category/{categoryId}:
+ *    get:
+ *      summary: Get contents for a category
  *      tags: [Content-Category]
- *      description: Retrieve all categories linked to a specific content entry
+ *      description: Retrieve all content linked to a specific category
  *      parameters:
  *        - in: path
- *          name: contentId
+ *          name: categoryId
  *          required: true
- *          description: ID of the content entry
+ *          description: ID of the category
  *          schema:
  *            type: integer
  *      responses:
  *        200:
  *          description: Successful retrieval
  *        404:
- *          description: Content not found
-*/
-router.get("/content-category/:contentId", ContentCategoryController.getByContent);
+ *          description: Category not found
+ */
+
+router.get("/content-category/:categoryId", ContentCategoryController.getByCategory);
 
 /**
  *  @swagger

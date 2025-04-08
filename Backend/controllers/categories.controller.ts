@@ -60,14 +60,20 @@ export class ContentCategoryController {
         }
     }
 
-    static async getByContent(req: Request, res: Response) {
-        try {
-            const categories = await ContentCategoryService.getCategoriesForContent(Number(req.params.contentId));
-            res.status(200).json(categories);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
+    static async getByCategory(req: Request, res: Response) {
+        const categoryId = Number(req.params.categoryId);
+      
+        if (isNaN(categoryId)) {
+          return res.status(400).json({ error: "Invalid category ID" });
         }
-    }
+      
+        try {
+          const contents = await ContentCategoryService.getContentsByCategory(categoryId);
+          res.status(200).json(contents);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
 
     static async remove(req: Request, res: Response) {
         try {

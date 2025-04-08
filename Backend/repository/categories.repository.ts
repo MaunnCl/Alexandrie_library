@@ -65,8 +65,8 @@ export class ContentCategoryRepository {
         return db.insert(contentCategoryTable).values({ content_id: contentId, category_id: categoryId }).returning();
     }
 
-    static async findCategoriesByContent(contentId: number) {
-        return db.select().from(contentCategoryTable).where(eq(contentCategoryTable.content_id, contentId));
+    static async findContentsByCategorie(categoryId: number) {
+        return db.select().from(contentCategoryTable).where(eq(contentCategoryTable.category_id, categoryId));
     }
 
     static async deleteAssociation(contentId: number, categoryId: number) {
