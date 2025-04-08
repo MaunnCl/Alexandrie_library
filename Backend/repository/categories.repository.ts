@@ -1,24 +1,63 @@
 import { db } from "../config/database";
-import { categoriesTable } from "../schemas/categories";
-import { contentCategoryTable } from "../schemas/categories";
-import { eq } from "drizzle-orm";
+import { categoriesTable, contentCategoryTable } from "../schemas/categories";
+import { contentTable } from "../schemas/content";
+import { eq, and, inArray } from "drizzle-orm";
 
 export class CategoriesRepository {
-    static async create(data: any) {
-        return db.insert(categoriesTable).values(data).returning();
+  static async findCategoryByName(name: string) {
+    const result = await db
+      .select()
+      .from(categoriesTable)
+      .where(eq(categoriesTable.name, name));
+    return result[0];
+  }
+
+  static async createCategory(name: string, description: string) {
+    const result = await db
+      .insert(categoriesTable)
+      .values({ name, description })
+      .returning();
+    return result[0];
+  }
+
+  static async syncContentCategories() {
+    const allContents = await db.select().from(contentTable);
+    const alreadyLinked = await db.select().from(contentCategoryTable);
+
+    for (const content of allContents) {
+      if (!content.folder) continue;
+
+      let category = await this.findCategoryByName(content.folder);
+      if (!category) {
+        category = await this.createCategory(content.folder, `Auteur : ${content.folder}`);
+      }
+
+      const isLinked = alreadyLinked.some(
+        (link) => link.content_id === content.id && link.category_id === category.id
+      );
+
+      if (!isLinked) {
+        await db.insert(contentCategoryTable).values({
+          content_id: content.id,
+          category_id: category.id,
+        });
+      }
     }
 
-    static async findAll() {
-        return db.select().from(categoriesTable);
-    }
+    return { success: true };
+  }
 
-    static async findById(id: number) {
-        return db.select().from(categoriesTable).where(eq(categoriesTable.id, id));
-    }
+  static async findAll() {
+    return db.select().from(categoriesTable);
+  }
 
-    static async delete(id: number) {
-        return db.delete(categoriesTable).where(eq(categoriesTable.id, id)).returning();
-    }
+  static async findById(id: number) {
+    return db.select().from(categoriesTable).where(eq(categoriesTable.id, id));
+  }
+
+  static async delete(id: number) {
+    return db.delete(categoriesTable).where(eq(categoriesTable.id, id)).returning();
+  }
 }
 
 export class ContentCategoryRepository {
@@ -32,8 +71,10 @@ export class ContentCategoryRepository {
 
     static async deleteAssociation(contentId: number, categoryId: number) {
         return db.delete(contentCategoryTable)
-            .where(eq(contentCategoryTable.content_id, contentId))
-            .where(eq(contentCategoryTable.category_id, categoryId))
+            .where(and(
+                eq(contentCategoryTable.content_id, contentId),
+                eq(contentCategoryTable.category_id, categoryId)
+            ))
             .returning();
     }
 }

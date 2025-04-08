@@ -11,7 +11,7 @@ import {
   config();
   
   const s3Client = new S3Client({
-    endpoint: Bun.env.BUCKET_ENDPOINT as string, // tu peux laisser vide si tu n’as pas besoin
+    endpoint: Bun.env.BUCKET_ENDPOINT as string,
     region: Bun.env.BUCKET_REGION as string,
     forcePathStyle: true,
     credentials: {

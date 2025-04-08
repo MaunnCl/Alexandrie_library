@@ -127,4 +127,17 @@ router.get("/content-category/:contentId", ContentCategoryController.getByConten
 */
 router.delete("/content-category", ContentCategoryController.remove);
 
+/**
+ *  @swagger
+ *  /categories/sync:
+ *    post:
+ *      summary: Synchronise les vidéos avec les catégories
+ *      tags: [Categories]
+ *      description: Crée les catégories manquantes à partir du folder des contenus et les lie si besoin
+ *      responses:
+ *        200:
+ *          description: Synchronisation réussie
+ */
+router.post("/categories/sync", CategoriesController.syncContentCategories);
+
 export default router;

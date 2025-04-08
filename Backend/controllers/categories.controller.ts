@@ -37,6 +37,16 @@ export class CategoriesController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async syncContentCategories(req: Request, res: Response) {
+        try {
+          const result = await CategoriesService.syncContentCategories();
+          return res.status(200).json(result);
+        } catch (error) {
+          console.error("Erreur syncContentCategories :", error);
+          return res.status(500).json({ error: error.message });
+        }
+    }  
 }
 
 export class ContentCategoryController {
