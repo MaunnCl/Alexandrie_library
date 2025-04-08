@@ -24,7 +24,6 @@ function Navbar() {
           return;
         }
 
-        // Fetch user data
         const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +36,6 @@ function Navbar() {
 
         setUser(userData);
 
-        // Fetch profile using the same userId
         const profileResponse = await axios.get(`/api/profiles/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -92,9 +90,12 @@ function Navbar() {
       <Link to="/" className="logo-link">
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
+      <nav className="nav-links">
+        <Link to="/categories" className="nav-link">Categories</Link>
+      </nav>
 
-      {/* Centered Search Bar */}
-      <div className="search-wrapper">
+
+      {/* <div className="search-wrapper">
         <form className="search-bar" onSubmit={handleSearchSubmit}>
           <input
             type="text"
@@ -103,9 +104,8 @@ function Navbar() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </form>
-      </div>
+      </div> */}
 
-      {/* Profile Section */}
       {user && profile && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>

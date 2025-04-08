@@ -17,8 +17,10 @@ function GridSection() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    async function fetchVideos() {
+    async function refreshAndFetchVideos() {
       try {
+        await axios.patch('http://localhost:8080/api/contents/refresh');
+
         const res = await axios.get('http://localhost:8080/api/contents');
         const data = res.data;
 
@@ -27,7 +29,6 @@ function GridSection() {
           .map((v: any) => ({
             img:
               v.video_thumbnail_url ||
-              v.orator_image_url ||
               v.thumbnail_url ||
               'https://via.placeholder.com/800x450',
             title: v.title.replace(/\.mp4$/i, ''),
@@ -37,13 +38,13 @@ function GridSection() {
           }));
 
         const unique = Array.from(new Map(mapped.map((v) => [v.title, v])).values());
-        setEvents(unique.slice(0, 4));
+        setEvents(unique.slice(0, 10));
       } catch (error) {
-        console.error('Error fetching videos:', error);
+        console.error('Error refreshing/fetching videos:', error);
       }
     }
 
-    fetchVideos();
+    refreshAndFetchVideos();
   }, []);
 
   const handleOpenModal = (event: EventData) => {
