@@ -141,4 +141,42 @@ router.delete("/content-category", ContentCategoryController.remove);
  */
 router.post("/categories/sync", CategoriesController.syncContentCategories);
 
+/**
+ * @swagger
+ * /categories/{id}/refresh:
+ *   patch:
+ *     summary: Refresh signed URL of orator image for a category
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the category
+ *     responses:
+ *       200:
+ *         description: URL refreshed successfully
+ *       400:
+ *         description: Invalid ID
+ *       500:
+ *         description: Server error
+ */
+router.patch("/categories/:id/refresh", CategoriesController.refreshOratorImage);
+
+/**
+ * @swagger
+ * /categories/refresh:
+ *   patch:
+ *     summary: Refresh signed orator image URLs for all categories
+ *     tags: [Categories]
+ *     description: Regenerates signed URLs of orator images for all categories using linked content
+ *     responses:
+ *       200:
+ *         description: All categories updated successfully
+ *       500:
+ *         description: Server error
+ */
+router.patch("/categories/refresh", CategoriesController.refreshAllOratorImages);
+
 export default router;

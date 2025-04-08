@@ -58,6 +58,32 @@ export class CategoriesRepository {
   static async delete(id: number) {
     return db.delete(categoriesTable).where(eq(categoriesTable.id, id)).returning();
   }
+
+  static async update(id: number, data: Partial<typeof categoriesTable._.inferInsert>) {
+    const result = await db
+      .update(categoriesTable)
+      .set(data)
+      .where(eq(categoriesTable.id, id))
+      .returning();
+  
+    return result[0];
+  }
+  
+  static async getOneContentByCategory(categoryId: number) {
+    const link = await db
+      .select()
+      .from(contentCategoryTable)
+      .where(eq(contentCategoryTable.category_id, categoryId))
+      .limit(1);
+  
+    if (link.length === 0) return null;
+  
+    return db
+      .select()
+      .from(contentTable)
+      .where(eq(contentTable.id, link[0].content_id))
+      .then(res => res[0]);
+  }
 }
 
 export class ContentCategoryRepository {

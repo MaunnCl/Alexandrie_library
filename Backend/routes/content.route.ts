@@ -123,7 +123,7 @@ router.delete("/contents/:id", ContentController.delete);
 
 /**
  * @swagger
- * /content/{id}/refresh:
+ * /contents/{id}/refresh:
  *   patch:
  *     summary: Refresh signed URLs for a specific content
  *     tags: [Content]

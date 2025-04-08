@@ -35,16 +35,13 @@ export class ContentService {
     const { folder, title, picture_orator, thumbnail_name } = content;
 
     const videoKey = `${folder}/${title}`;
-    const oratorKey = `${folder}/${picture_orator}`;
     const thumbnailKey = `${folder}/${thumbnail_name}`;
     
     const newUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, videoKey);
-    const newOratorImageUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, oratorKey);
     const newThumbnailUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, thumbnailKey);
   
     const updatedContent = await ContentRepository.update(id, {
       url: newUrl,
-      orator_image_url: newOratorImageUrl,
       video_thumbnail_url: newThumbnailUrl
     });
   
@@ -83,16 +80,13 @@ export class ContentService {
       }
   
       const videoKey = `${content.folder}/${content.title}`;
-      const oratorKey = `${content.folder}/${content.picture_orator}`;
       const thumbnailKey = `${content.folder}/${content.thumbnail_name}`;
   
       const newUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, videoKey);
-      const newOratorImageUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, oratorKey);
       const newThumbnailUrl = await getSignedFileUrl(process.env.BUCKET_NAME!, thumbnailKey);
   
       const result = await ContentRepository.update(content.id, {
         url: newUrl,
-        orator_image_url: newOratorImageUrl,
         video_thumbnail_url: newThumbnailUrl
       });
   
