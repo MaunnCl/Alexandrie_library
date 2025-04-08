@@ -16,7 +16,10 @@ function WatchHistorySection() {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('watch-history') || '[]');
-    setVideos(stored);
+    const finishedVideos = stored.filter(
+      (v: WatchedVideo) => v.progress >= v.duration - 5
+    );
+    setVideos(finishedVideos);
   }, []);
 
   const handleClick = (video: WatchedVideo) => {
@@ -33,7 +36,10 @@ function WatchHistorySection() {
         {videos.map((v, index) => (
           <div key={index} className="grid-item" onClick={() => handleClick(v)}>
             <div className="image-container">
-              <img src={v.thumbnail || 'https://via.placeholder.com/800x450'} alt={v.title} />
+              <img
+                src={v.thumbnail || 'https://via.placeholder.com/800x450'}
+                alt={v.title}
+              />
               <div className="progress-bar-overlay">
                 <div
                   className="progress-fill"

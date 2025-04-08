@@ -16,10 +16,10 @@ function ContinueWatchingSection() {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('watch-history') || '[]');
-    const filtered = stored.filter(
-      (v: WatchedVideo) => v.progress > 0 && v.progress < v.duration - 10
+    const inProgressVideos = stored.filter(
+      (v: WatchedVideo) => v.progress > 0 && v.progress < v.duration - 5
     );
-    setVideos(filtered);
+    setVideos(inProgressVideos);
   }, []);
 
   const handleClick = (video: WatchedVideo) => {
@@ -36,7 +36,10 @@ function ContinueWatchingSection() {
         {videos.map((v, index) => (
           <div key={index} className="grid-item" onClick={() => handleClick(v)}>
             <div className="image-container">
-              <img src={v.thumbnail || 'https://via.placeholder.com/800x450'} alt={v.title} />
+              <img
+                src={v.thumbnail || 'https://via.placeholder.com/800x450'}
+                alt={v.title}
+              />
               <div className="progress-bar-overlay">
                 <div
                   className="progress-fill"
