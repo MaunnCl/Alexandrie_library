@@ -77,5 +77,10 @@ import {
     const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 }); // 1h
     return url;
   }
-  
+
+  export function extractS3Key(url?: string): string {
+    if (!url) throw new Error("Missing URL for S3 key extraction");
+    const urlObj = new URL(url);
+    return decodeURIComponent(urlObj.pathname).substring(1);
+  }
   

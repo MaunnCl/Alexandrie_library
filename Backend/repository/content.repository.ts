@@ -12,14 +12,19 @@ export class ContentRepository {
     }
 
     static async findById(id: number) {
-        return db.select().from(contentTable).where(eq(contentTable.id, id));
+        const result = await db
+            .select()
+            .from(contentTable)
+            .where(eq(contentTable.id, id));
+        return result[0];
     }
 
-    static async update(id: number, updateData: any) {
+    static async update(id: number, data: Partial<typeof contentTable._.inferInsert>) {
         return db.update(contentTable)
-            .set(updateData)
-            .where(eq(contentTable.id, id))
-            .returning();
+          .set(data)
+          .where(eq(contentTable.id, id))
+          .returning()
+          .then(res => res[0]);
     }
 
     static async delete(id: number) {

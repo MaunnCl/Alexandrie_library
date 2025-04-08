@@ -4,6 +4,8 @@ export const contentTable = pgTable("content", {
     id: serial("id").primaryKey().unique().notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     folder: varchar("folder", { length: 255 }).notNull(),
+    picture_orator: varchar("picture_orator", { length: 255 }).notNull(),
+    thumbnail_name: varchar("thumbnail_name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
     type: varchar("type", { length: 255 }),
     url: varchar("url").notNull(),

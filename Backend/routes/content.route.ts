@@ -121,4 +121,48 @@ router.put("/contents/:id", ContentController.update);
 */
 router.delete("/contents/:id", ContentController.delete);
 
+/**
+ * @swagger
+ * /content/{id}/refresh:
+ *   patch:
+ *     summary: Refresh signed URLs for a specific content
+ *     tags: [Content]
+ *     description: Regenerates S3 signed URLs (url, orator_image_url, video_thumbnail_url) for the content with the given ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the content to refresh
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: URLs refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Content'
+ *       400:
+ *         description: Invalid content ID
+ *       404:
+ *         description: Content not found
+ *       500:
+ *         description: Server error
+ */
+router.patch("/contents/:id/refresh", ContentController.refreshUrls);
+
+/**
+ * @swagger
+ * /contents/refresh:
+ *   patch:
+ *     summary: Refresh all signed URLs in the content table
+ *     tags: [Content]
+ *     description: Regenerates S3 signed URLs for all existing content entries
+ *     responses:
+ *       200:
+ *         description: URLs refreshed successfully
+ *       500:
+ *         description: Server error
+ */
+router.patch("/contents/refresh", ContentController.refreshAllUrls);
 export default router;

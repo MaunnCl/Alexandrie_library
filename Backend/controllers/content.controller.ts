@@ -58,5 +58,31 @@ export class ContentController {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-}
+  }
+
+  static async refreshUrls(req: Request, res: Response) {
+    const contentId = Number(req.params.id);
+    if (isNaN(contentId)) {
+      return res.status(400).json({ error: "Invalid content ID" });
+    }
+  
+    try {
+      const updatedContent = await ContentService.refreshContentUrls(contentId);
+      res.status(200).json(updatedContent);
+    } catch (error) {
+      console.error("Error refreshing URLs:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async refreshAllUrls(req: Request, res: Response) {
+    try {
+      const updated = await ContentService.refreshAllContentUrls();
+      res.status(200).json({ success: true, updated });
+    } catch (error) {
+      console.error("Erreur lors du refresh all:", error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+  
 }
