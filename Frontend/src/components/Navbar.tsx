@@ -5,7 +5,6 @@ import axios from 'axios';
 import '../styles/Navbar.css';
 
 function Navbar() {
-  const [query, setQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -66,11 +65,6 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    alert(`Searching for: ${query}`);
-  };
-
   const handleProfileClick = () => setProfileOpen((prev) => !prev);
 
   const handleNavigate = (path) => {
@@ -93,18 +87,6 @@ function Navbar() {
       <nav className="nav-links">
         <Link to="/categories" className="nav-link">Categories</Link>
       </nav>
-
-
-      {/* <div className="search-wrapper">
-        <form className="search-bar" onSubmit={handleSearchSubmit}>
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </form>
-      </div> */}
 
       {user && profile && (
         <div className="profile-section" ref={profileRef}>
