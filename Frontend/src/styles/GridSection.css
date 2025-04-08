@@ -64,9 +64,8 @@
      width: 100%;
      max-width: 250px;
      position: relative;
-
-
      animation: fadeInUp 0.8s ease-in-out;
+     padding-bottom: 1.5rem;
  }
 
  @keyframes fadeInUp {
@@ -101,12 +100,13 @@
  }
 
  .grid-item h3 {
-     margin-top: 10px;
+     margin-bottom: 0.25rem;
      font-size: 18px;
      color: #ff0000;
  }
 
  .grid-item p {
+     margin-top: 0;
      font-size: 13px;
      color: #cccccc;
      cursor: pointer;
