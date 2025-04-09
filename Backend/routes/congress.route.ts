@@ -130,4 +130,128 @@ router.put("/congress/:id", CongressController.update);
  */
 router.delete("/congress/:id", CongressController.delete);
 
+/**
+ * @swagger
+ * /congress/{congressId}/session/{sessionId}:
+ *   post:
+ *     summary: Add a session to a congress
+ *     tags: [Congress]
+ *     parameters:
+ *       - in: path
+ *         name: congressId
+ *         required: true
+ *         description: ID of the congress
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         description: ID of the session to add to the congress
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Session added to congress successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Session added to congress"
+ *                 congress:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "International AI Congress 2025"
+ *                     session_ids:
+ *                       type: array
+ *                       items:
+ *                         type: integer
+ *                       example: [1, 2, 3]
+ *                     picture:
+ *                       type: string
+ *                       example: "https://example.com/congress-picture.jpg"
+ *                     date:
+ *                       type: string
+ *                       example: "2025-06-12"
+ *                     city:
+ *                       type: string
+ *                       example: "Paris"
+ *       400:
+ *         description: Session already exists in the congress
+ *       404:
+ *         description: Congress or Session not found
+ *       500:
+ *         description: Server error
+ */
+router.post("/congress/:congressId/session/:sessionId", CongressController.addSessionToCongress);
+
+/**
+ * @swagger
+ * /congress/{congressId}/session/{sessionId}:
+ *   delete:
+ *     summary: Remove a session from a congress
+ *     tags: [Congress]
+ *     parameters:
+ *       - in: path
+ *         name: congressId
+ *         required: true
+ *         description: ID of the congress
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: sessionId
+ *         required: true
+ *         description: ID of the session to remove from the congress
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Session removed from congress successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Session removed from congress"
+ *                 congress:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "International AI Congress 2025"
+ *                     session_ids:
+ *                       type: array
+ *                       items:
+ *                         type: integer
+ *                       example: [1, 3]
+ *                     picture:
+ *                       type: string
+ *                       example: "https://example.com/congress-picture.jpg"
+ *                     date:
+ *                       type: string
+ *                       example: "2025-06-12"
+ *                     city:
+ *                       type: string
+ *                       example: "Paris"
+ *       400:
+ *         description: Session not found in the congress
+ *       404:
+ *         description: Congress or Session not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/congress/:congressId/session/:sessionId", CongressController.removeSessionFromCongress);
+
 export default router;

@@ -8,7 +8,8 @@ import roleRoutes from "routes/roleList.route";
 import usersRolesRoutes from "./routes/userRole.route";
 import oratorsRoutes from "./routes/orators.route";
 import contentsRoutes from "./routes/content.route";
-import congressRoutes from "./routes/congress.route"
+import congressRoutes from "./routes/congress.route";
+import sessionRoutes from "./routes/session.route";
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api", usersRolesRoutes);
 app.use("/api", oratorsRoutes);
 app.use("/api", contentsRoutes);
 app.use("/api", congressRoutes);
+app.use("/api", sessionRoutes);
 // Ajout de Swagger
 setupSwagger(app);
 

@@ -124,8 +124,122 @@ router.put("/orators/:id", OratorsController.update);
  */
 router.delete("/orators/:id", OratorsController.delete);
 
-
+/**
+ * @swagger
+ * /orators/{oratorId}/content/{contentId}:
+ *   post:
+ *     summary: Add content to an orator
+ *     tags: [Orators]
+ *     parameters:
+ *       - in: path
+ *         name: oratorId
+ *         required: true
+ *         description: ID of the orator to which the content should be added
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to add to the orator
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Content added to the orator successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Content added to orator"
+ *                 orator:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "Angeard"
+ *                     content_ids:
+ *                       type: array
+ *                       items:
+ *                         type: integer
+ *                       example: [1, 2, 3]
+ *                     country:
+ *                       type: string
+ *                       example: "France"
+ *                     city:
+ *                       type: string
+ *                       example: "Paris"
+ *       400:
+ *         description: Content already exists in the orator's list
+ *       404:
+ *         description: Orator or Content not found
+ *       500:
+ *         description: Server error
+ */
 router.post("/orators/:oratorId/content/:contentId", OratorsController.addContentToOrator);
+
+/**
+ * @swagger
+ * /orators/{oratorId}/content/{contentId}:
+ *   delete:
+ *     summary: Remove content from an orator
+ *     tags: [Orators]
+ *     parameters:
+ *       - in: path
+ *         name: oratorId
+ *         required: true
+ *         description: ID of the orator from which the content should be removed
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to remove from the orator
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Content removed from the orator successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Content removed from orator"
+ *                 orator:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "Angeard"
+ *                     content_ids:
+ *                       type: array
+ *                       items:
+ *                         type: integer
+ *                       example: [1, 2]
+ *                     country:
+ *                       type: string
+ *                       example: "France"
+ *                     city:
+ *                       type: string
+ *                       example: "Paris"
+ *       400:
+ *         description: Content not found in the orator's list
+ *       404:
+ *         description: Orator or Content not found
+ *       500:
+ *         description: Server error
+ */
 router.delete("/orators/:oratorId/content/:contentId", OratorsController.removeContentFromOrator);
 
 export default router;
