@@ -5,7 +5,6 @@ import axios from 'axios';
 import '../styles/Navbar.css';
 
 function Navbar() {
-  const [query, setQuery] = useState('');
   const [profileOpen, setProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -24,7 +23,6 @@ function Navbar() {
           return;
         }
 
-        // Fetch user data
         const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +35,6 @@ function Navbar() {
 
         setUser(userData);
 
-        // Fetch profile using the same userId
         const profileResponse = await axios.get(`/api/profiles/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,11 +65,6 @@ function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    alert(`Searching for: ${query}`);
-  };
-
   const handleProfileClick = () => setProfileOpen((prev) => !prev);
 
   const handleNavigate = (path) => {
@@ -92,20 +84,10 @@ function Navbar() {
       <Link to="/" className="logo-link">
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
+      <nav className="nav-links">
+        <Link to="/categories" className="nav-link">Categories</Link>
+      </nav>
 
-      {/* Centered Search Bar */}
-      <div className="search-wrapper">
-        <form className="search-bar" onSubmit={handleSearchSubmit}>
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </form>
-      </div>
-
-      {/* Profile Section */}
       {user && profile && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>

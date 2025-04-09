@@ -19,14 +19,15 @@ function VideoTest() {
   useEffect(() => {
     async function fetchVideo() {
       try {
+        await axios.patch('http://localhost:8080/api/contents/refresh');
+
         const response = await axios.get(`http://localhost:8080/api/contents/title/${videoTitle}`);
-        
         if (Array.isArray(response.data) && response.data.length > 0) {
           const video = response.data[0];
           setVideoUrl(video.url);
           setVideoName(video.title);
           setVideoThumbnail(
-            video.video_thumbnail_url || video.orator_image_url || 'https://via.placeholder.com/800x450?text=Video+Loading'
+            video.video_thumbnail_url || 'https://via.placeholder.com/800x450?text=Video+Loading'
           );
         } else {
           console.error('Format de réponse invalide:', response.data);
