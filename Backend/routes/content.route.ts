@@ -1,34 +1,33 @@
 import { Router } from "express";
 import { ContentController } from "../controllers/content.controller";
-import multer from "multer";
-import { uploadM } from "../config/multerConfig";
-
 const router = Router();
 
 /**
  * @swagger
  * /contents:
  *   post:
- *     summary: Create a new content item
- *     description: Add a new content entry to the system with just a title.
- *     tags: [Content]
+ *     summary: Create a new content
+ *     tags: [Contents]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - title
  *             properties:
  *               title:
  *                 type: string
- *                 example: Video-Bassez
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *               url:
+ *                 type: string
+ *                 nullable: true
  *     responses:
  *       201:
  *         description: Content created successfully
  *       400:
- *         description: Bad request
+ *         description: Content already exists or invalid input
  */
 router.post("/contents", ContentController.create);
 
@@ -36,133 +35,82 @@ router.post("/contents", ContentController.create);
  * @swagger
  * /contents:
  *   get:
- *     summary: Get all content items
- *     description: Retrieve a list of all content entries
- *     tags: [Content]
+ *     summary: Get all contents
+ *     tags: [Contents]
  *     responses:
  *       200:
  *         description: Successful retrieval
- *       400:
- *         description: Bad request
  */
 router.get("/contents", ContentController.getAll);
 
 /**
  * @swagger
- * /contents/:{id}:
+ * /contents/{id}:
  *   get:
- *     summary: Get content by ID
- *     description: Retrieve a specific content entry
- *     tags: [Content]
+ *     summary: Get a content by ID
+ *     tags: [Contents]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *         description: ID of the content entry
+ *         description: ID of the content
  *     responses:
  *       200:
- *         description: Successful retrieval
- *       400:
- *         description: Bad request
+ *         description: Content found
+ *       404:
+ *         description: Content not found
  */
 router.get("/contents/:id", ContentController.getById);
 
 /**
  * @swagger
- * /contents/title/{title}:
- *   get:
- *     summary: Récupérer un contenu par son titre
- *     description: Retourne les informations d’un contenu à partir de son titre.
- *     tags: [Content]
- *     parameters:
- *       - in: path
- *         name: title
- *         required: true
- *         schema:
- *           type: string
- *         description: Le titre du contenu à récupérer
- *     responses:
- *       200:
- *         description: Contenu trouvé avec succès
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Content'
- *       404:
- *         description: Contenu non trouvé
- */
-router.get('/contents/title/:title', ContentController.getContentByTitle);
-
-router.put("/contents/:id", ContentController.update);
-
-/**
- *  @swagger
- *  /contents/{id}:
- *  delete:
- *      summary: Delete a content
- *      tags: [Content]
- *      description: Remove a content from the system
- *      parameters:
- *        - in: path
- *          name: id
- *          required: true
- *          description: ID of the content to delete
- *          schema:
- *            type: integer
- *      responses:
- *        204:
- *          description: Successfully deleted
- *        404:
- *          description: Category not found
-*/
-router.delete("/contents/:id", ContentController.delete);
-
-/**
- * @swagger
- * /contents/{id}/refresh:
- *   patch:
- *     summary: Refresh signed URLs for a specific content
- *     tags: [Content]
- *     description: Regenerates S3 signed URLs (url, orator_image_url, video_thumbnail_url) for the content with the given ID.
+ * /contents/{id}:
+ *   put:
+ *     summary: Update a content
+ *     tags: [Contents]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the content to refresh
- *         schema:
- *           type: integer
+ *         description: ID of the content
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *               url:
+ *                 type: string
+ *                 nullable: true
  *     responses:
  *       200:
- *         description: URLs refreshed successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Content'
- *       400:
- *         description: Invalid content ID
+ *         description: Content updated successfully
  *       404:
  *         description: Content not found
- *       500:
- *         description: Server error
  */
-router.patch("/contents/:id/refresh", ContentController.refreshUrls);
+router.put("/contents/:id", ContentController.update);
 
 /**
  * @swagger
- * /contents/refresh:
- *   patch:
- *     summary: Refresh all signed URLs in the content table
- *     tags: [Content]
- *     description: Regenerates S3 signed URLs for all existing content entries
+ * /contents/{id}:
+ *   delete:
+ *     summary: Delete a content
+ *     tags: [Contents]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the content
  *     responses:
- *       200:
- *         description: URLs refreshed successfully
- *       500:
- *         description: Server error
+ *       204:
+ *         description: Content deleted successfully
  */
-router.patch("/contents/refresh", ContentController.refreshAllUrls);
+router.delete("/contents/:id", ContentController.delete);
+
 export default router;

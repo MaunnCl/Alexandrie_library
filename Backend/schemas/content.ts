@@ -1,17 +1,8 @@
-import { pgTable, serial, varchar, date, timestamp, integer, uuid } from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export const contentTable = pgTable("content", {
-    id: serial("id").primaryKey().unique().notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    folder: varchar("folder", { length: 255 }).notNull(),
-    picture_orator: varchar("picture_orator", { length: 255 }).notNull(),
-    thumbnail_name: varchar("thumbnail_name", { length: 255 }).notNull(),
-    description: varchar("description", { length: 255 }),
-    type: varchar("type", { length: 255 }),
-    url: varchar("url").notNull(),
-    video_thumbnail_url: varchar("video_thumbnail_url", { length: 512 }).notNull(),
-    duration: integer("duration"),
-    release_date: date("release_date").defaultNow(),
-    createdAt: date("createdAt").defaultNow(),
-    updatedAt: date("updatedAt").defaultNow()
+  id: serial("id").primaryKey().unique().notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: varchar("description", { length: 255 }),
+  url: varchar("url", { length: 255 })
 });
