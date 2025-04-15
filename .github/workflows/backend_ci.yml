@@ -54,5 +54,5 @@ jobs:
         working-directory: Backend
 
       - name: Run tests
-        run: bun test
+        run: npm run test
         working-directory: Backend
