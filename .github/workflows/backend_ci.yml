@@ -33,24 +33,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          bun-version: latest
+          node-version: 20
 
       - name: Install dependencies
-        run: bun install
+        run: npm install
+        working-directory: Backend
+
+      - name: Inject .env from GitHub secret
+        run: echo "${{ secrets.ENV_FILE }}" > .env
         working-directory: Backend
 
       - name: Wait for PostgreSQL
         run: |
           until pg_isready -h localhost -p 5432; do
-            echo "Waiting for PostgreSQL..."
+            echo "⏳ Waiting for PostgreSQL..."
             sleep 2
           done
 
       - name: Run DB migrations
-        run: bunx drizzle-kit push
+        run: npx drizzle-kit push
         working-directory: Backend
 
       - name: Run tests
