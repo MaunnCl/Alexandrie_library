@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run tests (Backend)
-        run: bun test
+      - name: Run tests
+        run: npm test
