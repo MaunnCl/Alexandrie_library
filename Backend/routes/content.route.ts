@@ -32,7 +32,7 @@ const router = Router();
  *       201:
  *         description: Content created successfully
  */
-router.post("/content", ContentController.create);
+router.post("/contents", ContentController.create);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.get("/contents/:id", ContentController.getById);
  *       200:
  *         description: Content updated successfully
  */
-router.put("/content/:id", ContentController.update);
+router.put("/contents/:id", ContentController.update);
 
 /**
  * @swagger
@@ -113,5 +113,43 @@ router.put("/content/:id", ContentController.update);
  *         description: Content deleted successfully
  */
 router.delete("/contents/:id", ContentController.delete);
+
+/**
+ * @swagger
+ * /content/{contentId}/orator/{oratorId}:
+ *   put:
+ *     summary: Link content to an orator
+ *     tags: [Content]
+ *     parameters:
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to link
+ *       - in: path
+ *         name: oratorId
+ *         required: true
+ *         description: ID of the orator
+ *     responses:
+ *       200:
+ *         description: Content linked to orator successfully
+ */
+router.put("/contents/:contentId/orator/:oratorId", ContentController.addContentToOrator);
+
+/**
+ * @swagger
+ * /content/{contentId}/orator:
+ *   delete:
+ *     summary: Remove content from an orator
+ *     tags: [Content]
+ *     parameters:
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to unlink
+ *     responses:
+ *       200:
+ *         description: Content removed from orator successfully
+ */
+router.delete("/contents/:contentId/orator", ContentController.removeContentFromOrator);
 
 export default router;

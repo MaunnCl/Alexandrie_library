@@ -20,4 +20,12 @@ export class ContentService {
   static async delete(id: number) {
     return ContentRepository.delete(id);
   }
+
+  static async addContentToOrator(contentId: number, oratorId: number) {
+    return ContentRepository.updateOrator(contentId, { orator_id: oratorId });
+  }
+
+  static async removeContentFromOrator(contentId: number) {
+    return ContentRepository.updateOrator(contentId, { orator_id: null });
+  }
 }

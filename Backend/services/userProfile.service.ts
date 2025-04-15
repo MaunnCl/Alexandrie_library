@@ -10,7 +10,7 @@ export class UserProfileService {
     }
 
     static async getUserProfileById(id: string) {
-        return await UserProfileRepository.getUserProfileById(id);
+        return await UserProfileRepository.getUserProfileById(Number(id));
     }
 
     static async updateUserProfile(id: string, profileData: any) {

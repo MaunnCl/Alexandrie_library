@@ -4,10 +4,7 @@ import { eq } from "drizzle-orm";
 
 export class SessionRepository {
   static async findById(id: number) {
-    const result = await db
-      .select()
-      .from(sessionTable)
-      .where(eq(sessionTable.id, id));
+    const result = await db.select().from(sessionTable).where(eq(sessionTable.id, id));
     return result[0];
   }
 

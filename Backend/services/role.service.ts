@@ -9,15 +9,15 @@ export class RoleService {
         return await RoleRepository.getAllRoles();
     }
 
-    static async getRoleById(id: number) {
+    static async getRoleById(id: string) {
         return await RoleRepository.getRoleById(id);
     }
 
-    static async updateRole(id: number, roleData: any) {
+    static async updateRole(id: string, roleData: any) {
         return await RoleRepository.updateRole(id, roleData);
     }
 
-    static async deleteRole(id: number) {
+    static async deleteRole(id: string) {
         return await RoleRepository.deleteRole(id);
     }
 }

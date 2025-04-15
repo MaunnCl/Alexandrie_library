@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "routes/auth.route.ts";
-import userRoutes from "routes/user.route.ts";
-import userProfileRoutes from "routes/userProfile.route.ts";
-import roleRoutes from "routes/roleList.route";
+import authRoutes from "./routes/auth.route.ts";
+import userRoutes from "./routes/user.route.ts";
+import userProfileRoutes from "./routes/userProfile.route.ts";
+import roleRoutes from "./routes/roleList.route";
 import usersRolesRoutes from "./routes/userRole.route";
 import oratorsRoutes from "./routes/orators.route";
 import contentsRoutes from "./routes/content.route";
@@ -37,7 +37,11 @@ app.use("/api", sessionRoutes);
 // Ajout de Swagger
 setupSwagger(app);
 
-app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-    console.log(`📄 Swagger disponible sur http://localhost:${PORT}/api-docs`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+      console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+      console.log(`📄 Swagger disponible sur http://localhost:${PORT}/api-docs`);
+    });
+  }
+
+export default app;

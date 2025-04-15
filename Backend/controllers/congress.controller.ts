@@ -1,116 +1,87 @@
 import { Request, Response } from "express";
 import { CongressService } from "../services/congress.service";
-import { SessionService } from "@services/session.service";
 
 export class CongressController {
-  static async create(req: Request, res: Response) {
-    const { name, key, session_ids, picture, date, city } = req.body;
-
+  static async create(req: Request, res: Response): Promise<void> {
     try {
+      const { name, key, session_ids, picture, date, city } = req.body;
       const congress = await CongressService.create(name, key, session_ids, picture, date, city);
       res.status(201).json(congress);
-    } catch (error) {
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async getAll(req: Request, res: Response): Promise<void> {
+    try {
+      const congressList = await CongressService.getAll();
+      res.status(200).json(congressList);
+    } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getAll(req: Request, res: Response) {
+  static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const congresses = await CongressService.getAll();
-      res.status(200).json(congresses);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-
-  static async getById(req: Request, res: Response) {
-    const { id } = req.params;
-
-    try {
-      const congress = await CongressService.getById(Number(id));
+      const congress = await CongressService.getById(Number(req.params.id));
       if (!congress) {
-        return res.status(404).json({ message: "Congress not found" });
+        res.status(404).json({ message: "Congress not found" });
+        return;
       }
       res.status(200).json(congress);
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async update(req: Request, res: Response) {
-    const { id } = req.params;
-    const { name, key, session_ids, picture, date, city } = req.body;
-
+  static async update(req: Request, res: Response): Promise<void> {
     try {
-      const updatedCongress = await CongressService.update(Number(id), name, key, session_ids, picture, date, city);
-      res.status(200).json(updatedCongress);
-    } catch (error) {
+      const { name, key, session_ids, picture, date, city } = req.body;
+      const updated = await CongressService.update(
+        Number(req.params.id),
+        name,
+        key,
+        session_ids,
+        picture,
+        date,
+        city
+      );
+      res.status(200).json(updated);
+    } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async delete(req: Request, res: Response) {
-    const { id } = req.params;
-
+  static async delete(req: Request, res: Response): Promise<void> {
     try {
-      await CongressService.delete(Number(id));
+      await CongressService.delete(Number(req.params.id));
       res.status(204).send();
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async addSessionToCongress(req: Request, res: Response) {
-    const { congressId, sessionId } = req.params;
-  
+  static async addSessionToCongress(req: Request, res: Response): Promise<void> {
     try {
-      const congress = await CongressService.getById(Number(congressId));
-      if (!congress) {
-        return res.status(404).json({ message: "Congress not found" });
-      }
-  
-      const session = await SessionService.getById(Number(sessionId));
-      if (!session) {
-        return res.status(404).json({ message: "Session not found" });
-      }
-  
-      if (!congress.session_ids.includes(Number(sessionId))) {
-        congress.session_ids.push(Number(sessionId));
-        await CongressService.update(congress.id, congress.name, congress.key, congress.session_ids, congress.picture, congress.date, congress.city);
-        res.status(200).json({ message: "Session added to congress", congress });
-      } else {
-        res.status(400).json({ message: "Session already exists in the congress" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      const result = await CongressService.addSessionToCongress(
+        Number(req.params.congressId),
+        Number(req.params.sessionId)
+      );
+      res.status(200).json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
 
-  static async removeSessionFromCongress(req: Request, res: Response) {
-    const { congressId, sessionId } = req.params;
-  
+  static async removeSessionFromCongress(req: Request, res: Response): Promise<void> {
     try {
-      const congress = await CongressService.getById(Number(congressId));
-      if (!congress) {
-        return res.status(404).json({ message: "Congress not found" });
-      }
-  
-      const session = await SessionService.getById(Number(sessionId));
-      if (!session) {
-        return res.status(404).json({ message: "Session not found" });
-      }
-  
-      const index = congress.session_ids.indexOf(Number(sessionId));
-      if (index > -1) {
-        congress.session_ids.splice(index, 1); // Supprimer la session du tableau
-        await CongressService.update(congress.id, congress.name, congress.key, congress.session_ids, congress.picture, congress.date, congress.city);
-        res.status(200).json({ message: "Session removed from congress", congress });
-      } else {
-        res.status(400).json({ message: "Session not found in the congress" });
-      }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      const result = await CongressService.removeSessionFromCongress(
+        Number(req.params.congressId),
+        Number(req.params.sessionId)
+      );
+      res.status(200).json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
-  
 }
