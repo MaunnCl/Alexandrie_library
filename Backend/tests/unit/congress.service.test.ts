@@ -1,7 +1,7 @@
 import { CongressService } from "../../src/services/congress.service";
 import { CongressRepository } from "../../src/repository/congress.repository";
 
-jest.mock("../../repository/congress.repository");
+jest.mock("../../src/repository/congress.repository");
 
 describe("CongressService", () => {
   beforeEach(() => jest.clearAllMocks());

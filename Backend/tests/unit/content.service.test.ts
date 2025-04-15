@@ -1,7 +1,7 @@
 import { ContentService } from "../../src/services/content.service";
 import { ContentRepository } from "../../src/repository/content.repository";
 
-jest.mock("../../repository/content.repository");
+jest.mock("../../src/repository/content.repository");
 
 describe("ContentService", () => {
   beforeEach(() => {

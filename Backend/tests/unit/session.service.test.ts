@@ -1,7 +1,7 @@
 import { SessionService } from "../../src/services/session.service";
 import { SessionRepository } from "../../src/repository/session.repository";
 
-jest.mock("../../repository/session.repository");
+jest.mock("../../src/repository/session.repository");
 
 describe("SessionService", () => {
   beforeEach(() => {

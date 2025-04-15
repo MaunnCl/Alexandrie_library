@@ -1,7 +1,7 @@
 import { OratorsService } from "../../src/services/orators.service";
 import { OratorsRepository } from "../../src/repository/orators.repository";
 
-jest.mock("../../repository/orators.repository");
+jest.mock("../../src/repository/orators.repository");
 
 describe("OratorsService", () => {
   beforeEach(() => {
