@@ -6,10 +6,11 @@ export async function syncVideo(): Promise<void> {
 
   await Promise.all(
     contents.map(async (content) => {
+      // Vérifie que content.orator_id et content.url existent et que content.url est bien une string
       if (!content.orator_id || !content.url) return;
 
       try {
-        const url = await getPresignedUrl(content.url);
+        const url = await getPresignedUrl(content.url); // content.url est sûr ici
         await ContentRepository.update(
           content.id,
           content.title,
@@ -18,7 +19,8 @@ export async function syncVideo(): Promise<void> {
           url
         );
       } catch (error: unknown) {
-        console.error(`Error syncing video for content ${content.id}:`, (error as Error).message);
+        const message = error instanceof Error ? error.message : "Unknown error";
+        console.error(`Error syncing video for content ${content.id}:`, message);
       }
     })
   );
