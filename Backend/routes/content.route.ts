@@ -4,32 +4,35 @@ const router = Router();
 
 /**
  * @swagger
- * /contents:
+ * /content:
  *   post:
  *     summary: Create a new content
- *     tags: [Contents]
+ *     tags: [Content]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - title
+ *               - orator_id
+ *               - description
+ *               - url
  *             properties:
  *               title:
  *                 type: string
+ *               orator_id:
+ *                 type: integer
  *               description:
  *                 type: string
- *                 nullable: true
  *               url:
  *                 type: string
- *                 nullable: true
  *     responses:
  *       201:
  *         description: Content created successfully
- *       400:
- *         description: Content already exists or invalid input
  */
-router.post("/contents", ContentController.create);
+router.post("/content", ContentController.create);
 
 /**
  * @swagger
@@ -64,15 +67,15 @@ router.get("/contents/:id", ContentController.getById);
 
 /**
  * @swagger
- * /contents/{id}:
+ * /content/{id}:
  *   put:
- *     summary: Update a content
- *     tags: [Contents]
+ *     summary: Update content
+ *     tags: [Content]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the content
+ *         description: ID of the content to update
  *     requestBody:
  *       required: true
  *       content:
@@ -82,19 +85,17 @@ router.get("/contents/:id", ContentController.getById);
  *             properties:
  *               title:
  *                 type: string
+ *               orator_id:
+ *                 type: integer
  *               description:
  *                 type: string
- *                 nullable: true
  *               url:
  *                 type: string
- *                 nullable: true
  *     responses:
  *       200:
  *         description: Content updated successfully
- *       404:
- *         description: Content not found
  */
-router.put("/contents/:id", ContentController.update);
+router.put("/content/:id", ContentController.update);
 
 /**
  * @swagger

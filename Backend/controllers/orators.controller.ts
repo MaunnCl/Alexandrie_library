@@ -98,5 +98,15 @@ export class OratorsController {
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
-      }      
+      }
+    
+      static async updatePhoto(req: Request, res: Response) {
+        const { id, photoUrl } = req.body;
+        try {
+          const updatedOrator = await OratorsService.updatePhoto(Number(id), photoUrl);
+          res.status(200).json(updatedOrator);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
 }

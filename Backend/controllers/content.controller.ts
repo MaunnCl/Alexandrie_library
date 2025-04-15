@@ -3,19 +3,20 @@ import { ContentService } from "../services/content.service";
 
 export class ContentController {
   static async create(req: Request, res: Response) {
-    const { title, description, url } = req.body;
+    const { title, orator_id, description, url } = req.body;
+
     try {
-      const content = await ContentService.create(title, description, url);
-      res.status(201).json(content);
+      const newContent = await ContentService.create(title, orator_id, description, url);
+      res.status(201).json(newContent);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 
   static async getAll(req: Request, res: Response) {
     try {
-      const contents = await ContentService.getAll();
-      res.status(200).json(contents);
+      const contentList = await ContentService.getAll();
+      res.status(200).json(contentList);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -36,9 +37,10 @@ export class ContentController {
 
   static async update(req: Request, res: Response) {
     const { id } = req.params;
-    const { title, description, url } = req.body;
+    const { title, orator_id, description, url } = req.body;
+
     try {
-      const updatedContent = await ContentService.update(Number(id), title, description, url);
+      const updatedContent = await ContentService.update(Number(id), title, orator_id, description, url);
       res.status(200).json(updatedContent);
     } catch (error) {
       res.status(500).json({ error: error.message });

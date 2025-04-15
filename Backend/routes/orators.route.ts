@@ -242,4 +242,37 @@ router.post("/orators/:oratorId/content/:contentId", OratorsController.addConten
  */
 router.delete("/orators/:oratorId/content/:contentId", OratorsController.removeContentFromOrator);
 
+
+/**
+ * @swagger
+ * /orators/{id}/photo:
+ *   put:
+ *     summary: Update orator's photo
+ *     tags: [Orators]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the orator
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: photoUrl
+ *         description: URL of the photo to update
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             photoUrl:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: Orator's photo updated successfully
+ *       404:
+ *         description: Orator not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/orators/:id/photo", OratorsController.updatePhoto);
+
 export default router;

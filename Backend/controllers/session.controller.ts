@@ -54,4 +54,26 @@ export class SessionController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  static async addContentToSession(req: Request, res: Response) {
+    const { id, contentId } = req.params;
+    console.log(contentId);
+    try {
+      const updatedSession = await SessionService.addContentToSession(Number(id), Number(contentId));
+      res.status(200).json(updatedSession);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  static async removeContentFromSession(req: Request, res: Response) {
+    const { id, contentId } = req.params;
+
+    try {
+      const updatedSession = await SessionService.removeContentFromSession(Number(id), Number(contentId));
+      res.status(200).json(updatedSession);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 }

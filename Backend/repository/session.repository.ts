@@ -15,18 +15,18 @@ export class SessionRepository {
     return db.select().from(sessionTable);
   }
 
-  static async create(name: string) {
+  static async create(name: string, content_ids: number[]) {
     const result = await db
       .insert(sessionTable)
-      .values({ name })
+      .values({ name, content_ids })
       .returning();
     return result[0];
   }
 
-  static async update(id: number, name: string) {
+  static async update(id: number, name: string, content_ids: number[]) {
     const result = await db
       .update(sessionTable)
-      .set({ name })
+      .set({ name, content_ids })
       .where(eq(sessionTable.id, id))
       .returning();
     return result[0];

@@ -15,18 +15,18 @@ export class CongressRepository {
     return db.select().from(congressTable);
   }
 
-  static async create(name: string, session_ids: number[], picture: string | null, date: string, city: string) {
+  static async create(name: string, key: string, session_ids: number[], picture: string | null, date: string, city: string) {
     const result = await db
       .insert(congressTable)
-      .values({ name, session_ids, picture, date, city })
+      .values({ name, key, session_ids, picture, date, city })
       .returning();
     return result[0];
   }
 
-  static async update(id: number, name: string, session_ids: number[], picture: string | null, date: string, city: string) {
+  static async update(id: number, name: string, key: string, session_ids: number[], picture: string | null, date: string, city: string) {
     const result = await db
       .update(congressTable)
-      .set({ name, session_ids, picture, date, city })
+      .set({ name, key, session_ids, picture, date, city })
       .where(eq(congressTable.id, id))
       .returning();
     return result[0];

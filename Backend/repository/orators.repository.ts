@@ -47,4 +47,11 @@ export class OratorsRepository {
       .returning();
     return result[0];
   }
+
+  static async updatePhoto(id: number, photoUrl: string) {
+    return db
+      .update(oratorsTable)
+      .set({ picture: photoUrl })
+      .where(eq(oratorsTable.id, id));
+  }
 }

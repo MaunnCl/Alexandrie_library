@@ -104,4 +104,58 @@ router.put("/sessions/:id", SessionController.update);
  */
 router.delete("/sessions/:id", SessionController.delete);
 
+/**
+ * @swagger
+ * /sessions/{id}/add-content/{contentId}:
+ *   patch:
+ *     summary: Add a specific content ID to a session
+ *     tags: [Session]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the session to add content to
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to add to the session
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Content ID added successfully
+ *       400:
+ *         description: Invalid request
+ */
+router.patch("/sessions/:id/add/:contentId", SessionController.addContentToSession);
+
+/**
+ * @swagger
+ * /sessions/{id}/remove-content/{contentId}:
+ *   patch:
+ *     summary: Remove a specific content ID from a session
+ *     tags: [Session]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the session to remove content from
+ *         schema:
+ *           type: integer
+ *       - in: path
+ *         name: contentId
+ *         required: true
+ *         description: ID of the content to remove from the session
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Content ID removed successfully
+ *       400:
+ *         description: Invalid request
+ */
+router.patch("/sessions/:id/remove/:contentId", SessionController.removeContentFromSession);
+
 export default router;

@@ -15,26 +15,26 @@ const router = Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - key
+ *               - date
+ *               - city
  *             properties:
  *               name:
  *                 type: string
- *               session_ids:
- *                 type: array
- *                 items:
- *                   type: integer
- *               picture:
+ *               key:
  *                 type: string
- *                 nullable: true
  *               date:
  *                 type: string
  *                 format: date
  *               city:
  *                 type: string
+ *               picture:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Congress created successfully
- *       400:
- *         description: Invalid input
  */
 router.post("/congress", CongressController.create);
 
@@ -42,7 +42,7 @@ router.post("/congress", CongressController.create);
  * @swagger
  * /congress:
  *   get:
- *     summary: Get all congresses
+ *     summary: Get all congress
  *     tags: [Congress]
  *     responses:
  *       200:
@@ -54,7 +54,7 @@ router.get("/congress", CongressController.getAll);
  * @swagger
  * /congress/{id}:
  *   get:
- *     summary: Get a congress by ID
+ *     summary: Get congress by ID
  *     tags: [Congress]
  *     parameters:
  *       - in: path
@@ -75,13 +75,13 @@ router.get("/congress/:id", CongressController.getById);
  * @swagger
  * /congress/{id}:
  *   put:
- *     summary: Update a congress
+ *     summary: Update congress
  *     tags: [Congress]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the congress
+ *         description: ID of the congress to update
  *     requestBody:
  *       required: true
  *       content:
@@ -91,23 +91,18 @@ router.get("/congress/:id", CongressController.getById);
  *             properties:
  *               name:
  *                 type: string
- *               session_ids:
- *                 type: array
- *                 items:
- *                   type: integer
- *               picture:
+ *               key:
  *                 type: string
- *                 nullable: true
  *               date:
  *                 type: string
  *                 format: date
  *               city:
  *                 type: string
+ *               picture:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Congress updated successfully
- *       404:
- *         description: Congress not found
  */
 router.put("/congress/:id", CongressController.update);
 
@@ -122,8 +117,6 @@ router.put("/congress/:id", CongressController.update);
  *         name: id
  *         required: true
  *         description: ID of the congress to delete
- *         schema:
- *           type: integer
  *     responses:
  *       204:
  *         description: Congress deleted successfully
@@ -169,6 +162,8 @@ router.delete("/congress/:id", CongressController.delete);
  *                     name:
  *                       type: string
  *                       example: "International AI Congress 2025"
+ *                     key:
+ *                      type: string
  *                     session_ids:
  *                       type: array
  *                       items:
@@ -231,6 +226,8 @@ router.post("/congress/:congressId/session/:sessionId", CongressController.addSe
  *                     name:
  *                       type: string
  *                       example: "International AI Congress 2025"
+ *                     key:
+ *                      type: string
  *                     session_ids:
  *                       type: array
  *                       items:

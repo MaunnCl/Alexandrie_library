@@ -51,4 +51,7 @@ export class OratorsService {
     throw new Error("Content not found in the orator's list");
   }
   
+  static async updatePhoto(id: number, photoUrl: string) {
+    return OratorsRepository.updatePhoto(id, photoUrl);
+  }
 }
