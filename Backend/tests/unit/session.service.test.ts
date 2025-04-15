@@ -1,5 +1,5 @@
-import { SessionService } from "../../services/session.service";
-import { SessionRepository } from "../../repository/session.repository";
+import { SessionService } from "../../src/services/session.service";
+import { SessionRepository } from "../../src/repository/session.repository";
 
 jest.mock("../../repository/session.repository");
 

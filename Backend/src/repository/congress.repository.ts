@@ -1,4 +1,4 @@
-import { db } from "../config/database";
+import { db } from "../../config/database";
 import { congressTable } from "../schemas/congress";
 import { eq } from "drizzle-orm";
 

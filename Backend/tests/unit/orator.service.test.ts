@@ -1,5 +1,5 @@
-import { OratorsService } from "../../services/orators.service";
-import { OratorsRepository } from "../../repository/orators.repository";
+import { OratorsService } from "../../src/services/orators.service";
+import { OratorsRepository } from "../../src/repository/orators.repository";
 
 jest.mock("../../repository/orators.repository");
 

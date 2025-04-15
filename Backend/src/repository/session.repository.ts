@@ -1,4 +1,4 @@
-import { db } from "../config/database";
+import { db } from "../../config/database";
 import { sessionTable } from "../schemas/session";
 import { eq } from "drizzle-orm";
 

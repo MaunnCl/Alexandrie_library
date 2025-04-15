@@ -1,8 +1,14 @@
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
 
-const s3 = new S3Client({ region: "eu-west-3" });
+const s3 = new S3Client({
+  region: process.env.BUCKET_REGION,
+  credentials: {
+    accessKeyId: process.env.BUCKET_ACCESS_KEY!,
+    secretAccessKey: process.env.BUCKET_SECRET_KEY!,
+  },
+});
 
 export async function getPresignedUrl(key: string): Promise<string> {
   const command = new GetObjectCommand({
@@ -30,4 +36,14 @@ export async function getObjectText(key: string): Promise<string> {
   }
 
   return Buffer.concat(chunks).toString("utf-8");
+}
+
+export async function listObjectsFromPrefix(prefix: string): Promise<string[]> {
+  const command = new ListObjectsV2Command({
+    Bucket: process.env.BUCKET_NAME,
+    Prefix: prefix,
+  });
+
+  const response = await s3.send(command);
+  return response.Contents?.map((obj) => obj.Key!) || [];
 }

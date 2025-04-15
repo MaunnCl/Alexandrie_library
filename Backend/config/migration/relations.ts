@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, subscriptions, paymentHistory, usersProfiles, usersRoles, roleList } from "./schema";
+import { users, subscriptions, usersProfiles, usersRoles, roleList, paymentHistory } from "./schema";
 
 export const subscriptionsRelations = relations(subscriptions, ({one, many}) => ({
 	user: one(users, {
@@ -13,13 +13,6 @@ export const usersRelations = relations(users, ({many}) => ({
 	subscriptions: many(subscriptions),
 	usersProfiles: many(usersProfiles),
 	usersRoles: many(usersRoles),
-}));
-
-export const paymentHistoryRelations = relations(paymentHistory, ({one}) => ({
-	subscription: one(subscriptions, {
-		fields: [paymentHistory.subscriptionId],
-		references: [subscriptions.id]
-	}),
 }));
 
 export const usersProfilesRelations = relations(usersProfiles, ({one}) => ({
@@ -42,4 +35,11 @@ export const usersRolesRelations = relations(usersRoles, ({one}) => ({
 
 export const roleListRelations = relations(roleList, ({many}) => ({
 	usersRoles: many(usersRoles),
+}));
+
+export const paymentHistoryRelations = relations(paymentHistory, ({one}) => ({
+	subscription: one(subscriptions, {
+		fields: [paymentHistory.subscriptionId],
+		references: [subscriptions.id]
+	}),
 }));

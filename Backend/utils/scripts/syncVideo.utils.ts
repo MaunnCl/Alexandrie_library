@@ -1,5 +1,5 @@
-import { ContentRepository } from "../repository/content.repository";
-import { getPresignedUrl } from "./aws.utils";
+import { ContentRepository } from "../../src/repository/content.repository";
+import { getPresignedUrl } from "../aws.utils";
 
 export async function syncVideo(): Promise<void> {
   const contents = await ContentRepository.findAll();

@@ -1,5 +1,5 @@
-import { ContentService } from "../../services/content.service";
-import { ContentRepository } from "../../repository/content.repository";
+import { ContentService } from "../../src/services/content.service";
+import { ContentRepository } from "../../src/repository/content.repository";
 
 jest.mock("../../repository/content.repository");
 

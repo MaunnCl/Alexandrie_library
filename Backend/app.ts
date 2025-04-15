@@ -1,15 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "./routes/auth.route.ts";
-import userRoutes from "./routes/user.route.ts";
-import userProfileRoutes from "./routes/userProfile.route.ts";
-import roleRoutes from "./routes/roleList.route";
-import usersRolesRoutes from "./routes/userRole.route";
-import oratorsRoutes from "./routes/orators.route";
-import contentsRoutes from "./routes/content.route";
-import congressRoutes from "./routes/congress.route";
-import sessionRoutes from "./routes/session.route";
+import authRoutes from "./src/routes/auth.route.ts";
+import userRoutes from "./src/routes/user.route.ts";
+import userProfileRoutes from "./src/routes/userProfile.route.ts";
+import roleRoutes from "./src/routes/roleList.route.ts";
+import usersRolesRoutes from "./src/routes/userRole.route.ts";
+import oratorsRoutes from "./src/routes/orators.route.ts";
+import contentsRoutes from "./src/routes/content.route.ts";
+import congressRoutes from "./src/routes/congress.route.ts";
+import sessionRoutes from "./src/routes/session.route.ts";
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();

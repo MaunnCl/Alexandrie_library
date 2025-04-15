@@ -1,5 +1,5 @@
-import { CongressService } from "../../services/congress.service";
-import { CongressRepository } from "../../repository/congress.repository";
+import { CongressService } from "../../src/services/congress.service";
+import { CongressRepository } from "../../src/repository/congress.repository";
 
 jest.mock("../../repository/congress.repository");
 

@@ -9,10 +9,10 @@ const dbHost = process.env.DB_HOST as string;
 const dbUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}/${dbName}`;
 
 export default defineConfig({
-    dialect: "postgresql",
-    out: "./config/migration",
-    schema: "./schemas/",
-    dbCredentials: {
-        url: dbUrl as string,
-    },
+  dialect: "postgresql",
+  out: "./config/migration",
+  schema: "./config/migration/schema.ts",
+  dbCredentials: {
+    url: dbUrl,
+  },
 });

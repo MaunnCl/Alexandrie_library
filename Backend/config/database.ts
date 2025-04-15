@@ -10,3 +10,4 @@ const dbHost = process.env.DB_HOST as string;
 const dbUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}/${dbName}`;
 
 export const db = drizzle(postgres(dbUrl as string));
+export const client = postgres(dbUrl);

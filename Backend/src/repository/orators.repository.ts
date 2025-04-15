@@ -1,4 +1,4 @@
-import { db } from "../config/database";
+import { db } from "../../config/database";
 import { oratorsTable } from "../schemas/orators";
 import { eq } from "drizzle-orm";
 
