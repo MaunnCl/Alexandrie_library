@@ -12,7 +12,9 @@ import congressRoutes from "./routes/congress.route";
 import sessionRoutes from "./routes/session.route";
 import { setupSwagger } from "./docs/swagger";
 
-dotenv.config();
+dotenv.config({
+    path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
+  });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
