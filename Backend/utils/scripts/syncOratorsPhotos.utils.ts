@@ -41,13 +41,3 @@ export async function syncOratorsPhotos(): Promise<void> {
     }
   }
 }
-
-syncOratorsPhotos()
-  .then(() => {
-    console.log("🎉 Terminé !");
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error("🔥 Erreur globale :", err);
-    process.exit(1);
-  });
