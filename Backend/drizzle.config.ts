@@ -1,18 +1,18 @@
 import 'dotenv/config';
 import { defineConfig } from 'drizzle-kit';
 
-const dbName = process.env.DB_NAME as string;
-const dbUser = process.env.DB_USER as string;
-const dbPassword = process.env.DB_PASSWORD as string;
-const dbHost = process.env.DB_HOST as string;
+const dbName = process.env.DB_NAME!;
+const dbUser = process.env.DB_USER!;
+const dbPassword = process.env.DB_PASSWORD!;
+const dbHost = process.env.DB_HOST!;
 
 const dbUrl = `postgres://${dbUser}:${dbPassword}@${dbHost}/${dbName}`;
 
 export default defineConfig({
-  dialect: "postgresql",
-  out: "./config/migration",
-  schema: "./config/migration/schema.ts",
+  schema: './src/schemas',
+  out: './config/migration',
+  dialect: 'postgresql',
   dbCredentials: {
-    url: dbUrl,
-  },
+    url: dbUrl
+  }
 });

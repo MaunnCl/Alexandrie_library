@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { RoleService } from "../services/role.service";
+import { UsersRolesService } from "../services/usersRoles.service";
+import { promises } from "dns";
 
-export class RoleController {
+export class UsersRolesController {
   static async create(req: Request, res: Response): Promise<void>  {
     try {
-      console.log("📥 Incoming role data:", req.body);
-      const role = await RoleService.create(req.body);
-      res.status(201).json(role);
+      const userRole = await UsersRolesService.create(req.body);
+      res.status(201).json(userRole);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -14,20 +14,20 @@ export class RoleController {
 
   static async getAll(req: Request, res: Response): Promise<void>  {
     try {
-      const roles = await RoleService.getAll();
-      res.status(200).json(roles);
+      const userRoles = await UsersRolesService.getAll();
+      res.status(200).json(userRoles);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   }
 
-  static async getById(req: Request, res: Response): Promise<void>  {
+  static async getById(req: Request, res: Response): Promise<void> {
     try {
-      const role = await RoleService.getById(req.params.id);
-      if (!role) {
-        res.status(404).json({ message: "Role not found" });
+      const userRole = await UsersRolesService.getById(req.params.id);
+      if (!userRole) {
+        res.status(404).json({ message: "UserRole not found" });
       }
-      res.status(200).json(role);
+      res.status(200).json(userRole);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -35,7 +35,7 @@ export class RoleController {
 
   static async update(req: Request, res: Response): Promise<void>  {
     try {
-      const updated = await RoleService.update(req.params.id, req.body);
+      const updated = await UsersRolesService.update(req.params.id, req.body);
       res.status(200).json(updated);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -44,7 +44,7 @@ export class RoleController {
 
   static async delete(req: Request, res: Response): Promise<void>  {
     try {
-      await RoleService.delete(req.params.id);
+      await UsersRolesService.delete(req.params.id);
       res.status(204).send();
     } catch (error: any) {
       res.status(500).json({ error: error.message });

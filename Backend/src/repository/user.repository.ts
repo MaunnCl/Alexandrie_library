@@ -1,48 +1,34 @@
 import { db } from "../../config/database";
-import { userTable } from "../schemas/user";
+import { users } from "../schemas/user";
 import { eq } from "drizzle-orm";
 
-export class UserRepository {
-    static async createUser(userData: any) {
-        const user = {
-            firstname: userData.firstname,
-            lastname: userData.lastname,
-            email: (userData.email as string).toLowerCase(),
-            password: userData.password,
-            date_of_birth: userData.birthDate,
-            address: userData.address,
-            country: userData.country,
-            phone: userData.phone,
-            zipcode: userData.zipcode
-        };
+export class UsersRepository {
+  static async create(data: any) {
+    const result = await db.insert(users).values(data).returning();
+    return result[0];
+  }
 
-        try {
-            const result = await db.insert(userTable).values(user).returning();
-            if (result.length > 0) return result[0];
-            console.log("⚠️ User not created.");
-        } catch (error) {
-            console.error("❌ Database Insert Error:", error);
-            return null;
-        }
-    }
+  static findAll() {
+    return db.select().from(users);
+  }
 
-    static async getAllUsers() {
-        return db.select().from(userTable);
-    }
+  static async findById(id: number) {
+    const result = await db.select().from(users).where(eq(users.id, id));
+    return result[0];
+  }
 
-    static async getUserByEmail(email: string) {
-        return db.select().from(userTable).where(eq(userTable.email, email)).then(users => users[0]);
-    }
+  static async update(id: number, data: any) {
+    const result = await db.update(users).set(data).where(eq(users.id, id)).returning();
+    return result[0];
+  }
 
-    static async getUserById(id: number) {
-        return db.select().from(userTable).where(eq(userTable.id, id));
-    }
+  static async delete(id: number) {
+    const result = await db.delete(users).where(eq(users.id, id)).returning();
+    return result[0];
+  }
 
-    static async updateUser(id: number, userData: any) {
-        return db.update(userTable).set(userData).where(eq(userTable.id, id)).returning();
-    }
-
-    static async deleteUser(id: number) {
-        return db.delete(userTable).where(eq(userTable.id, id));
-    }
+  static async findByEmail(email: string) {
+    const result = await db.select().from(users).where(eq(users.email, email));
+    return result[0];
+  }
 }

@@ -1,25 +1,29 @@
 import { db } from "../../config/database";
-import { roleList } from "../schemas/user";
+import { roleList } from "../schemas/role";
 import { eq } from "drizzle-orm";
 
 export class RoleRepository {
-    static async createRole(roleData: any) {
-        return db.insert(roleList).values(roleData).returning();
-    }
+  static async create(data: any) {
+    const result = await db.insert(roleList).values(data).returning();
+    return result[0];
+  }
 
-    static async getAllRoles() {
-        return db.select().from(roleList);
-    }
+  static findAll() {
+    return db.select().from(roleList);
+  }
 
-    static async getRoleById(id: string) {
-        return db.select().from(roleList).where(eq(roleList.id, id)).then(res => res[0]);
-    }
-    
-    static async updateRole(id: string, roleData: any) {
-        return db.update(roleList).set(roleData).where(eq(roleList.id, id)).returning();
-    }
-    
-    static async deleteRole(id: string) {
-        return db.delete(roleList).where(eq(roleList.id, id));
-    }
+  static async findById(id: string) {
+    const result = await db.select().from(roleList).where(eq(roleList.id, id));
+    return result[0];
+  }
+
+  static async update(id: string, data: any) {
+    const result = await db.update(roleList).set(data).where(eq(roleList.id, id)).returning();
+    return result[0];
+  }
+
+  static async delete(id: string) {
+    const result = await db.delete(roleList).where(eq(roleList.id, id)).returning();
+    return result[0];
+  }
 }

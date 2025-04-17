@@ -1,23 +1,23 @@
 import { RoleRepository } from "../repository/role.repository";
 
 export class RoleService {
-    static async createRole(roleData: any) {
-        return await RoleRepository.createRole(roleData);
-    }
+  static create(data: any) {
+    return RoleRepository.create(data);
+  }
 
-    static async getAllRoles() {
-        return await RoleRepository.getAllRoles();
-    }
+  static getAll() {
+    return RoleRepository.findAll();
+  }
 
-    static async getRoleById(id: string) {
-        return await RoleRepository.getRoleById(id);
-    }
+  static getById(id: string) {
+    return RoleRepository.findById(id);
+  }
 
-    static async updateRole(id: string, roleData: any) {
-        return await RoleRepository.updateRole(id, roleData);
-    }
+  static update(id: string, data: any) {
+    return RoleRepository.update(id, data);
+  }
 
-    static async deleteRole(id: string) {
-        return await RoleRepository.deleteRole(id);
-    }
+  static delete(id: string) {
+    return RoleRepository.delete(id);
+  }
 }

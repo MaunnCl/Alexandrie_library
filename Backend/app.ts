@@ -1,11 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "./src/routes/auth.route.ts";
-import userRoutes from "./src/routes/user.route.ts";
-import userProfileRoutes from "./src/routes/userProfile.route.ts";
-import roleRoutes from "./src/routes/roleList.route.ts";
-import usersRolesRoutes from "./src/routes/userRole.route.ts";
+import userRoutes from "./src/routes/users.route.ts";
+import userRolesRoutes from "./src/routes/usersRoles.route.ts"
+import userProfilesRoutes from "./src/routes/usersProfiles.route.ts"
+import roleRoutes from "./src/routes/role.route.ts"
 import oratorsRoutes from "./src/routes/orators.route.ts";
 import contentsRoutes from "./src/routes/content.route.ts";
 import congressRoutes from "./src/routes/congress.route.ts";
@@ -24,11 +23,10 @@ app.use((req: express.Request, res, next) => {
   next();
 });
 
-app.use("/api", authRoutes);
 app.use("/api", userRoutes);
-app.use("/api", userProfileRoutes);
+app.use("/api", userRolesRoutes);
+app.use("/api", userProfilesRoutes);
 app.use("/api", roleRoutes);
-app.use("/api", usersRolesRoutes);
 app.use("/api", oratorsRoutes);
 app.use("/api", contentsRoutes);
 app.use("/api", congressRoutes);
