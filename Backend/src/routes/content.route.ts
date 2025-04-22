@@ -7,7 +7,7 @@ const router = Router();
  * /content:
  *   post:
  *     summary: Create a new content
- *     tags: [Content]
+ *     tags: [Contents]
  *     requestBody:
  *       required: true
  *       content:
@@ -70,7 +70,7 @@ router.get("/contents/:id", ContentController.getById);
  * /content/{id}:
  *   put:
  *     summary: Update content
- *     tags: [Content]
+ *     tags: [Contents]
  *     parameters:
  *       - in: path
  *         name: id
@@ -119,7 +119,7 @@ router.delete("/contents/:id", ContentController.delete);
  * /content/{contentId}/orator/{oratorId}:
  *   put:
  *     summary: Link content to an orator
- *     tags: [Content]
+ *     tags: [Contents]
  *     parameters:
  *       - in: path
  *         name: contentId
@@ -140,7 +140,7 @@ router.put("/contents/:contentId/orator/:oratorId", ContentController.addContent
  * /content/{contentId}/orator:
  *   delete:
  *     summary: Remove content from an orator
- *     tags: [Content]
+ *     tags: [Contents]
  *     parameters:
  *       - in: path
  *         name: contentId
