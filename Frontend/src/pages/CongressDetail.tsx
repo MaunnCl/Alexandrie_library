@@ -40,6 +40,7 @@ function CongressDetail() {
     const [loading, setLoading] = useState(true);
     const [active, setActive] = useState<Category | null>(null);
     const [orators, setOrators] = useState<Orator[]>([]);
+    const [selectedOrator, setSelectedOrator] = useState<Orator | null>(null);
 
     useEffect(() => {
         async function fetchAll() {
@@ -156,11 +157,53 @@ function CongressDetail() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                 >
-                                    <ul>
-                                        {speakers.map((sp, i) => (
-                                            <li key={i}>{sp}</li>
-                                        ))}
-                                    </ul>
+                                    {selectedOrator ? (
+                                        <>
+                                            <h3 style={{ color: '#fff', marginBottom: '1rem' }}>{selectedOrator.name}'s Sessions</h3>
+                                            <ul className="session-list">
+                                                {sessions
+                                                    .filter(s => s.orator_id === selectedOrator.id)
+                                                    .map(s => (
+                                                        <li key={s.id} className="session-item">
+                                                            <div
+                                                                className="session-box"
+                                                                onClick={() => window.open(s.url, '_blank')}
+                                                            >
+                                                                <p className="session-title">{s.title}</p>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                            <button
+                                                onClick={() => setSelectedOrator(null)}
+                                                style={{
+                                                    marginTop: '1rem',
+                                                    background: 'none',
+                                                    border: '1px solid #ff4d4d',
+                                                    color: '#ff4d4d',
+                                                    padding: '0.5rem 1rem',
+                                                    borderRadius: '5px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Back to all speakers
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <ul className="session-list">
+                                            {orators.map(orator => (
+                                                <li key={orator.id} className="session-item">
+                                                    <div
+                                                        className="session-box"
+                                                        onClick={() => setSelectedOrator(orator)}
+                                                    >
+                                                        <p className="session-title">{orator.name}</p>
+                                                        <p className="speaker-name">{orator.city}, {orator.country}</p>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </motion.div>
                             )}
 
