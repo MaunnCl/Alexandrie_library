@@ -40,9 +40,7 @@ function CongressDetail() {
                 ]);
 
                 setCongress(cg.data);
-                setSessions(
-                    allContents.data.filter(s => cg.data.session_ids.includes(s.id))
-                );
+                setSessions(allContents.data);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {

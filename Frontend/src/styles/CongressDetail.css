@@ -54,6 +54,20 @@
     border: 1px solid #333;
     border-radius: 8px;
     padding: 1.5rem 2rem;
+    max-height: 65vh;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #1a1a1a;
+}
+
+.cat-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cat-content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
 }
 
 .cat-content ul {
