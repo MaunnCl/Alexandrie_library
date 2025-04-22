@@ -22,6 +22,15 @@ interface Content {
     url: string;
 }
 
+interface Orator {
+    id: number;
+    name: string;
+    picture: string;
+    content_ids: number[];
+    country: string;
+    city: string;
+}
+
 type Category = 'SESSIONS' | 'SPEAKERS' | 'TOPICS';
 
 function CongressDetail() {
@@ -30,17 +39,20 @@ function CongressDetail() {
     const [sessions, setSessions] = useState<Content[]>([]);
     const [loading, setLoading] = useState(true);
     const [active, setActive] = useState<Category | null>(null);
+    const [orators, setOrators] = useState<Orator[]>([]);
 
     useEffect(() => {
         async function fetchAll() {
             try {
-                const [cg, allContents] = await Promise.all([
+                const [cg, allContents, allOrators] = await Promise.all([
                     axios.get<Congress>(`/api/congress/${id}`),
-                    axios.get<Content[]>(`/api/contents`)
+                    axios.get<Content[]>(`/api/contents`),
+                    axios.get<Orator[]>(`/api/orators`)
                 ]);
 
                 setCongress(cg.data);
                 setSessions(allContents.data);
+                setOrators(allOrators.data);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
@@ -71,6 +83,11 @@ function CongressDetail() {
         });
         return Array.from(set);
     }, [sessions]);
+
+    const getOratorName = (id: number) => {
+        return orators.find(o => o.id === id)?.name || `Speaker #${id}`;
+    };
+
 
     return (
         <>
@@ -117,14 +134,13 @@ function CongressDetail() {
                                     <ul className="session-list">
                                         {sessions.map(s => (
                                             <li key={s.id} className="session-item">
-                                                <div className="session-box">
-                                                    <button
-                                                        className="session-button"
-                                                        onClick={() => window.open(s.url, '_blank')}
-                                                    >
-                                                        {s.title}
-                                                    </button>
-                                                    <p className="speaker-name">Speaker #{s.orator_id}</p>
+                                                <div
+                                                    className="session-box"
+                                                    onClick={() => window.open(s.url, '_blank')}
+                                                    style={{ cursor: 'pointer' }}
+                                                >
+                                                    <p className="session-title">{s.title}</p>
+                                                    <p className="speaker-name">{getOratorName(s.orator_id)}</p>
                                                 </div>
                                             </li>
                                         ))}
