@@ -7,47 +7,25 @@ import '../styles/Navbar.css';
 function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
   const profileRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
-        if (!token || !userId) {
-          console.error('No token or userId found in localStorage');
+        if (!userId) {
+          console.error('No userId found in localStorage');
           navigate('/login');
           return;
         }
 
-        const userResponse = await axios.get(`/api/users/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const userResponse = await axios.get(`/api/users/${userId}`);
+        setUser(userResponse.data);
 
-        const userData = Array.isArray(userResponse.data)
-          ? userResponse.data[0]
-          : userResponse.data;
-
-        setUser(userData);
-
-        const profileResponse = await axios.get(`/api/profiles/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const profileData = Array.isArray(profileResponse.data)
-          ? profileResponse.data[0]
-          : profileResponse.data;
-
-        setProfile(profileData);
       } catch (error) {
-        console.error("Error fetching user or profile data:", error);
+        console.error("Error fetching user data:", error);
         navigate('/login');
       }
     }
@@ -73,7 +51,7 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.removeItem('userId');
     setProfileOpen(false);
     navigate('/login');
@@ -88,10 +66,14 @@ function Navbar() {
         <Link to="/categories" className="nav-link">Categories</Link>
       </nav>
 
-      {user && profile && (
+      {user && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
-            <img src={profile.profile_picture} alt="User Avatar" className="avatar" />
+            <img
+              src="https://via.placeholder.com/40x40?text=👤"
+              alt="User Avatar"
+              className="avatar"
+            />
             <span className="profile-name">{user.firstname} {user.lastname}</span>
             <span className="arrow-down">▼</span>
           </div>
@@ -99,7 +81,11 @@ function Navbar() {
           {profileOpen && (
             <div className="profile-card animate-slideDown">
               <div className="profile-card-header">
-                <img src={profile.profile_picture} alt="User Avatar" className="avatar" />
+                <img
+                  src="https://via.placeholder.com/60x60?text=👤"
+                  alt="User Avatar"
+                  className="avatar"
+                />
                 <div>
                   <h4>{user.firstname} {user.lastname}</h4>
                   <p>{user.email}</p>

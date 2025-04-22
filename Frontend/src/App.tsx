@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -9,12 +8,14 @@ import Checkout from './pages/Checkout';
 import ProfileCreation from './pages/ProfileCreation';
 import VideoTest from './pages/Watch';
 import Categories from './pages/Categories';
+import CongressDirectory from './pages/CongressDirectory';
+import CongressDetail from './pages/CongressDetail';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<CongressDirectory />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
@@ -24,6 +25,8 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/watch" element={<VideoTest />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/congress" element={<CongressDirectory />} />
+        <Route path="/congress/:id" element={<CongressDetail />} />
       </Routes>
     </Router>
   );
