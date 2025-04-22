@@ -22,7 +22,7 @@ interface Content {
     url: string;
 }
 
-type Category = 'CONGRESS' | 'SPEAKERS' | 'TOPICS';
+type Category = 'SESSIONS' | 'SPEAKERS' | 'TOPICS';
 
 function CongressDetail() {
     const { id } = useParams();
@@ -92,7 +92,7 @@ function CongressDetail() {
                         </p>
 
                         <div className="cat-grid">
-                            {(['CONGRESS', 'SPEAKERS', 'TOPICS'] as Category[]).map(cat => (
+                            {(['SESSIONS', 'SPEAKERS', 'TOPICS'] as Category[]).map(cat => (
                                 <motion.div
                                     key={cat}
                                     className={`cat-card ${active === cat ? 'active' : ''}`}
@@ -106,23 +106,26 @@ function CongressDetail() {
                         </div>
 
                         <AnimatePresence mode="wait">
-                            {active === 'CONGRESS' && (
+                            {active === 'SESSIONS' && (
                                 <motion.div
-                                    key="congress-info"
+                                    key="sessions-info"
                                     className="cat-content"
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                 >
-                                    <ul>
+                                    <ul className="session-list">
                                         {sessions.map(s => (
-                                            <li key={s.id}>
-                                                <button
-                                                    className="session-button"
-                                                    onClick={() => window.open(s.url, '_blank')}
-                                                >
-                                                    {s.title}
-                                                </button>
+                                            <li key={s.id} className="session-item">
+                                                <div className="session-box">
+                                                    <button
+                                                        className="session-button"
+                                                        onClick={() => window.open(s.url, '_blank')}
+                                                    >
+                                                        {s.title}
+                                                    </button>
+                                                    <p className="speaker-name">Speaker #{s.orator_id}</p>
+                                                </div>
                                             </li>
                                         ))}
                                     </ul>
