@@ -41,19 +41,24 @@ function CongressDetail() {
     const [active, setActive] = useState<Category | null>(null);
     const [orators, setOrators] = useState<Orator[]>([]);
     const [selectedOrator, setSelectedOrator] = useState<Orator | null>(null);
+    const [topicSessions, setTopicSessions] = useState<{ id: number; name: string; content_ids: number[] }[]>([]);
+    const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+
 
     useEffect(() => {
         async function fetchAll() {
             try {
-                const [cg, allContents, allOrators] = await Promise.all([
+                const [cg, allContents, allOrators, allTopics] = await Promise.all([
                     axios.get<Congress>(`/api/congress/${id}`),
                     axios.get<Content[]>(`/api/contents`),
-                    axios.get<Orator[]>(`/api/orators`)
+                    axios.get<Orator[]>(`/api/orators`),
+                    axios.get(`/api/sessions`)
                 ]);
 
                 setCongress(cg.data);
                 setSessions(allContents.data);
                 setOrators(allOrators.data);
+                setTopicSessions(allTopics.data);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
@@ -87,6 +92,12 @@ function CongressDetail() {
 
     const getOratorName = (id: number) => {
         return orators.find(o => o.id === id)?.name || `Speaker #${id}`;
+    };
+
+    const getSessionsForTopic = (topicId: number): Content[] => {
+        const topic = topicSessions.find(t => t.id === topicId);
+        if (!topic) return [];
+        return sessions.filter(s => topic.content_ids.includes(s.id));
     };
 
 
@@ -209,11 +220,41 @@ function CongressDetail() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                 >
-                                    <ul>
-                                        {topics.map((t, i) => (
-                                            <li key={i}>{t}</li>
-                                        ))}
-                                    </ul>
+                                    {!selectedTopic ? (
+                                        <ul className="session-list">
+                                            {topicSessions.map(topic => (
+                                                <li key={topic.id} className="session-item">
+                                                    <div
+                                                        className="session-box speaker-box"
+                                                        onClick={() => setSelectedTopic(topic.id)}
+                                                    >
+                                                        <div className="speaker-info">
+                                                            <span className="speaker-label">{topic.name}</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <>
+                                            <button className="back-button" onClick={() => setSelectedTopic(null)}>
+                                                ← Back to topics
+                                            </button>
+                                            <ul className="session-list">
+                                                {getSessionsForTopic(selectedTopic).map(s => (
+                                                    <li key={s.id} className="session-item">
+                                                        <div
+                                                            className="session-box"
+                                                            onClick={() => window.open(s.url, '_blank')}
+                                                        >
+                                                            <p className="session-title">{s.title}</p>
+                                                            <p className="speaker-name">{getOratorName(s.orator_id)}</p>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </>
+                                    )}
                                 </motion.div>
                             )}
                         </AnimatePresence>
