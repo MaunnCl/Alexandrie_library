@@ -109,7 +109,7 @@ router.delete("/sessions/:id", SessionController.delete);
  * /sessions/{id}/add-content/{contentId}:
  *   patch:
  *     summary: Add a specific content ID to a session
- *     tags: [Session]
+ *     tags: [Sessions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -136,7 +136,7 @@ router.patch("/sessions/:id/add/:contentId", SessionController.addContentToSessi
  * /sessions/{id}/remove-content/{contentId}:
  *   patch:
  *     summary: Remove a specific content ID from a session
- *     tags: [Session]
+ *     tags: [Sessions]
  *     parameters:
  *       - in: path
  *         name: id
