@@ -157,9 +157,30 @@ function CongressDetail() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                 >
-                                    {selectedOrator ? (
+                                    {!selectedOrator ? (
+                                        <ul className="session-list">
+                                            {orators.map(o => (
+                                                <li key={o.id} className="session-item">
+                                                    <div
+                                                        className="session-box speaker-box"
+                                                        onClick={() => setSelectedOrator(o)}
+                                                    >
+                                                        <div className="speaker-info">
+                                                            <div className="speaker-details">
+                                                                <p className="speaker-name">{o.name}</p>
+                                                                <p className="speaker-location">{o.city}, {o.country}</p>
+                                                            </div>
+                                                            <img src={o.picture} alt={o.name} className="speaker-image" />
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
                                         <>
-                                            <h3 style={{ color: '#fff', marginBottom: '1rem' }}>{selectedOrator.name}'s Sessions</h3>
+                                            <button className="back-button" onClick={() => setSelectedOrator(null)}>
+                                                ← Back to speakers
+                                            </button>
                                             <ul className="session-list">
                                                 {sessions
                                                     .filter(s => s.orator_id === selectedOrator.id)
@@ -170,39 +191,12 @@ function CongressDetail() {
                                                                 onClick={() => window.open(s.url, '_blank')}
                                                             >
                                                                 <p className="session-title">{s.title}</p>
+                                                                <p className="speaker-name">{selectedOrator.name}</p>
                                                             </div>
                                                         </li>
                                                     ))}
                                             </ul>
-                                            <button
-                                                onClick={() => setSelectedOrator(null)}
-                                                style={{
-                                                    marginTop: '1rem',
-                                                    background: 'none',
-                                                    border: '1px solid #ff4d4d',
-                                                    color: '#ff4d4d',
-                                                    padding: '0.5rem 1rem',
-                                                    borderRadius: '5px',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Back to all speakers
-                                            </button>
                                         </>
-                                    ) : (
-                                        <ul className="session-list">
-                                            {orators.map(orator => (
-                                                <li key={orator.id} className="session-item">
-                                                    <div
-                                                        className="session-box"
-                                                        onClick={() => setSelectedOrator(orator)}
-                                                    >
-                                                        <p className="session-title">{orator.name}</p>
-                                                        <p className="speaker-name">{orator.city}, {orator.country}</p>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                        </ul>
                                     )}
                                 </motion.div>
                             )}
