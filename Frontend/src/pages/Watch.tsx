@@ -18,11 +18,14 @@ export default function Watch() {
   const [thumbnail, setThumbnail] = useState('');
   const [segments,  setSegments]  = useState<Segment[]>([]);
   const [orator,    setOrator]    = useState<Orator | null>(null);
+  const [previews,  setPreviews]  = useState<Record<string, string>>({});
 
   const [loading,   setLoading]   = useState(true);
-  const [previews,  setPreviews]  = useState<Record<string, string>>({});
+  const [showVid,   setShowVid]   = useState(false);
   const [pendingSeek, setPendingSeek] = useState<number | null>(null);
-  const [showVid,   setShowVid]   = useState(false);      // remplace la grille
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [curIdx,    setCurIdx]    = useState<number>(-1);           // index de la slide courante
 
   /* ─────────── fetch méta ─────────── */
   useEffect(() => {
@@ -41,16 +44,13 @@ export default function Watch() {
         }
 
         if (c.timeStamp) {
-          const txt = (await axios.get<string>(c.timeStamp)).data;
-          const nums = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
-            ?.[1].match(/\d+/g) ?? [];
-
-          const starts = nums.slice(0, -1).map(Number);     // on retire la fin
+          const txt   = (await axios.get<string>(c.timeStamp)).data;
+          const nums  = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
+                         ?.[1].match(/\d+/g) ?? [];
+          const starts = nums.slice(0, -1).map(Number);     // retire la valeur de fin
           setSegments(starts.map(f => ({ frame: f.toString() })));
         }
-      } finally {
-        setLoading(false);
-      }
+      } finally { setLoading(false); }
     }
     if (id) fetchData();
   }, [id]);
@@ -60,16 +60,16 @@ export default function Watch() {
     if (!videoUrl || segments.length === 0) return;
     let cancel = false;
 
-    const buildThumbs = async () => {
+    (async () => {
       const vid = document.createElement('video');
       vid.src = videoUrl;
       vid.crossOrigin = 'anonymous';
       await new Promise(r => vid.addEventListener('loadeddata', r, { once: true }));
 
       const cvs = document.createElement('canvas');
-      cvs.width = vid.videoWidth / 4;
+      cvs.width  = vid.videoWidth / 4;
       cvs.height = vid.videoHeight / 4;
-      const ctx = cvs.getContext('2d')!;
+      const ctx  = cvs.getContext('2d')!;
       const map: Record<string, string> = {};
       const OFFSET = 20;
 
@@ -85,64 +85,111 @@ export default function Watch() {
         if (cancel) return;
       }
       if (!cancel) setPreviews(map);
-    };
-    buildThumbs();
+    })();
+
     return () => { cancel = true; };
   }, [videoUrl, segments]);
 
-  /* ─────────── seek différé ─────────── */
-  useEffect(() => {
-    if (pendingSeek == null || !videoRef.current) return;
-    const v = videoRef.current;
-    const apply = () => { v.currentTime = pendingSeek; setPendingSeek(null); };
-    if (v.readyState >= 1) apply();
-    else v.addEventListener('loadedmetadata', apply, { once: true });
-  }, [pendingSeek]);
-
-  /* ─────────── actions ─────────── */
-  const jump = (f: string) => {
-    const t = (+f + 3) / 60;
+  /* ─────────── handlers ─────────── */
+  const seekToFrame = (idx: number) => {
+    const frame = +segments[idx].frame;
+    const t = (frame + 3) / 60;                 // offset 3 frames
     if (videoRef.current) videoRef.current.currentTime = t;
-    else setPendingSeek(t);
+    else                   setPendingSeek(t);
+    setCurIdx(idx);
     setShowVid(true);
   };
+
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play().catch(()=>{}); }
+    else          { v.pause();              }
+  };
+
+  const gotoNextSlide = () => {
+    if (curIdx < 0 || curIdx >= segments.length - 1) return;
+    seekToFrame(curIdx + 1);
+  };
+
+  /* ─────────── sync état lecture ─────────── */
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const onPlay  = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    v.addEventListener('play', onPlay);
+    v.addEventListener('pause', onPause);
+    return () => { v.removeEventListener('play', onPlay); v.removeEventListener('pause', onPause); };
+  }, [showVid]);
+
+  /* autoplay à l’apparition du player */
+  useEffect(() => {
+    if (!showVid || !videoRef.current) return;
+    const v = videoRef.current;
+    if (pendingSeek != null) v.currentTime = pendingSeek;
+    const tryPlay = () => v.play().catch(()=>{});
+    if (v.readyState >= 2) tryPlay();
+    else v.addEventListener('canplay', tryPlay, { once: true });
+  }, [showVid]);
+
   const cleanTitle = title.replace(/\.mp4$/i, '');
 
   /* ─────────── rendu ─────────── */
   return (
     <div className="watch-page">
       <header className="watch-header">
-        <img
-          src={siteLogo} alt="Logo"
-          className="watch-logo cursor-pointer"
-          onClick={() => navigate('/')}
-        />
+        <img src={siteLogo} alt="Logo" className="watch-logo"
+             onClick={() => navigate('/')} />
       </header>
 
       {loading ? (
         <p className="loading-text">Chargement…</p>
       ) : (
         <section className="watch-layout">
-          {/* colonne gauche */}
+          {/* ----- Colonne gauche ----- */}
           {orator && (
             <aside className="left-pane">
               <img src={orator.picture} alt={orator.name} className="orator-img" />
               <h3 className="orator-name">{orator.name}</h3>
+
+              {/* --- contrôles custom --- */}
+              <div className="controls-bar">
+                <button
+                  className="ctrl-btn"
+                  disabled={!showVid}
+                  onClick={togglePlay}
+                  title="Play / Pause"
+                >
+                  {isPlaying ? '⏸' : '▶'}
+                </button>
+
+                <button
+                  className="ctrl-btn"
+                  disabled={!showVid || curIdx === segments.length - 1}
+                  onClick={gotoNextSlide}
+                  title="Slide suivante"
+                >
+                  ➡
+                </button>
+              </div>
             </aside>
           )}
 
-          {/* colonne droite : grille OU vidéo */}
+          {/* ----- Colonne droite ----- */}
           <main className="right-pane">
             {!showVid ? (
               <>
                 <h3>Choisissez un moment</h3>
                 <ul className="frame-list grid grid-cols-3 gap-2">
-                  {segments.map(({ frame }) => (
-                    <li key={frame} className="frame-item" onClick={() => jump(frame)}>
+                  {segments.map(({ frame }, i) => (
+                    <li key={frame} className="frame-item"
+                        onClick={() => seekToFrame(i)}>
                       {previews[frame]
-                        ? <img src={previews[frame]} alt={`slide ${frame}`}
+                        ? <img src={previews[frame]}
+                               alt={`slide ${i+1}`}
                                className="w-full object-cover rounded-lg shadow" />
-                        : <div className="w-full aspect-video bg-gray-300 animate-pulse rounded-lg" />}
+                        : <div className="w-full aspect-video bg-gray-500 animate-pulse rounded-lg" />}
                     </li>
                   ))}
                 </ul>
@@ -151,9 +198,8 @@ export default function Watch() {
               <>
                 <video
                   ref={videoRef}
-                  controls
-                  preload="metadata"
                   poster={thumbnail}
+                  playsInline
                   className="w-full rounded-lg border border-gray-600"
                 >
                   <source src={videoUrl!} type="video/mp4" />

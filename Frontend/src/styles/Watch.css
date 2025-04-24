@@ -88,3 +88,31 @@ video {
 .video-container {
     margin-top: 2rem;
 }
+
+.controls-bar {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.ctrl-btn {
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.ctrl-btn:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.ctrl-btn:not(:disabled):hover {
+    background: #444;
+}
