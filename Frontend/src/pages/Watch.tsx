@@ -43,10 +43,13 @@ function Watch() {
         }
 
         if (content.timeStamp) {
-          const { data: txt } = await axios.get<string>(content.timeStamp);
-          const m = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i);
-          const num = m ? m[1].match(/\d+/g) ?? [] : [];
-          setSegments(num.map(f => ({ frame: f })));
+          const txt = (await axios.get<string>(content.timeStamp)).data;
+          const numbers = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
+            ?.[1].match(/\d+/g) ?? [];
+
+          const starts = numbers.slice(0, -1).map(Number);
+
+          setSegments(starts.map(f => ({ frame: f.toString() })));
         }
       } finally {
         setLoading(false);
@@ -88,12 +91,14 @@ function Watch() {
 
       const thumbMap: Record<string, string> = {};
 
+      const PREVIEW_OFFSET = 20;          // +20 frames ≃ 0,33 s
+
       for (const seg of segments) {
-        const time = Number(seg.frame) / 60;
-        await seekTo(offVideo, time);
-        ctx?.drawImage(offVideo, 0, 0, canvas.width, canvas.height);
+        const t = (Number(seg.frame) + PREVIEW_OFFSET) / 60;
+        await seekTo(offVideo, t);
+        ctx.drawImage(offVideo, 0, 0, canvas.width, canvas.height);
+
         thumbMap[seg.frame] = canvas.toDataURL('image/jpeg');
-        if (cancelled) return;
       }
 
       if (!cancelled) setPreviews(thumbMap);
@@ -105,8 +110,8 @@ function Watch() {
   }, [videoUrl, segments]);
 
   const jumpToFrame = (f: string) => {
-    const target = Number(f) / 60;
-    if (videoRef.current) videoRef.current.currentTime = target;
+    const target = (Number(f) + 3) / 60;
+    videoRef.current!.currentTime = target;
     setShowVid(true);
   };
 
