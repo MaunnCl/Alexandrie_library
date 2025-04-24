@@ -118,7 +118,7 @@ function VideoPlayer({
     return () => clearTimeout(timeout);
   }, [showControls]);
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (_e: MouseEvent) => {
     setShowControls(true);
   };
 
