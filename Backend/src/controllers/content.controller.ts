@@ -4,8 +4,8 @@ import { ContentService } from "../services/content.service";
 export class ContentController {
   static async create(req: Request, res: Response): Promise<void> {
     try {
-      const { title, orator_id, description, url } = req.body;
-      const content = await ContentService.create(title, Number(orator_id), description, url);
+      const { title, orator_id, description, url, timeStamp } = req.body;
+      const content = await ContentService.create(title, Number(orator_id), description, url, timeStamp);
       res.status(201).json(content);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
@@ -36,13 +36,14 @@ export class ContentController {
 
   static async update(req: Request, res: Response): Promise<void> {
     try {
-      const { title, orator_id, description, url } = req.body;
+      const { title, orator_id, description, url, timeStamp } = req.body;
       const updated = await ContentService.update(
         Number(req.params.id),
         title,
         Number(orator_id),
         description,
-        url
+        url,
+        timeStamp
       );
       res.status(200).json(updated);
     } catch (error: any) {

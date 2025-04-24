@@ -13,7 +13,8 @@ describe("Content Routes", () => {
         title: "Test Content",
         orator_id: 1,
         description: "Test description",
-        url: "http://test.com"
+        url: "http://test.com",
+        timeStamp: "test"
       });
 
     expect(response.status).toBe(201);
@@ -42,7 +43,8 @@ describe("Content Routes", () => {
         title: "Updated Content",
         orator_id: 1,
         description: "Updated description",
-        url: "http://updated.com"
+        url: "http://updated.com",
+        timeStamp: "update"
       });
 
     expect(response.status).toBe(200);

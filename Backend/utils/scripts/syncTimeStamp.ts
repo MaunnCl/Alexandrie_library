@@ -4,8 +4,8 @@ import { ContentRepository } from "../../src/repository/content.repository";
 import { OratorsRepository } from "../../src/repository/orators.repository";
 import { getPresignedUrl, listObjectsFromPrefix } from "../aws.utils";
 
-export async function syncVideo(): Promise<void> {
-  console.log("🎞️ Syncing video URLs...");
+export async function syncTimeStamp(): Promise<void> {
+  console.log("🎞️ Syncing txt URLs...");
   const congresses = await CongressRepository.findAll();
 
   for (const congress of congresses) {
@@ -22,12 +22,12 @@ export async function syncVideo(): Promise<void> {
         const orator = await OratorsRepository.findById(content.orator_id);
         if (!orator) continue;
 
-        const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.mp4`;
+        const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.txt`;
 
         try {
           const existingFiles = await listObjectsFromPrefix(s3Path);
           if (existingFiles.length === 0) {
-            console.log(`⚠️ Aucun fichier .mp4 trouvé pour ${s3Path}`);
+            console.log(`⚠️ Aucun fichier .txt trouvé pour ${s3Path}`);
             continue;
           }
         
@@ -37,10 +37,11 @@ export async function syncVideo(): Promise<void> {
             content.title,
             content.orator_id,
             content.description,
-            signedUrl,
-            content.timeStamp
+            content.url,
+            signedUrl
+
           );
-          console.log(`✅ Synced video for content ${content.id}: ${s3Path}`);
+          console.log(`✅ Synced txt for content ${content.id}: ${s3Path}`);
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Unknown error";
           console.error(`❌ Error syncing video for content ${content.id}:`, message);

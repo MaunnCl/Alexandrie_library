@@ -23,18 +23,18 @@ export class ContentRepository {
     return result[0];
   }
 
-  static async create(title: string, orator_id: number, description: string, url: string) {
+  static async create(title: string, orator_id: number, description: string, url: string, timeStamp: string) {
     const result = await db
       .insert(contentTable)
-      .values({ title, orator_id, description, url })
+      .values({ title, orator_id, description, url, timeStamp })
       .returning();
     return result[0];
   }
 
-  static async update(id: number, title: string, orator_id: number, description: string, url: string) {
+  static async update(id: number, title: string, orator_id: number, description: string, url: string, timeStamp: string) {
     const result = await db
       .update(contentTable)
-      .set({ title, orator_id, description, url })
+      .set({ title, orator_id, description, url, timeStamp })
       .where(eq(contentTable.id, id))
       .returning();
     return result[0];

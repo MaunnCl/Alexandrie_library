@@ -5,5 +5,6 @@ export const contentTable = pgTable("content", {
   title: varchar("title", { length: 255 }).notNull(),
   orator_id: integer("orator_id"),
   description: varchar("description", { length: 255 }),
-  url: text("url")
+  url: text("url"),
+  timeStamp: text("timeStamp")
 });

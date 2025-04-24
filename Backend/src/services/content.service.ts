@@ -1,8 +1,8 @@
 import { ContentRepository } from "../repository/content.repository";
 
 export class ContentService {
-  static async create(title: string, orator_id: number, description: string, url: string) {
-    return ContentRepository.create(title, orator_id, description, url);
+  static async create(title: string, orator_id: number, description: string, url: string, timeStamp: string) {
+    return ContentRepository.create(title, orator_id, description, url, timeStamp);
   }
 
   static async getAll() {
@@ -13,8 +13,8 @@ export class ContentService {
     return ContentRepository.findById(id);
   }
 
-  static async update(id: number, title: string, orator_id: number, description: string, url: string) {
-    return ContentRepository.update(id, title, orator_id, description, url);
+  static async update(id: number, title: string, orator_id: number, description: string, url: string, timeStamp: string) {
+    return ContentRepository.update(id, title, orator_id, description, url, timeStamp);
   }
 
   static async delete(id: number) {

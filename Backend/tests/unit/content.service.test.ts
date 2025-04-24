@@ -1,5 +1,7 @@
 import { ContentService } from "../../src/services/content.service";
 import { ContentRepository } from "../../src/repository/content.repository";
+import { timestamp } from "drizzle-orm/mysql-core";
+import { timeStamp } from "console";
 
 jest.mock("../../src/repository/content.repository");
 
@@ -14,15 +16,16 @@ describe("ContentService", () => {
       title: "Test Content",
       orator_id: 1,
       description: "Description",
-      url: "http://test.com"
+      url: "http://test.com",
+      timeStamp: "test"
     };
     (ContentRepository.create as jest.Mock).mockResolvedValue(mockContent);
 
-    const content = await ContentService.create("Test Content", 1, "Description", "http://test.com");
+    const content = await ContentService.create("Test Content", 1, "Description", "http://test.com", "test");
 
     expect(content.id).toBe(1);
     expect(content.title).toBe("Test Content");
-    expect(ContentRepository.create).toHaveBeenCalledWith("Test Content", 1, "Description", "http://test.com");
+    expect(ContentRepository.create).toHaveBeenCalledWith("Test Content", 1, "Description", "http://test.com", "test");
   });
 
   it("should get content by id", async () => {
@@ -31,7 +34,8 @@ describe("ContentService", () => {
       title: "Test Content",
       orator_id: 1,
       description: "Description",
-      url: "http://test.com"
+      url: "http://test.com",
+      timeStamp: "test"
     };
     (ContentRepository.findById as jest.Mock).mockResolvedValue(mockContent);
 
@@ -48,14 +52,15 @@ describe("ContentService", () => {
       title: "Updated Content",
       orator_id: 1,
       description: "Updated Description",
-      url: "http://updated.com"
+      url: "http://updated.com",
+      timeStamp: "update"
     };
     (ContentRepository.update as jest.Mock).mockResolvedValue(mockUpdatedContent);
 
-    const updatedContent = await ContentService.update(1, "Updated Content", 1, "Updated Description", "http://updated.com");
+    const updatedContent = await ContentService.update(1, "Updated Content", 1, "Updated Description", "http://updated.com", "update");
 
     expect(updatedContent.title).toBe("Updated Content");
-    expect(ContentRepository.update).toHaveBeenCalledWith(1, "Updated Content", 1, "Updated Description", "http://updated.com");
+    expect(ContentRepository.update).toHaveBeenCalledWith(1, "Updated Content", 1, "Updated Description", "http://updated.com", "update");
   });
 
   it("should delete a content", async () => {
@@ -64,7 +69,8 @@ describe("ContentService", () => {
       title: "Deleted Content",
       orator_id: 1,
       description: "Deleted Description",
-      url: "http://deleted.com"
+      url: "http://deleted.com",
+      timeStamp: "delete"
     };
     (ContentRepository.delete as jest.Mock).mockResolvedValue(mockDeletedContent);
 
@@ -75,7 +81,7 @@ describe("ContentService", () => {
   });
 
   it("should link content to an orator", async () => {
-    const mockLinkedContent = { id: 1, orator_id: 2, title: "Content", description: "", url: "" };
+    const mockLinkedContent = { id: 1, orator_id: 2, title: "Content", description: "", url: "", timeStamp: "" };
     (ContentRepository.updateOrator as jest.Mock).mockResolvedValue(mockLinkedContent);
 
     const updatedContent = await ContentService.addContentToOrator(1, 2);
@@ -85,7 +91,7 @@ describe("ContentService", () => {
   });
 
   it("should unlink content from an orator", async () => {
-    const mockUnlinkedContent = { id: 1, orator_id: null, title: "Content", description: "", url: "" };
+    const mockUnlinkedContent = { id: 1, orator_id: null, title: "Content", description: "", url: "", timeStamp: "" };
     (ContentRepository.updateOrator as jest.Mock).mockResolvedValue(mockUnlinkedContent);
 
     const updatedContent = await ContentService.removeContentFromOrator(1);

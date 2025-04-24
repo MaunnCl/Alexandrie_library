@@ -2,6 +2,7 @@ import app from "./app";
 import cron from "node-cron";
 import { syncVideo } from "./utils/scripts/syncVideo.utils";
 import { syncOratorsPhotos } from "@utils/scripts/syncOratorsPhotos.utils";
+import { syncTimeStamp } from "@utils/scripts/syncTimeStamp";
 
 const PORT = process.env.PORT || 5000;
 
@@ -28,6 +29,13 @@ const server = app.listen(PORT, () => {
       console.error("❌ Erreur dans syncOratorsPhotos :", err);
     }
 
+    try {
+      console.log("▶️ Lancement de syncTimeStamp...");
+      await syncTimeStamp();
+      console.log("✅ syncTimeStamp terminé !");
+    } catch (err) {
+      console.error("❌ Erreur dans syncTimeStamp :", err);
+    }
     console.log("🕒 [CRON] Tâche complète terminée.\n");
   });
 
