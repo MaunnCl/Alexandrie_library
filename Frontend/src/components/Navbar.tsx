@@ -4,17 +4,22 @@ import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import axios from 'axios';
 import '../styles/Navbar.css';
 
+interface User {
+  firstname: string;
+  lastname: string;
+  email: string;
+}
+
 function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const profileRef = useRef(null);
+  const [user, setUser] = useState<User | null>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUserData() {
       try {
         const userId = localStorage.getItem('userId');
-
         if (!userId) {
           console.error('No userId found in localStorage');
           navigate('/login');
@@ -23,7 +28,6 @@ function Navbar() {
 
         const userResponse = await axios.get(`/api/users/${userId}`);
         setUser(userResponse.data);
-
       } catch (error) {
         console.error("Error fetching user data:", error);
         navigate('/login');
@@ -34,8 +38,8 @@ function Navbar() {
   }, [navigate]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
       }
     }
@@ -45,7 +49,7 @@ function Navbar() {
 
   const handleProfileClick = () => setProfileOpen((prev) => !prev);
 
-  const handleNavigate = (path) => {
+  const handleNavigate = (path: string) => {
     setProfileOpen(false);
     navigate(path);
   };
