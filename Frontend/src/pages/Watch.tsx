@@ -12,24 +12,27 @@ interface Orator {
   picture: string;
 }
 
-function Watch() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const videoRef = useRef<HTMLVideoElement>(null);
+export default function Watch() {
+  const { id }        = useParams();
+  const navigate      = useNavigate();
+  const videoRef      = useRef<HTMLVideoElement>(null);
 
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [title, setTitle] = useState('');
+  const [videoUrl,  setVideoUrl]  = useState<string | null>(null);
+  const [title,     setTitle]     = useState('');
   const [thumbnail, setThumbnail] = useState('');
-  const [segments, setSegments] = useState<Segment[]>([]);
-  const [orator, setOrator] = useState<Orator | null>(null);
-  const [showVid, setShowVid] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [previews, setPreviews] = useState<Record<string, string>>({});
+  const [segments,  setSegments]  = useState<Segment[]>([]);
+  const [orator,    setOrator]    = useState<Orator | null>(null);
+
+  const [loading,   setLoading]   = useState(true);
+  const [previews,  setPreviews]  = useState<Record<string, string>>({});
+  const [showVid,   setShowVid]   = useState(false);
+  const [pendingSeek, setPendingSeek] = useState<number | null>(null);   // NEW
 
   useEffect(() => {
     async function fetchData() {
       try {
         const { data: content } = await axios.get(`/api/contents/${id}`);
+
         setVideoUrl(content.url);
         setTitle(content.title);
         setThumbnail(
@@ -55,7 +58,6 @@ function Watch() {
         setLoading(false);
       }
     }
-
     if (id) fetchData();
   }, [id]);
 
@@ -64,54 +66,71 @@ function Watch() {
 
     let cancelled = false;
 
-    const seekTo = (video: HTMLVideoElement, time: number) =>
+    const seekTo = (v: HTMLVideoElement, t: number) =>
       new Promise<void>(resolve => {
         const handler = () => {
-          video.removeEventListener('seeked', handler);
+          v.removeEventListener('seeked', handler);
           resolve();
         };
-        video.addEventListener('seeked', handler);
-        video.currentTime = time;
+        v.addEventListener('seeked', handler);
+        v.currentTime = t;
       });
 
     (async () => {
-      const offVideo = document.createElement('video');
-      offVideo.src = videoUrl;
-      offVideo.crossOrigin = 'anonymous';
-      offVideo.preload = 'auto';
+      const off = document.createElement('video');
+      off.src = videoUrl;
+      off.crossOrigin = 'anonymous';
+      off.preload = 'auto';
 
-      await new Promise<void>(resolve => {
-        offVideo.addEventListener('loadeddata', () => resolve(), { once: true });
-      });
+      await new Promise<void>(r => off.addEventListener('loadeddata', () => r(), { once: true }));
 
       const canvas = document.createElement('canvas');
-      canvas.width = offVideo.videoWidth / 4;
-      canvas.height = offVideo.videoHeight / 4;
-      const ctx = canvas.getContext('2d');
+      canvas.width  = off.videoWidth  / 4;
+      canvas.height = off.videoHeight / 4;
+      const ctx = canvas.getContext('2d')!;
 
-      const thumbMap: Record<string, string> = {};
+      const map: Record<string, string> = {};
+      const PREVIEW_OFFSET = 20;
 
-      const PREVIEW_OFFSET = 20;          // +20 frames ≃ 0,33 s
-
-      for (const seg of segments) {
-        const t = (Number(seg.frame) + PREVIEW_OFFSET) / 60;
-        await seekTo(offVideo, t);
-        ctx.drawImage(offVideo, 0, 0, canvas.width, canvas.height);
-
-        thumbMap[seg.frame] = canvas.toDataURL('image/jpeg');
+      for (const { frame } of segments) {
+        const t = (Number(frame) + PREVIEW_OFFSET) / 60;
+        await seekTo(off, t);
+        ctx.drawImage(off, 0, 0, canvas.width, canvas.height);
+        map[frame] = canvas.toDataURL('image/jpeg');
+        if (cancelled) return;
       }
 
-      if (!cancelled) setPreviews(thumbMap);
+      if (!cancelled) setPreviews(map);
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [videoUrl, segments]);
+
+  useEffect(() => {
+    if (pendingSeek == null || !videoRef.current) return;
+
+    const vid = videoRef.current;
+
+    const applySeek = () => {
+      vid.currentTime = pendingSeek;
+      setPendingSeek(null);
+    };
+
+    if (vid.readyState >= 1) {
+      applySeek();
+    } else {
+      vid.addEventListener('loadedmetadata', applySeek, { once: true });
+      return () => vid.removeEventListener('loadedmetadata', applySeek);
+    }
+  }, [pendingSeek, showVid]);
 
   const jumpToFrame = (f: string) => {
     const target = (Number(f) + 3) / 60;
-    videoRef.current!.currentTime = target;
+    if (videoRef.current) {
+      videoRef.current.currentTime = target;
+    } else {
+      setPendingSeek(target);
+    }
     setShowVid(true);
   };
 
@@ -119,38 +138,33 @@ function Watch() {
 
   return (
     <div className="watch-page">
-      <div className="watch-header">
+      <header className="watch-header">
         <img
           src={siteLogo}
           alt="Logo"
           onClick={() => navigate('/')}
           className="watch-logo cursor-pointer"
         />
-      </div>
+      </header>
 
       {loading ? (
         <p className="loading-text">Chargement…</p>
       ) : (
-        <div className="watch-layout">
-          <div className="left-pane">
-            {orator && (
-              <>
-                <img
-                  src={orator.picture}
-                  alt={orator.name}
-                  className="orator-img"
-                />
-                <h3 className="orator-name">{orator.name}</h3>
-              </>
-            )}
-          </div>
+        <section className="watch-layout">
+          {/* orateur */}
+          {orator && (
+            <aside className="left-pane">
+              <img src={orator.picture} alt={orator.name} className="orator-img" />
+              <h3 className="orator-name">{orator.name}</h3>
+            </aside>
+          )}
 
-          <div className="right-pane">
+          <main className="right-pane">
             <h3>Choisissez un moment</h3>
             <ul className="frame-list grid grid-cols-3 gap-2">
-              {segments.map(({ frame }, i) => (
+              {segments.map(({ frame }) => (
                 <li
-                  key={i}
+                  key={frame}
                   className="frame-item cursor-pointer hover:opacity-80"
                   onClick={() => jumpToFrame(frame)}
                 >
@@ -166,13 +180,19 @@ function Watch() {
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
+          </main>
+        </section>
       )}
 
       {showVid && videoUrl && (
         <div className="video-container mt-6">
-          <video ref={videoRef} controls poster={thumbnail} className="w-full">
+          <video
+            ref={videoRef}
+            controls
+            preload="metadata"
+            poster={thumbnail}
+            className="w-full"
+          >
             <source src={videoUrl} type="video/mp4" />
           </video>
           <h2 className="video-title mt-2 text-center text-xl font-semibold">
@@ -183,5 +203,3 @@ function Watch() {
     </div>
   );
 }
-
-export default Watch;
