@@ -1,11 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../styles/CongressDetail.css';
-import { useNavigate } from 'react-router-dom';
 
 interface Congress {
     id: number;
@@ -46,7 +45,6 @@ function CongressDetail() {
     const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         async function fetchAll() {
             try {
@@ -70,28 +68,6 @@ function CongressDetail() {
         fetchAll();
     }, [id]);
 
-    const speakers = useMemo(() => {
-        const map = new Map<number, string>();
-        sessions.forEach(s => {
-            if (!map.has(s.orator_id)) {
-                map.set(s.orator_id, `Speaker #${s.orator_id}`);
-            }
-        });
-        return Array.from(map.values());
-    }, [sessions]);
-
-    const topics = useMemo(() => {
-        const set = new Set<string>();
-        sessions.forEach(s => {
-            try {
-                const path = decodeURIComponent(new URL(s.url).pathname);
-                const [, , topic] = path.split('/');
-                if (topic) set.add(topic.replace(/_/g, ' '));
-            } catch { }
-        });
-        return Array.from(set);
-    }, [sessions]);
-
     const getOratorName = (id: number) => {
         return orators.find(o => o.id === id)?.name || `Speaker #${id}`;
     };
@@ -101,7 +77,6 @@ function CongressDetail() {
         if (!topic) return [];
         return sessions.filter(s => topic.content_ids.includes(s.id));
     };
-
 
     return (
         <>
@@ -202,7 +177,7 @@ function CongressDetail() {
                                                             <div
                                                                 className="session-box"
                                                                 onClick={() => navigate(`/watch/${s.id}`)}
-                                                                >
+                                                            >
                                                                 <p className="session-title">{s.title}</p>
                                                                 <p className="speaker-name">{selectedOrator.name}</p>
                                                             </div>
@@ -248,7 +223,7 @@ function CongressDetail() {
                                                         <div
                                                             className="session-box"
                                                             onClick={() => navigate(`/watch/${s.id}`)}
-                                                            >
+                                                        >
                                                             <p className="session-title">{s.title}</p>
                                                             <p className="speaker-name">{getOratorName(s.orator_id)}</p>
                                                         </div>

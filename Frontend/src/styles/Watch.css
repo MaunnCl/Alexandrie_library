@@ -51,3 +51,40 @@ video {
     color: #bbb;
     font-size: 1rem;
 }
+
+.watch-layout {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.left-pane {
+    width: 260px;
+    text-align: center;
+}
+
+.orator-img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.frame-list {
+    list-style: none;
+    padding: 0;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.frame-item {
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 1px solid #444;
+}
+
+.frame-item:hover {
+    background: #222;
+}
+
+.video-container {
+    margin-top: 2rem;
+}
