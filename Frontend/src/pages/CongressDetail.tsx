@@ -124,12 +124,16 @@ function CongressDetail() {
                                         {sessions.map(s => (
                                             <li key={s.id} className="session-item">
                                                 <div
-                                                    className="session-box"
+                                                    className="session-box speaker-box"
                                                     onClick={() => navigate(`/watch/${s.id}`)}
                                                     style={{ cursor: 'pointer' }}
                                                 >
-                                                    <p className="session-title">{s.title}</p>
-                                                    <p className="speaker-name">{getOratorName(s.orator_id)}</p>
+                                                    <div className="speaker-info">
+                                                        <div className="speaker-details">
+                                                            <p className="speaker-label">{s.title}</p>
+                                                            <p className="speaker-location">{getOratorName(s.orator_id)}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </li>
                                         ))}
