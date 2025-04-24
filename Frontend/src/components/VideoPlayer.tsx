@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, MouseEvent, SyntheticEvent } from 'react';
+import { useRef, useState, useEffect, MouseEvent, SyntheticEvent } from 'react';
 import '../styles/VideoPlayer.css';
 import {
   FiPlay,
