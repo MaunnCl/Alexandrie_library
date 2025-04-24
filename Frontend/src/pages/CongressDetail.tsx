@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import '../styles/CongressDetail.css';
+import { useNavigate } from 'react-router-dom';
 
 interface Congress {
     id: number;
@@ -43,6 +44,7 @@ function CongressDetail() {
     const [selectedOrator, setSelectedOrator] = useState<Orator | null>(null);
     const [topicSessions, setTopicSessions] = useState<{ id: number; name: string; content_ids: number[] }[]>([]);
     const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -148,7 +150,7 @@ function CongressDetail() {
                                             <li key={s.id} className="session-item">
                                                 <div
                                                     className="session-box"
-                                                    onClick={() => window.open(s.url, '_blank')}
+                                                    onClick={() => navigate(`/watch/${s.id}`)}
                                                     style={{ cursor: 'pointer' }}
                                                 >
                                                     <p className="session-title">{s.title}</p>
@@ -199,8 +201,8 @@ function CongressDetail() {
                                                         <li key={s.id} className="session-item">
                                                             <div
                                                                 className="session-box"
-                                                                onClick={() => window.open(s.url, '_blank')}
-                                                            >
+                                                                onClick={() => navigate(`/watch/${s.id}`)}
+                                                                >
                                                                 <p className="session-title">{s.title}</p>
                                                                 <p className="speaker-name">{selectedOrator.name}</p>
                                                             </div>
@@ -245,8 +247,8 @@ function CongressDetail() {
                                                     <li key={s.id} className="session-item">
                                                         <div
                                                             className="session-box"
-                                                            onClick={() => window.open(s.url, '_blank')}
-                                                        >
+                                                            onClick={() => navigate(`/watch/${s.id}`)}
+                                                            >
                                                             <p className="session-title">{s.title}</p>
                                                             <p className="speaker-name">{getOratorName(s.orator_id)}</p>
                                                         </div>

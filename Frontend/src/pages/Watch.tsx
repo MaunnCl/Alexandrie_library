@@ -1,81 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import VideoPlayer from '../components/VideoPlayer';
 import '../styles/Watch.css';
 import siteLogo from '/logo.png';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 
-function VideoTest() {
+function Watch() {
+  const { id } = useParams();
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [videoName, setVideoName] = useState<string>('');
-  const [videoThumbnail, setVideoThumbnail] = useState<string>('');
+  const [title, setTitle] = useState('');
+  const [thumbnail, setThumbnail] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const [searchParams] = useSearchParams();
-  const videoTitle = searchParams.get('title');
-
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchVideo() {
       try {
-        await axios.patch('http://localhost:8080/api/contents/refresh');
+        const response = await axios.get(`/api/contents/${id}`);
+        const video = response.data;
 
-        const response = await axios.get(`http://localhost:8080/api/contents/title/${videoTitle}`);
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          const video = response.data[0];
-          setVideoUrl(video.url);
-          setVideoName(video.title);
-          setVideoThumbnail(
-            video.video_thumbnail_url || 'https://via.placeholder.com/800x450?text=Video+Loading'
-          );
-        } else {
-          console.error('Format de réponse invalide:', response.data);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la récupération de la vidéo depuis le backend:', error);
+        setVideoUrl(video.url);
+        setTitle(video.title);
+        setThumbnail(
+          video.video_thumbnail_url || 'https://via.placeholder.com/1280x720?text=Loading...'
+        );
+      } catch (err) {
+        console.error('Error fetching video:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    if (videoTitle) {
-      fetchVideo();
-    }
-  }, [videoTitle]);
+    if (id) fetchVideo();
+  }, [id]);
 
-  const displayTitle = videoName.replace(/\.mp4$/i, '') || 'Vidéo';
+  const cleanTitle = title.replace(/\.mp4$/i, '');
 
   return (
-    <div className="video-test-page">
-      {loading ? (
-        <p className="loading-text">Loading video...</p>
-      ) : videoUrl ? (
-        <div className="video-and-logo">
-          <div className="video-wrapper">
-            <VideoPlayer
-              src={videoUrl}
-              poster={videoThumbnail}
-              title={displayTitle}
-            />
-          </div>
+    <div className="watch-page">
+      <div className="watch-header">
+        <img src={siteLogo} alt="Logo" onClick={() => navigate('/')} className="watch-logo" />
+      </div>
 
-          <div className="logo-section">
-            <img
-              src={siteLogo}
-              alt="Site Logo"
-              className="site-logo"
-              onClick={() => navigate('/')}
-              style={{ cursor: 'pointer' }}
-            />
-            <p className="video-name">{displayTitle}</p>
-          </div>
+      {loading ? (
+        <p className="loading-text">Chargement de la vidéo…</p>
+      ) : videoUrl ? (
+        <div className="video-container">
+          <video controls poster={thumbnail}>
+            <source src={videoUrl} type="video/mp4" />
+            Votre navigateur ne prend pas en charge la lecture de vidéos.
+          </video>
+          <h2 className="video-title">{cleanTitle}</h2>
         </div>
       ) : (
-        <p className="error-text">Failed to load video.</p>
+        <p className="error-text">Vidéo introuvable.</p>
       )}
     </div>
   );
 }
 
-export default VideoTest;
+export default Watch;

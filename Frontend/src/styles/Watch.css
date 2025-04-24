@@ -1,69 +1,53 @@
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #141414;
-    font-family: sans-serif;
+.watch-page {
+    background-color: #121212;
     color: #fff;
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.video-test-page {
-    width: 100vw;
-    height: 100vh;
+.watch-header {
+    width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
+    margin-bottom: 2rem;
+}
+
+.watch-logo {
+    height: 60px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.watch-logo:hover {
+    transform: scale(1.1);
+}
+
+.video-container {
+    width: 100%;
+    max-width: 960px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+video {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+.video-title {
+    font-size: 1.3rem;
+    color: #ff4d4d;
+    margin-top: 0.5rem;
 }
 
 .loading-text,
 .error-text {
-    font-size: 18px;
-    text-align: center;
-}
-
-.video-and-logo {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 1200px;
-    width: 100%;
-}
-
-.video-wrapper {
-    flex: 1;
-    max-width: 900px;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-}
-
-.logo-section {
-    width: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.site-logo {
-    width: 120px;
-    height: auto;
-    object-fit: contain;
-    border: 2px solid #ff0000;
-    border-radius: 8px;
-    background-color: #fff;
-    padding: 5px;
-}
-
-.video-name {
-    font-size: 16px;
-    background-color: rgba(255, 0, 0, 0.2);
-    color: #fff;
-    padding: 5px;
-    border-radius: 4px;
-    text-align: center;
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
+    color: #bbb;
+    font-size: 1rem;
 }
