@@ -12,15 +12,14 @@ function Login() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-
+  
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      
-      // Vérifier si la réponse est bien en JSON
+  
       const contentType = response.headers.get("Content-Type");
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
@@ -32,11 +31,13 @@ function Login() {
           setError(data.message || 'Invalid email or password. Please try again.');
         }
       } else {
-        // Si la réponse n'est pas en JSON, loguer la réponse brute
         const text = await response.text();
         console.error('Response is not JSON:', text);
-        setError('Error parsing response');
+        setError('Error parsing response. Please check the server response.');
       }
+    } catch (err) {
+      console.error('Error during login:', err);
+      setError('Network error. Please try again.');
     }
   };
 
