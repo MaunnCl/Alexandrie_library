@@ -4,9 +4,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://13.53.198.252:5863',  // Vite lira directement cette variable
+        target: 'http://13.53.198.252:5863',  // Le serveur backend
         changeOrigin: true,
-        secure: false,
+        secure: false,  // si tu utilises HTTPS, passe à true
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },
