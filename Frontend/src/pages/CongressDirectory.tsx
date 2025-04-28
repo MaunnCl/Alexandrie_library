@@ -24,7 +24,7 @@ function CongressDirectory() {
   useEffect(() => {
     async function fetchCongresses() {
       try {
-        const res = await axios.get<Congress[]>(`${import.meta.env.VITE_API_URL}/api/congress`);
+        const res = await axios.get<Congress[]>('/api/congress');
         setCongresses(res.data);
       } catch (err) {
         console.error('Erreur de récupération des congrès', err);
@@ -55,7 +55,7 @@ function CongressDirectory() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => navigate(`${import.meta.env.VITE_API_URL}/congress/${c.id}`)}
+                onClick={() => navigate(`/congress/${c.id}`)}
               >
                 <div className="card-body">
                   <h3>{c.name}</h3>

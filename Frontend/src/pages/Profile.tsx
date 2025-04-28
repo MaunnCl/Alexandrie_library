@@ -31,7 +31,7 @@ function ProfilePage() {
           navigate('/login');
           return;
         }
-        const userResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, {
+        const userResponse = await axios.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -43,7 +43,7 @@ function ProfilePage() {
 
         setUser(userData);
 
-        const profileResponse = await axios.get(`${import.meta.env.VITE_API_URL}/api/profiles/${userId}`, {
+        const profileResponse = await axios.get(`/api/profiles/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -87,7 +87,7 @@ function ProfilePage() {
       }
 
       if (activeCategory === 'Personal Info') {
-        await axios.put(`${import.meta.env.VITE_API_URL}/api/users/${userId}`, user, {
+        await axios.put(`/api/users/${userId}`, user, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ function ProfilePage() {
       }
 
       if (activeCategory === 'Profile') {
-        await axios.put(`${import.meta.env.VITE_API_URL}/api/profiles/${userId}`, profile, {
+        await axios.put(`/api/profiles/${userId}`, profile, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
