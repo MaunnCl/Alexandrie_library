@@ -17,21 +17,26 @@ function Login() {
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('userId', data.id);
-        localStorage.setItem('user', JSON.stringify(data));
-        navigate('/congress');
+      
+      // Vérifier si la réponse est bien en JSON
+      const contentType = response.headers.get("Content-Type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (response.ok) {
+          localStorage.setItem('userId', data.id);
+          localStorage.setItem('user', JSON.stringify(data));
+          navigate('/congress');
+        } else {
+          setError(data.message || 'Invalid email or password. Please try again.');
+        }
       } else {
-        setError(data.message || 'Invalid email or password. Please try again.');
+        // Si la réponse n'est pas en JSON, loguer la réponse brute
+        const text = await response.text();
+        console.error('Response is not JSON:', text);
+        setError('Error parsing response');
       }
-    } catch (err) {
-      console.error(err);
-      setError('Network error. Please try again.');
     }
   };
 
