@@ -24,7 +24,7 @@ function Categories() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/categories').then((res) => {
+    axios.get('${import.meta.env.VITE_API_URL}/api/categories').then((res) => {
       setCategories(res.data);
       setSelectedCategory(res.data[0]); // sélectionne la première par défaut
     });
@@ -32,7 +32,7 @@ function Categories() {
 
   useEffect(() => {
     if (!selectedCategory) return;
-    axios.get('http://localhost:8080/api/contents').then((res) => {
+    axios.get('${import.meta.env.VITE_API_URL}/api/contents').then((res) => {
       const allVideos = res.data;
       const filtered = allVideos.filter((v: Video) =>
         v.title.toLowerCase().includes(selectedCategory.name.toLowerCase())
