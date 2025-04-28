@@ -17,7 +17,7 @@ function VideoWatchPage() {
   useEffect(() => {
     async function fetchVideo() {
       try {
-        const res = await axios.get(`/api/contents/title/${title}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/contents/title/${title}`);
         const video = res.data[0];
         setVideoUrl(video.url);
       } catch (err) {

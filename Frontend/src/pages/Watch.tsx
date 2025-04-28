@@ -30,13 +30,13 @@ export default function Watch() {
 
   useEffect(() => {
     (async () => {
-      const { data: c } = await axios.get(`/api/contents/${id}`);
+      const { data: c } = await axios.get(`${import.meta.env.VITE_API_URL}/api/contents/${id}`);
       setVideoUrl(c.url);
       setTitle(c.title.replace(/\.mp4$/i, ''));
       setThumbnail(c.video_thumbnail_url || 'https://placehold.co/1280x720?text=Loading…');
 
       if (c.orator_id) {
-        const { data: o } = await axios.get(`/api/orators/${c.orator_id}`);
+        const { data: o } = await axios.get(`${import.meta.env.VITE_API_URL}/api/orators/${c.orator_id}`);
         setOrator({ name: o.name, picture: o.picture });
       }
 

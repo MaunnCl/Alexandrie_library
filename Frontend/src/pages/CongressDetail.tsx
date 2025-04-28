@@ -49,10 +49,10 @@ function CongressDetail() {
         async function fetchAll() {
             try {
                 const [cg, allContents, allOrators, allTopics] = await Promise.all([
-                    axios.get<Congress>(`/api/congress/${id}`),
-                    axios.get<Content[]>(`/api/contents`),
-                    axios.get<Orator[]>(`/api/orators`),
-                    axios.get(`/api/sessions`)
+                    axios.get<Congress>(`${import.meta.env.VITE_API_URL}/api/congress/${id}`),
+                    axios.get<Content[]>(`${import.meta.env.VITE_API_URL}/api/contents`),
+                    axios.get<Orator[]>(`${import.meta.env.VITE_API_URL}/api/orators`),
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/sessions`)
                 ]);
 
                 setCongress(cg.data);
