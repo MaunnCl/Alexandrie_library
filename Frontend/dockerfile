@@ -1,14 +1,17 @@
-FROM node:19-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
+COPY package.json package-lock.json ./
+
+RUN npm install
+
 COPY . .
 
-# Install dependencies
-RUN npm i
+RUN npm run build
 
-# Expose Vite port
-EXPOSE 5173
+RUN npm install -g serve
 
-# Start the app
-CMD ["npm", "run", "dev"]
+EXPOSE 3000
+
+CMD ["serve", "-s", "dist", "-l", "3000"]
