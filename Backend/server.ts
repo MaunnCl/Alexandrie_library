@@ -6,9 +6,9 @@ import { syncTimeStamp } from "@utils/scripts/syncTimeStamp";
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-  console.log(`📄 Swagger disponible sur http://localhost:${PORT}/api-docs`);
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Serveur démarré sur http://0.0.0.0:${PORT}`);
+  console.log(`📄 Swagger disponible sur http://0.0.0.0:${PORT}/api-docs`);
 
   cron.schedule("0 * * * *", async () => {
     console.log("⏳ [CRON] Début de la tâche horaire...");
