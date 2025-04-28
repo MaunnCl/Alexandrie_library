@@ -56,9 +56,9 @@ function CongressDetail() {
                 ]);
 
                 setCongress(cg.data);
-                setSessions(allContents.data);
-                setOrators(allOrators.data);
-                setTopicSessions(allTopics.data);
+                setSessions(Array.isArray(allContents.data) ? allContents.data : []);
+                setOrators(Array.isArray(allOrators.data) ? allOrators.data : []);
+                setTopicSessions(Array.isArray(allTopics.data) ? allTopics.data : []);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
