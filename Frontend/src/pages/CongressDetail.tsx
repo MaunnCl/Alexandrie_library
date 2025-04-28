@@ -120,24 +120,28 @@ function CongressDetail() {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                 >
-                                    <ul className="session-list">
-                                        {sessions.map(s => (
-                                            <li key={s.id} className="session-item">
-                                                <div
-                                                    className="session-box speaker-box"
-                                                    onClick={() => navigate(`/watch/${s.id}`)}
-                                                    style={{ cursor: 'pointer' }}
-                                                >
-                                                    <div className="speaker-info">
-                                                        <div className="speaker-details">
-                                                            <p className="speaker-label">{s.title}</p>
-                                                            <p className="speaker-location">{getOratorName(s.orator_id)}</p>
+                                    {Array.isArray(sessions) && sessions.length > 0 ? (
+                                        <ul className="session-list">
+                                            {sessions.map(s => (
+                                                <li key={s.id} className="session-item">
+                                                    <div
+                                                        className="session-box speaker-box"
+                                                        onClick={() => navigate(`/watch/${s.id}`)}
+                                                        style={{ cursor: 'pointer' }}
+                                                    >
+                                                        <div className="speaker-info">
+                                                            <div className="speaker-details">
+                                                                <p className="speaker-label">{s.title}</p>
+                                                                <p className="speaker-location">{getOratorName(s.orator_id)}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p>No sessions available</p>
+                                    )}
                                 </motion.div>
                             )}
 
@@ -151,22 +155,26 @@ function CongressDetail() {
                                 >
                                     {!selectedOrator ? (
                                         <ul className="session-list">
-                                            {orators.map(o => (
-                                                <li key={o.id} className="session-item">
-                                                    <div
-                                                        className="session-box speaker-box"
-                                                        onClick={() => setSelectedOrator(o)}
-                                                    >
-                                                        <div className="speaker-info">
-                                                            <div className="speaker-details">
-                                                                <p className="speaker-name">{o.name}</p>
-                                                                <p className="speaker-location">{o.city}, {o.country}</p>
+                                            {Array.isArray(orators) && orators.length > 0 ? (
+                                                orators.map(o => (
+                                                    <li key={o.id} className="session-item">
+                                                        <div
+                                                            className="session-box speaker-box"
+                                                            onClick={() => setSelectedOrator(o)}
+                                                        >
+                                                            <div className="speaker-info">
+                                                                <div className="speaker-details">
+                                                                    <p className="speaker-name">{o.name}</p>
+                                                                    <p className="speaker-location">{o.city}, {o.country}</p>
+                                                                </div>
+                                                                <img src={o.picture} alt={o.name} className="speaker-image" />
                                                             </div>
-                                                            <img src={o.picture} alt={o.name} className="speaker-image" />
                                                         </div>
-                                                    </div>
-                                                </li>
-                                            ))}
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <p>No orators available</p>
+                                            )}
                                         </ul>
                                     ) : (
                                         <>
@@ -203,18 +211,22 @@ function CongressDetail() {
                                 >
                                     {!selectedTopic ? (
                                         <ul className="session-list">
-                                            {topicSessions.map(topic => (
-                                                <li key={topic.id} className="session-item">
-                                                    <div
-                                                        className="session-box speaker-box"
-                                                        onClick={() => setSelectedTopic(topic.id)}
-                                                    >
-                                                        <div className="speaker-info">
-                                                            <span className="speaker-label">{topic.name}</span>
+                                            {Array.isArray(topicSessions) && topicSessions.length > 0 ? (
+                                                topicSessions.map(topic => (
+                                                    <li key={topic.id} className="session-item">
+                                                        <div
+                                                            className="session-box speaker-box"
+                                                            onClick={() => setSelectedTopic(topic.id)}
+                                                        >
+                                                            <div className="speaker-info">
+                                                                <span className="speaker-label">{topic.name}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </li>
-                                            ))}
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <p>No topics available</p>
+                                            )}
                                         </ul>
                                     ) : (
                                         <>
