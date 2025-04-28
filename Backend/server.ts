@@ -1,10 +1,10 @@
 import app from "./app";
 import cron from "node-cron";
 import { syncVideo } from "./utils/scripts/syncVideo.utils";
-import { syncOratorsPhotos } from "@utils/scripts/syncOratorsPhotos.utils";
-import { syncTimeStamp } from "@utils/scripts/syncTimeStamp";
+import { syncOratorsPhotos } from "./utils/scripts/syncOratorsPhotos.utils";
+import { syncTimeStamp } from "./utils/scripts/syncTimeStamp";
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
 const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Serveur démarré sur http://0.0.0.0:${PORT}`);

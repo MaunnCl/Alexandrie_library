@@ -1,7 +1,6 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "type": "module",
   "module": "server.ts",
   "scripts": {
     "build": "tsc",
@@ -50,6 +49,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^22.12.0",
+    "@types/node-cron": "^3.0.11",
     "@types/pg": "^8.11.11",
     "@types/supertest": "^6.0.3",
     "bun-types": "^1.2.9",

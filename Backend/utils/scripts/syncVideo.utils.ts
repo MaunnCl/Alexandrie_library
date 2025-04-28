@@ -36,9 +36,9 @@ export async function syncVideo(): Promise<void> {
             content.id,
             content.title,
             content.orator_id,
-            content.description,
+            content.description ?? "",
             signedUrl,
-            content.timeStamp
+            content.timeStamp ?? ""
           );
           console.log(`✅ Synced video for content ${content.id}: ${s3Path}`);
         } catch (error: unknown) {

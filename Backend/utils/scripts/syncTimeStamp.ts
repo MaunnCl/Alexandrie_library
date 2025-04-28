@@ -36,8 +36,8 @@ export async function syncTimeStamp(): Promise<void> {
             content.id,
             content.title,
             content.orator_id,
-            content.description,
-            content.url,
+            content.description ?? "",
+            content.url ?? "",
             signedUrl
 
           );
