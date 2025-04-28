@@ -4,8 +4,9 @@
   "type": "module",
   "module": "server.ts",
   "scripts": {
-    "start": "tsx server.ts",
-    "dev": "nodemon server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsx server.ts",
     "test": "jest --config jest.config.ts --detectOpenHandles --forceExit",
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
