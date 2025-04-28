@@ -25,6 +25,7 @@ function CongressDirectory() {
     async function fetchCongresses() {
       try {
         const res = await axios.get<Congress[]>('/api/congress');
+        console.log(res.data);  // Vérifie la structure des données
         setCongresses(res.data);
       } catch (err) {
         console.error('Erreur de récupération des congrès', err);
@@ -62,7 +63,8 @@ function CongressDirectory() {
                   <p className="meta">
                     {new Date(c.date).toLocaleDateString()} — {c.city}
                   </p>
-                  <p className="sessions">{c.session_ids.length} sessions</p>
+                  <p className="sessions">{c.session_ids && c.session_ids.length > 0 ? `${c.session_ids.length} sessions` : 'No sessions available'}</p>
+                  {c.picture && <img src={c.picture} alt={c.name} className="congress-image" />}
                 </div>
               </motion.div>
             ))}
