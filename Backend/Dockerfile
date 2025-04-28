@@ -1,17 +1,20 @@
+# Utiliser Node.js 20
 FROM node:20-bookworm
 
-RUN curl -fsSL https://bun.sh/install | bash
-
-ENV PATH="/root/.bun/bin:$PATH"
-
+# Créer le dossier de travail
 WORKDIR /app
 
-COPY package.json bun.lockb ./
+# Copier seulement les fichiers de dépendances
+COPY package.json package-lock.json ./
 
-RUN bun install
+# Installer toutes les dépendances
+RUN npm install
 
+# Copier le reste du code
 COPY . .
 
-RUN bun run rebuild || true
+# Exposer le port (même si Docker Compose le mappe après)
+EXPOSE 8080
 
-CMD ["bun", "run", "bun:dev"]
+# Commande de démarrage
+CMD ["npm", "run", "start"]
