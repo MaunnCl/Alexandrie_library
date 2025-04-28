@@ -11,7 +11,6 @@ services:
       - ./Backend:/app
     networks:
       - alex_net
-    command: npm run start
 
 
   alex_front:
