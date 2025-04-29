@@ -93,7 +93,6 @@ function ProfilePage() {
             'Content-Type': 'application/json',
           },
         });
-        console.log('User data updated successfully');
       }
 
       if (activeCategory === 'Profile') {
@@ -103,7 +102,6 @@ function ProfilePage() {
             'Content-Type': 'application/json',
           },
         });
-        console.log('Profile data updated successfully');
       }
 
       setIsEditing(false);

@@ -1,18 +1,21 @@
 import { defineConfig } from 'vite';
 
+const useLocalBackend = false;
+
 export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://13.53.198.252:5863',  // Le serveur backend
+        target: useLocalBackend
+          ? 'http://localhost:8080'
+          : 'http://13.53.198.252:5863',
         changeOrigin: true,
-        secure: false,  // si tu utilises HTTPS, passe à true
-        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false,
       },
     },
   },
   preview: {
     port: 5173,
-    host: "0.0.0.0"
-  }
+    host: '0.0.0.0',
+  },
 });

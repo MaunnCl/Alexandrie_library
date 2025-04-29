@@ -25,7 +25,6 @@ function CongressDirectory() {
     async function fetchCongresses() {
       try {
         const res = await axios.get<Congress[]>('/api/congress');
-        console.log(res.data);  // Vérifie la structure des données
         setCongresses(res.data);
       } catch (err) {
         console.error('Erreur de récupération des congrès', err);
