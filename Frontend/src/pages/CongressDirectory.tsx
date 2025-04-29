@@ -17,7 +17,7 @@ interface Congress {
 }
 
 function CongressDirectory() {
-  const [congresses, setCongresses] = useState<Congress[]>([]);
+  const [congresses, setCongresses] = useState<Congress[] | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -25,9 +25,10 @@ function CongressDirectory() {
     async function fetchCongresses() {
       try {
         const res = await axios.get<Congress[]>('/api/congress');
-        setCongresses(res.data);
+        setCongresses(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Erreur de récupération des congrès', err);
+        setCongresses([]);
       } finally {
         setLoading(false);
       }
@@ -47,26 +48,32 @@ function CongressDirectory() {
           {loading && <p className="loading-text">Loading…</p>}
 
           <div className="congress-grid">
-            {congresses.map((c, i) => (
-              <motion.div
-                key={c.id}
-                className="congress-card"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ scale: 1.03 }}
-                onClick={() => navigate(`/congress/${c.id}`)}
-              >
-                <div className="card-body">
-                  <h3>{c.name}</h3>
-                  <p className="meta">
-                    {new Date(c.date).toLocaleDateString()} — {c.city}
-                  </p>
-                  <p className="sessions">{c.session_ids && c.session_ids.length > 0 ? `${c.session_ids.length} sessions` : 'No sessions available'}</p>
-                  {c.picture && <img src={c.picture} alt={c.name} className="congress-image" />}
-                </div>
-              </motion.div>
-            ))}
+            {Array.isArray(congresses) && congresses.length > 0 ? (
+              congresses.map((c, i) => (
+                <motion.div
+                  key={c.id}
+                  className="congress-card"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ scale: 1.03 }}
+                  onClick={() => navigate(`/congress/${c.id}`)}
+                >
+                  <div className="card-body">
+                    <h3>{c.name}</h3>
+                    <p className="meta">
+                      {new Date(c.date).toLocaleDateString()} — {c.city}
+                    </p>
+                    <p className="sessions">
+                      {c.session_ids?.length > 0 ? `${c.session_ids.length} sessions` : 'No sessions available'}
+                    </p>
+                    {c.picture && <img src={c.picture} alt={c.name} className="congress-image" />}
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              !loading && <p className="loading-text">No congresses available.</p>
+            )}
           </div>
         </main>
       </div>

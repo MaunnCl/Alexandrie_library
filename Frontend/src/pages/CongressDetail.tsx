@@ -74,10 +74,10 @@ function CongressDetail() {
 
     const getSessionsForTopic = (topicId: number): Content[] => {
         const topic = topicSessions.find(t => t.id === topicId);
-        if (!topic) return [];
+        if (!topic || !Array.isArray(topic.content_ids)) return [];
         return sessions.filter(s => topic.content_ids.includes(s.id));
-    };
-
+      };
+      
     return (
         <>
             <Navbar />
