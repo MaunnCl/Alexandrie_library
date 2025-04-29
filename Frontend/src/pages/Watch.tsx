@@ -11,11 +11,9 @@ export default function Watch() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  /* ─── Réfs ───────────────────────────── */
   const videoRef = useRef<HTMLVideoElement>(null);
   const barRef   = useRef<HTMLDivElement>(null);
 
-  /* ─── State ──────────────────────────── */
   const [videoUrl,  setVideoUrl]  = useState<string|null>(null);
   const [title,     setTitle]     = useState('');
   const [thumbnail, setThumbnail] = useState('');
@@ -31,7 +29,6 @@ export default function Watch() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume,    setVolume]    = useState(1);
 
-  /* ─── Fetch métadonnées ──────────────── */
   useEffect(() => {
     (async () => {
       const { data:c } = await axios.get(`/api/contents/${id}`);
@@ -56,7 +53,6 @@ export default function Watch() {
     })();
   },[id]);
 
-  /* ─── Génération miniatures ──────────── */
   useEffect(()=>{
     if(!videoUrl||segments.length===0) return;
     let cancel=false;
@@ -73,7 +69,7 @@ export default function Watch() {
       const map:Record<string,string>={};
 
       for(const {frame} of segments){
-        const t=(+frame+20)/60;                    // +20 frames pour être sûr
+        const t=(+frame+20)/60;
         await new Promise<void>(res=>{
           const h=()=>{ vid.removeEventListener('seeked',h); res();};
           vid.addEventListener('seeked',h); vid.currentTime=t;
@@ -88,7 +84,6 @@ export default function Watch() {
     return ()=>{ cancel=true };
   },[videoUrl,segments]);
 
-  /* ─── Helpers lecture ────────────────── */
   const seekIdx=(i:number)=>{
     const t=(+segments[i].frame+3)/60;
     if(videoRef.current) videoRef.current.currentTime=t;
@@ -102,7 +97,6 @@ export default function Watch() {
                      :videoRef.current?.pause();
   const toGrid=()=>setShowVid(false);
 
-  /* ─── Progress bar ───────────────────── */
   const updateProgress=()=>{
     if(!videoRef.current||!barRef.current) return;
     const pct=(videoRef.current.currentTime / videoRef.current.duration||0)*100;
@@ -115,7 +109,6 @@ export default function Watch() {
     videoRef.current.currentTime=ratio*videoRef.current.duration;
   };
 
-  /* ─── Sync state lecture/volume ──────── */
   useEffect(()=>{
     const v=videoRef.current; if(!v) return;
     v.volume=volume;
@@ -129,7 +122,6 @@ export default function Watch() {
                 v.removeEventListener('timeupdate',updateProgress); };
   },[showVid,volume]);
 
-  /* ─── Autoplay quand player visible ─── */
   useEffect(()=>{
     if(!showVid||!videoRef.current) return;
     const v=videoRef.current;
@@ -138,7 +130,6 @@ export default function Watch() {
     v.readyState>=2 ? start() : v.addEventListener('canplay',start,{once:true});
   },[showVid]);
 
-  /* ─── Rendu ──────────────────────────── */
   return(
     <div className="watch-page">
       <header className="watch-header glass">
@@ -149,7 +140,6 @@ export default function Watch() {
 
       {loading ? <p className="loading-text">Chargement…</p> : (
         <section className="watch-layout">
-          {/* ---------- ORATOR ---------- */}
           {orator && (
             <aside className="left-pane card">
               <img src={orator.picture} className="orator-img" />
@@ -175,7 +165,6 @@ export default function Watch() {
             </aside>
           )}
 
-          {/* ---------- MAIN ---------- */}
           <main className="right-pane">
             {!showVid ? (
               <>
