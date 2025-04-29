@@ -5,7 +5,12 @@ import '../styles/Watch.css';
 import siteLogo from '/logo.png';
 
 interface Segment { frame: string }
-interface Orator  { name: string; picture: string }
+interface Orator {
+  name: string;
+  picture: string;
+  city?: string;
+  country?: string;
+}
 
 export default function Watch() {
   const { id } = useParams();
@@ -20,34 +25,49 @@ export default function Watch() {
   const [segments,  setSegments]  = useState<Segment[]>([]);
   const [orator,    setOrator]    = useState<Orator|null>(null);
   const [previews,  setPreviews]  = useState<Record<string,string>>({});
+  const [videoDur,  setVideoDur]  = useState<number>(0);
 
-  const [loading,   setLoading]   = useState(true);
-  const [showVid,   setShowVid]   = useState(false);
-  const [pendingSeek,setPending]  = useState<number|null>(null);
+  const [loading, setLoading]   = useState(true);
+  const [showVid, setShowVid]   = useState(false);
+  const [pendingSeek,setPending]= useState<number|null>(null);
 
-  const [curIdx,    setCurIdx]    = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume,    setVolume]    = useState(1);
+  const [curIdx, setCurIdx]    = useState(-1);
+  const [isPlaying,setIsPlaying]= useState(false);
+  const [volume,  setVolume]   = useState(1);
 
-  useEffect(() => {
-    (async () => {
+  const fmtDur = (s:number)=>{
+    const h = Math.floor(s/3600);
+    const m = Math.floor((s%3600)/60);
+    const sec = Math.floor(s%60);
+    return h
+      ? `${h}:${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`
+      : `${m}:${sec.toString().padStart(2,'0')}`;
+  };
+
+  useEffect(()=>{
+    (async()=>{
       const { data:c } = await axios.get(`/api/contents/${id}`);
       setVideoUrl(c.url);
       setTitle(c.title.replace(/\.mp4$/i,''));
-      setThumbnail(c.video_thumbnail_url
-        || 'https://placehold.co/1280x720?text=Loading…');
+      setThumbnail(c.video_thumbnail_url ||
+        'https://placehold.co/1280x720?text=Loading…');
 
-      if (c.orator_id){
+      if(c.orator_id){
         const { data:o } = await axios.get(`/api/orators/${c.orator_id}`);
-        setOrator({ name:o.name , picture:o.picture });
+        setOrator({
+          name:o.name,
+          picture:o.picture,
+          city:o.city,
+          country:o.country
+        });
       }
 
-      if (c.timeStamp){
-        const txt   = (await axios.get<string>(c.timeStamp)).data;
-        const nums  = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
-                    ?.[1].match(/\d+/g) ?? [];
-        const starts= nums.slice(0,-1).map(Number);
-        setSegments(starts.map(f=>({ frame:f.toString() })));
+      if(c.timeStamp){
+        const txt=(await axios.get<string>(c.timeStamp)).data;
+        const nums = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
+                   ?.[1].match(/\d+/g) ?? [];
+        const starts = nums.slice(0,-1).map(Number);
+        setSegments(starts.map(f=>({frame:f.toString()})));
       }
       setLoading(false);
     })();
@@ -56,22 +76,19 @@ export default function Watch() {
   useEffect(()=>{
     if(!videoUrl||segments.length===0) return;
     let cancel=false;
-
     (async()=>{
       const vid=document.createElement('video');
       vid.src=videoUrl; vid.crossOrigin='anonymous';
       await new Promise(r=>vid.addEventListener('loadeddata',r,{once:true}));
-
       const cvs=document.createElement('canvas');
       cvs.width =vid.videoWidth/4;
       cvs.height=vid.videoHeight/4;
       const ctx=cvs.getContext('2d')!;
       const map:Record<string,string>={};
-
       for(const {frame} of segments){
         const t=(+frame+20)/60;
         await new Promise<void>(res=>{
-          const h=()=>{ vid.removeEventListener('seeked',h); res();};
+          const h=()=>{ vid.removeEventListener('seeked',h); res(); };
           vid.addEventListener('seeked',h); vid.currentTime=t;
         });
         ctx.drawImage(vid,0,0,cvs.width,cvs.height);
@@ -80,8 +97,7 @@ export default function Watch() {
       }
       if(!cancel) setPreviews(map);
     })();
-
-    return ()=>{ cancel=true };
+    return()=>{ cancel=true };
   },[videoUrl,segments]);
 
   const seekIdx=(i:number)=>{
@@ -90,16 +106,15 @@ export default function Watch() {
     else setPending(t);
     setCurIdx(i); setShowVid(true);
   };
-  const prev =()=>curIdx>0 && seekIdx(curIdx-1);
-  const next =()=>curIdx<segments.length-1 && seekIdx(curIdx+1);
-  const toggle=()=>videoRef.current?.paused
-                     ?videoRef.current.play()
-                     :videoRef.current?.pause();
-  const toGrid=()=>setShowVid(false);
+  const prev = ()=>curIdx>0 && seekIdx(curIdx-1);
+  const next = ()=>curIdx<segments.length-1 && seekIdx(curIdx+1);
+  const toggle= ()=>videoRef.current?.paused ? videoRef.current.play()
+                                             : videoRef.current?.pause();
+  const toGrid= ()=>setShowVid(false);
 
   const updateProgress=()=>{
     if(!videoRef.current||!barRef.current) return;
-    const pct=(videoRef.current.currentTime / videoRef.current.duration||0)*100;
+    const pct=(videoRef.current.currentTime/videoRef.current.duration||0)*100;
     barRef.current.style.setProperty('--pct',`${pct}%`);
   };
   const clickProgress=(e:React.MouseEvent)=>{
@@ -114,12 +129,15 @@ export default function Watch() {
     v.volume=volume;
     const onPlay =()=>setIsPlaying(true);
     const onPause=()=>setIsPlaying(false);
+    const onLoaded=()=>setVideoDur(v.duration);
     v.addEventListener('play',onPlay);
     v.addEventListener('pause',onPause);
     v.addEventListener('timeupdate',updateProgress);
+    v.addEventListener('loadedmetadata',onLoaded);
     return()=>{ v.removeEventListener('play',onPlay);
                 v.removeEventListener('pause',onPause);
-                v.removeEventListener('timeupdate',updateProgress); };
+                v.removeEventListener('timeupdate',updateProgress);
+                v.removeEventListener('loadedmetadata',onLoaded); };
   },[showVid,volume]);
 
   useEffect(()=>{
@@ -127,74 +145,87 @@ export default function Watch() {
     const v=videoRef.current;
     if(pendingSeek!=null) v.currentTime=pendingSeek;
     const start=()=>v.play().catch(()=>{});
-    v.readyState>=2 ? start() : v.addEventListener('canplay',start,{once:true});
+    v.readyState>=2 ? start() :
+      v.addEventListener('canplay',start,{once:true});
   },[showVid]);
 
   return(
     <div className="watch-page">
       <header className="watch-header glass">
-        <img src={siteLogo} className="watch-logo"
-             onClick={()=>navigate('/')}/>
+        <img src={siteLogo} className="watch-logo" onClick={()=>navigate('/')}/>
         <h1 className="session-title neon">{title}</h1>
       </header>
 
-      {loading ? <p className="loading-text">Chargement…</p> : (
-        <section className="watch-layout">
-          {orator && (
-            <aside className="left-pane card">
-              <img src={orator.picture} className="orator-img" />
-              <h3 className="orator-name">{orator.name}</h3>
+      {loading
+        ? <p className="loading-text">Chargement…</p>
+        : (
+          <section className="watch-layout">
+            {orator && (
+              <aside className="left-pane card">
+                <img src={orator.picture} className="orator-img"/>
+                <h3 className="orator-name">{orator.name}</h3>
 
-              <div className="controls-bar">
-                <button className="ctrl" onClick={prev}
-                        disabled={!showVid||curIdx<=0}>⏮</button>
-                <button className="ctrl" onClick={toggle} disabled={!showVid}>
-                  {isPlaying?'⏸':'▶'}
-                </button>
-                <button className="ctrl" onClick={next}
-                        disabled={!showVid||curIdx>=segments.length-1}>⏭</button>
-                <button className="ctrl" onClick={toGrid} title="Miniatures">🖼</button>
-              </div>
-
-              <input type="range" className="volume"
-                     min="0" max="1" step="0.05" value={volume}
-                     onChange={e=>{
-                       const v=+e.target.value; setVolume(v);
-                       if(videoRef.current) videoRef.current.volume=v;
-                     }}/>
-            </aside>
-          )}
-
-          <main className="right-pane">
-            {!showVid ? (
-              <>
-                <h3 className="neon sub">Choisissez un moment</h3>
-                <ul className="frame-grid">
-                  {segments.map(({frame},i)=>(
-                    <li key={frame} className="thumb-wrapper"
-                        onClick={()=>seekIdx(i)}>
-                      {previews[frame]
-                        ? <img src={previews[frame]} className="thumb"/>
-                        : <div className="placeholder"/>}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ):(
-              <>
-                <video ref={videoRef} poster={thumbnail}
-                       playsInline className="video-player glow">
-                  <source src={videoUrl!} type="video/mp4"/>
-                </video>
-                <div className="progress-bar" ref={barRef}
-                     onClick={clickProgress}>
-                  <div className="progress-fill"/>
+                <div className="controls-bar">
+                  <button className="ctrl" onClick={prev}
+                          disabled={!showVid||curIdx<=0}>⏮</button>
+                  <button className="ctrl" onClick={toggle} disabled={!showVid}>
+                    {isPlaying?'⏸':'▶'}
+                  </button>
+                  <button className="ctrl" onClick={next}
+                          disabled={!showVid||curIdx>=segments.length-1}>⏭</button>
+                  <button className="ctrl" onClick={toGrid}>🖼</button>
                 </div>
-              </>
+
+                <input type="range" className="volume" min="0" max="1" step="0.05"
+                       value={volume}
+                       onChange={e=>{
+                         const v=+e.target.value; setVolume(v);
+                         if(videoRef.current) videoRef.current.volume=v;
+                       }}/>
+              </aside>
             )}
-          </main>
-        </section>
-      )}
+
+            <main className="right-pane">
+              {!showVid ? (
+                <>
+                  <h3 className="neon sub">Choisissez un moment</h3>
+                  <ul className="frame-grid">
+                    {segments.map(({frame},i)=>(
+                      <li key={frame} className="thumb-wrapper"
+                          onClick={()=>seekIdx(i)}>
+                        {previews[frame]
+                          ? <img src={previews[frame]} className="thumb"/>
+                          : <div className="placeholder"/>}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <>
+                  <video ref={videoRef} poster={thumbnail}
+                         playsInline className="video-player glow">
+                    <source src={videoUrl!} type="video/mp4"/>
+                  </video>
+
+                  <div className="progress-bar" ref={barRef}
+                       onClick={clickProgress}>
+                    <div className="progress-fill"/>
+                  </div>
+
+                  <div className="video-info-bar">
+                    <p><strong>{title}</strong></p>
+                    {orator && (
+                      <p>{orator.name} — {orator.city}, {orator.country}</p>
+                    )}
+                    <p>
+                      Durée : {fmtDur(videoDur)} — Slide {curIdx+1}/{segments.length}
+                    </p>
+                  </div>
+                </>
+              )}
+            </main>
+          </section>
+        )}
     </div>
   );
 }
