@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import VideoPlayer from '../components/VideoPlayer';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -17,7 +17,7 @@ function VideoWatchPage() {
   useEffect(() => {
     async function fetchVideo() {
       try {
-        const res = await axios.get(`/api/contents/title/${title}`);
+        const res = await api.get(`/api/contents/title/${title}`);
         const video = res.data[0];
         setVideoUrl(video.url);
       } catch (err) {

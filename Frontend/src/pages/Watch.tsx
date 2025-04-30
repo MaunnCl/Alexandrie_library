@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import '../styles/Watch.css';
 import siteLogo from '/logo.png';
 
@@ -46,14 +46,14 @@ export default function Watch() {
 
   useEffect(()=>{
     (async()=>{
-      const { data:c } = await axios.get(`/api/contents/${id}`);
+      const { data:c } = await api.get(`/api/contents/${id}`);
       setVideoUrl(c.url);
       setTitle(c.title.replace(/\.mp4$/i,''));
       setThumbnail(c.video_thumbnail_url ||
         'https://placehold.co/1280x720?text=Loading…');
 
       if(c.orator_id){
-        const { data:o } = await axios.get(`/api/orators/${c.orator_id}`);
+        const { data:o } = await api.get(`/api/orators/${c.orator_id}`);
         setOrator({
           name:o.name,
           picture:o.picture,
@@ -63,7 +63,7 @@ export default function Watch() {
       }
 
       if(c.timeStamp){
-        const txt=(await axios.get<string>(c.timeStamp)).data;
+        const txt=(await api.get<string>(c.timeStamp)).data;
         const nums = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
                    ?.[1].match(/\d+/g) ?? [];
         const starts = nums.slice(0,-1).map(Number);

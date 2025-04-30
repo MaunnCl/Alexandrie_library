@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from '../lib/api';
 
 function Logout() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ function Logout() {
         const token = localStorage.getItem("token");
 
         if (token) {
-          await axios.post("/api/logout", {}, {
+          await api.post("/api/logout", {}, {
             headers: { Authorization: `Bearer ${token}` },
           });
         }

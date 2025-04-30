@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
-import axios from 'axios';
+import api from '../lib/api';
 import '../styles/Navbar.css';
 
 interface User {
@@ -26,7 +26,7 @@ function Navbar() {
           return;
         }
 
-        const userResponse = await axios.get(`/api/users/${userId}`);
+        const userResponse = await api.get(`/api/users/${userId}`);
         setUser(userResponse.data);
       } catch (error) {
         console.error("Error fetching user data:", error);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -49,10 +49,10 @@ function CongressDetail() {
         async function fetchAll() {
             try {
                 const [cg, allContents, allOrators, allTopics] = await Promise.all([
-                    axios.get<Congress>(`/api/congress/${id}`),
-                    axios.get<Content[]>(`/api/contents`),
-                    axios.get<Orator[]>(`/api/orators`),
-                    axios.get(`/api/sessions`)
+                    api.get<Congress>(`/api/congress/${id}`),
+                    api.get<Content[]>(`/api/contents`),
+                    api.get<Orator[]>(`/api/orators`),
+                    api.get(`/api/sessions`)
                 ]);
 
                 setCongress(cg.data);

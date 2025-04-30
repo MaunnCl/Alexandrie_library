@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/api';
 import {
   FiShield,
   FiSettings,
@@ -31,7 +31,7 @@ function ProfilePage() {
           navigate('/login');
           return;
         }
-        const userResponse = await axios.get(`/api/users/${userId}`, {
+        const userResponse = await api.get(`/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -43,7 +43,7 @@ function ProfilePage() {
 
         setUser(userData);
 
-        const profileResponse = await axios.get(`/api/profiles/${userId}`, {
+        const profileResponse = await api.get(`/api/profiles/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -87,7 +87,7 @@ function ProfilePage() {
       }
 
       if (activeCategory === 'Personal Info') {
-        await axios.put(`/api/users/${userId}`, user, {
+        await api.put(`/api/users/${userId}`, user, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ function ProfilePage() {
       }
 
       if (activeCategory === 'Profile') {
-        await axios.put(`/api/profiles/${userId}`, profile, {
+        await api.put(`/api/profiles/${userId}`, profile, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

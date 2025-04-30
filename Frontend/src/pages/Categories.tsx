@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import '../styles/Categories.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,15 +24,15 @@ function Categories() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get(`/api/categories`).then((res) => {
+    api.get(`/api/categories`).then((res) => {
       setCategories(res.data);
-      setSelectedCategory(res.data[0]); // sélectionne la première par défaut
+      setSelectedCategory(res.data[0]);
     });
   }, []);
 
   useEffect(() => {
     if (!selectedCategory) return;
-    axios.get(`/api/contents`).then((res) => {
+    api.get(`/api/contents`).then((res) => {
       const allVideos = res.data;
       const filtered = allVideos.filter((v: Video) =>
         v.title.toLowerCase().includes(selectedCategory.name.toLowerCase())

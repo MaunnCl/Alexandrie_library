@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/api';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -24,7 +24,7 @@ function CongressDirectory() {
   useEffect(() => {
     async function fetchCongresses() {
       try {
-        const res = await axios.get<Congress[]>('/api/congress');
+        const res = await api.get<Congress[]>('/api/congress');
         setCongresses(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error('Erreur de récupération des congrès', err);

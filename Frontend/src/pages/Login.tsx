@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import '../styles/Login.css';
+import api from '../lib/api';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -12,32 +13,30 @@ function Login() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
-  
+
     try {
-      const response = await fetch('http://13.53.198.252:5863/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const response = await api.post('/api/login', {
+        email,
+        password,
       });
-  
-      const contentType = response.headers.get("Content-Type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        if (response.ok) {
-          localStorage.setItem('userId', data.id);
-          localStorage.setItem('user', JSON.stringify(data));
-          navigate('/congress');
-        } else {
-          setError(data.message || 'Invalid email or password. Please try again.');
-        }
-      } else {
-        const text = await response.text();
-        console.error('Response is not JSON:', text);
-        setError('Error parsing response. Please check the server response.');
-      }
-    } catch (err) {
+
+      const data = response.data;
+
+      console.log('Login response:', data);
+
+      localStorage.setItem('userId', data.id);
+      localStorage.setItem('user', JSON.stringify(data));
+
+      navigate('/congress');
+    } catch (err: any) {
       console.error('Error during login:', err);
-      setError('Network error. Please try again.');
+      console.log('Full error response:', err?.response);
+
+      const msg =
+        err?.response?.data?.message ||
+        err.message ||
+        'Login failed. Please try again.';
+      setError(msg);
     }
   };
 
