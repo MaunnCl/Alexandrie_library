@@ -5,15 +5,16 @@ import { OratorsRepository } from "../../src/repository/orators.repository";
 import { getPresignedUrl, listObjectsFromPrefix } from "../aws.utils";
 
 export async function syncTimeStamp(): Promise<void> {
-  console.log("🎞️ Syncing txt URLs...");
+  console.log("🎞️ Syncing content URLs (.txt / .json)...");
+
   const congresses = await CongressRepository.findAll();
 
   for (const congress of congresses) {
-    if (!congress.session_ids || congress.session_ids.length === 0) continue;
+    if (!congress.session_ids?.length) continue;
 
     for (const sessionId of congress.session_ids) {
       const session = await SessionRepository.findById(sessionId);
-      if (!session || !session.content_ids) continue;
+      if (!session?.content_ids?.length) continue;
 
       for (const contentId of session.content_ids) {
         const content = await ContentRepository.findById(contentId);
@@ -22,16 +23,28 @@ export async function syncTimeStamp(): Promise<void> {
         const orator = await OratorsRepository.findById(content.orator_id);
         if (!orator) continue;
 
-        const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.txt`;
+        const fileBasePath = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}`;
+
+        // Essayer d'abord avec .txt, sinon .json
+        const possibleExtensions = [".txt", ".json"];
+        let foundFilePath: string | null = null;
+
+        for (const ext of possibleExtensions) {
+          const pathWithExt = `${fileBasePath}${ext}`;
+          const matchingFiles = await listObjectsFromPrefix(pathWithExt);
+          if (matchingFiles.length > 0) {
+            foundFilePath = pathWithExt;
+            break;
+          }
+        }
+
+        if (!foundFilePath) {
+          console.warn(`⚠️ Aucun fichier .txt ou .json trouvé pour : ${fileBasePath}`);
+          continue;
+        }
 
         try {
-          const existingFiles = await listObjectsFromPrefix(s3Path);
-          if (existingFiles.length === 0) {
-            console.log(`⚠️ Aucun fichier .txt trouvé pour ${s3Path}`);
-            continue;
-          }
-        
-          const signedUrl = await getPresignedUrl(s3Path);
+          const signedUrl = await getPresignedUrl(foundFilePath);
           await ContentRepository.update(
             content.id,
             content.title,
@@ -39,12 +52,11 @@ export async function syncTimeStamp(): Promise<void> {
             content.description ?? "",
             content.url ?? "",
             signedUrl
-
           );
-          console.log(`✅ Synced txt for content ${content.id}: ${s3Path}`);
+          console.log(`✅ Synced ${foundFilePath} to content ${content.id}`);
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : "Unknown error";
-          console.error(`❌ Error syncing video for content ${content.id}:`, message);
+          console.error(`❌ Erreur lors du sync de ${foundFilePath} (content ${content.id}):`, message);
         }
       }
     }
