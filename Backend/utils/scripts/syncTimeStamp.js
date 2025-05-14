@@ -1,56 +1,66 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncTimeStamp = syncTimeStamp;
-const congress_repository_1 = require("../../src/repository/congress.repository");
-const session_repository_1 = require("../../src/repository/session.repository");
-const content_repository_1 = require("../../src/repository/content.repository");
-const orators_repository_1 = require("../../src/repository/orators.repository");
-const aws_utils_1 = require("../aws.utils");
-function syncTimeStamp() {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
-        console.log("🎞️ Syncing txt URLs...");
-        const congresses = yield congress_repository_1.CongressRepository.findAll();
-        for (const congress of congresses) {
-            if (!congress.session_ids || congress.session_ids.length === 0)
-                continue;
-            for (const sessionId of congress.session_ids) {
-                const session = yield session_repository_1.SessionRepository.findById(sessionId);
-                if (!session || !session.content_ids)
-                    continue;
-                for (const contentId of session.content_ids) {
-                    const content = yield content_repository_1.ContentRepository.findById(contentId);
-                    if (!content || !content.orator_id || !content.title)
-                        continue;
-                    const orator = yield orators_repository_1.OratorsRepository.findById(content.orator_id);
-                    if (!orator)
-                        continue;
-                    const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.txt`;
-                    try {
-                        const existingFiles = yield (0, aws_utils_1.listObjectsFromPrefix)(s3Path);
-                        if (existingFiles.length === 0) {
-                            console.log(`⚠️ Aucun fichier .txt trouvé pour ${s3Path}`);
-                            continue;
-                        }
-                        const signedUrl = yield (0, aws_utils_1.getPresignedUrl)(s3Path);
-                        yield content_repository_1.ContentRepository.update(content.id, content.title, content.orator_id, (_a = content.description) !== null && _a !== void 0 ? _a : "", (_b = content.url) !== null && _b !== void 0 ? _b : "", signedUrl);
-                        console.log(`✅ Synced txt for content ${content.id}: ${s3Path}`);
-                    }
-                    catch (error) {
-                        const message = error instanceof Error ? error.message : "Unknown error";
-                        console.error(`❌ Error syncing video for content ${content.id}:`, message);
-                    }
-                }
-            }
+
+const { CongressRepository } = require("../../src/repository/congress.repository");
+const { SessionRepository } = require("../../src/repository/session.repository");
+const { ContentRepository } = require("../../src/repository/content.repository");
+const { OratorsRepository } = require("../../src/repository/orators.repository");
+const { getPresignedUrl, listObjectsFromPrefix } = require("../aws.utils");
+
+async function syncTimeStamp() {
+  console.log("🎞️ Syncing content URLs (.txt / .json)...");
+
+  const congresses = await CongressRepository.findAll();
+
+  for (const congress of congresses) {
+    if (!congress.session_ids?.length) continue;
+
+    for (const sessionId of congress.session_ids) {
+      const session = await SessionRepository.findById(sessionId);
+      if (!session?.content_ids?.length) continue;
+
+      for (const contentId of session.content_ids) {
+        const content = await ContentRepository.findById(contentId);
+        if (!content || !content.orator_id || !content.title) continue;
+
+        const orator = await OratorsRepository.findById(content.orator_id);
+        if (!orator) continue;
+
+        const fileBasePath = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}`;
+        const extensions = [".txt", ".json"];
+        let foundFilePath = null;
+
+        for (const ext of extensions) {
+          const path = `${fileBasePath}${ext}`;
+          const files = await listObjectsFromPrefix(path);
+          if (files.length > 0) {
+            foundFilePath = path;
+            break;
+          }
         }
-    });
+
+        if (!foundFilePath) {
+          console.warn(`⚠️ Aucun fichier .txt ou .json trouvé pour : ${fileBasePath}`);
+          continue;
+        }
+
+        try {
+          const signedUrl = await getPresignedUrl(foundFilePath);
+          await ContentRepository.update(
+            content.id,
+            content.title,
+            content.orator_id,
+            content.description ?? "",
+            content.url ?? "",
+            signedUrl
+          );
+          console.log(`✅ Synced ${foundFilePath} to content ${content.id}`);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Unknown error";
+          console.error(`❌ Error syncing ${foundFilePath} for content ${content.id}:`, message);
+        }
+      }
+    }
+  }
 }
+
+syncTimeStamp();
