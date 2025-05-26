@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite';
 
-const useLocalBackend = false;
+const useLocalBackend = true;
 
 export default defineConfig({
   server: {
+    port: 5173,
+    strictPort: true,
     proxy: {
       '/api': {
         target: useLocalBackend
