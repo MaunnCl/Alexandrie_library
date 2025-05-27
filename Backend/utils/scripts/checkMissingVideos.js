@@ -64,3 +64,4 @@ function checkVideoSync() {
         console.log(`→ En trop sur S3 : ${missingInDB.length}`);
     });
 }
+checkVideoSync();

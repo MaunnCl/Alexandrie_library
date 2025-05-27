@@ -3,8 +3,8 @@ import cron from "node-cron";
 import { syncVideo } from "./utils/scripts/syncVideo.utils";
 import { syncOratorsPhotos } from "./utils/scripts/syncOratorsPhotos.utils";
 import { syncTimeStamp } from "./utils/scripts/syncTimeStamp";
-import { syncOratorContentIds } from "@utils/scripts/syncContentForOrators";
-import { checkVideoSync } from "@utils/scripts/checkMissingVideos";
+import { syncOratorContentIds } from "./utils/scripts/syncContentForOrators";
+import { checkVideoSync } from "./utils/scripts/checkMissingVideos";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 

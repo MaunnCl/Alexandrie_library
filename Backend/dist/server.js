@@ -17,8 +17,8 @@ const node_cron_1 = __importDefault(require("node-cron"));
 const syncVideo_utils_1 = require("./utils/scripts/syncVideo.utils");
 const syncOratorsPhotos_utils_1 = require("./utils/scripts/syncOratorsPhotos.utils");
 const syncTimeStamp_1 = require("./utils/scripts/syncTimeStamp");
-const syncContentForOrators_1 = require("@utils/scripts/syncContentForOrators");
-const checkMissingVideos_1 = require("@utils/scripts/checkMissingVideos");
+const syncContentForOrators_1 = require("./utils/scripts/syncContentForOrators");
+const checkMissingVideos_1 = require("./utils/scripts/checkMissingVideos");
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 const server = app_1.default.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Serveur démarré sur http://0.0.0.0:${PORT}`);

@@ -55,5 +55,3 @@ export async function checkVideoSync(): Promise<void> {
   console.log(`→ Manquantes sur S3 : ${missingInS3.length}`);
   console.log(`→ En trop sur S3 : ${missingInDB.length}`);
 }
-
-checkVideoSync();

@@ -41,5 +41,3 @@ export async function syncOratorsPhotos(): Promise<void> {
     }
   }
 }
-
-syncOratorsPhotos();
