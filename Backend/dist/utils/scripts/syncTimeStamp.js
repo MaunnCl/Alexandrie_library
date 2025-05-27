@@ -17,15 +17,15 @@ const orators_repository_1 = require("../../src/repository/orators.repository");
 const aws_utils_1 = require("../aws.utils");
 function syncTimeStamp() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
-        console.log("🎞️ Syncing txt URLs...");
+        var _a, _b, _c, _d;
+        console.log("🎞️ Syncing content timestamps (.txt / .json)...");
         const congresses = yield congress_repository_1.CongressRepository.findAll();
         for (const congress of congresses) {
-            if (!congress.session_ids || congress.session_ids.length === 0)
+            if (!((_a = congress.session_ids) === null || _a === void 0 ? void 0 : _a.length))
                 continue;
             for (const sessionId of congress.session_ids) {
                 const session = yield session_repository_1.SessionRepository.findById(sessionId);
-                if (!session || !session.content_ids)
+                if (!((_b = session === null || session === void 0 ? void 0 : session.content_ids) === null || _b === void 0 ? void 0 : _b.length))
                     continue;
                 for (const contentId of session.content_ids) {
                     const content = yield content_repository_1.ContentRepository.findById(contentId);
@@ -34,23 +34,32 @@ function syncTimeStamp() {
                     const orator = yield orators_repository_1.OratorsRepository.findById(content.orator_id);
                     if (!orator)
                         continue;
-                    const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.txt`;
-                    try {
-                        const existingFiles = yield (0, aws_utils_1.listObjectsFromPrefix)(s3Path);
-                        if (existingFiles.length === 0) {
-                            console.log(`⚠️ Aucun fichier .txt trouvé pour ${s3Path}`);
-                            continue;
+                    const fileBasePath = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}`;
+                    const extensionsToTry = [".txt", ".json"];
+                    let synced = false;
+                    for (const ext of extensionsToTry) {
+                        const fullPath = `${fileBasePath}${ext}`;
+                        const files = yield (0, aws_utils_1.listObjectsFromPrefix)(fullPath);
+                        if (files.length > 0) {
+                            try {
+                                const signedUrl = yield (0, aws_utils_1.getPresignedUrl)(fullPath);
+                                yield content_repository_1.ContentRepository.update(content.id, content.title, content.orator_id, (_c = content.description) !== null && _c !== void 0 ? _c : "", (_d = content.url) !== null && _d !== void 0 ? _d : "", signedUrl);
+                                console.log(`✅ Synced ${ext} for content ${content.id} (${fullPath})`);
+                                synced = true;
+                                break; // dès qu’un des deux est trouvé et synchronisé, on arrête
+                            }
+                            catch (error) {
+                                const message = error instanceof Error ? error.message : "Unknown error";
+                                console.error(`❌ Erreur pendant la génération du lien pour ${fullPath}:`, message);
+                            }
                         }
-                        const signedUrl = yield (0, aws_utils_1.getPresignedUrl)(s3Path);
-                        yield content_repository_1.ContentRepository.update(content.id, content.title, content.orator_id, (_a = content.description) !== null && _a !== void 0 ? _a : "", (_b = content.url) !== null && _b !== void 0 ? _b : "", signedUrl);
-                        console.log(`✅ Synced txt for content ${content.id}: ${s3Path}`);
                     }
-                    catch (error) {
-                        const message = error instanceof Error ? error.message : "Unknown error";
-                        console.error(`❌ Error syncing video for content ${content.id}:`, message);
+                    if (!synced) {
+                        console.warn(`⚠️ Aucun .txt ou .json trouvé pour : ${fileBasePath}`);
                     }
                 }
             }
+            console.log("\n\n");
         }
     });
 }

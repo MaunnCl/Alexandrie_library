@@ -75,5 +75,13 @@ class ContentRepository {
             return result[0];
         });
     }
+    static findByOratorId(orator_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield database_1.db
+                .select()
+                .from(content_1.contentTable)
+                .where((0, drizzle_orm_1.eq)(content_1.contentTable.orator_id, orator_id));
+        });
+    }
 }
 exports.ContentRepository = ContentRepository;

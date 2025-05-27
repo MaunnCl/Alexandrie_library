@@ -9,17 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.syncVideo = syncVideo;
-const congress_repository_1 = require("../../src/repository/congress.repository");
-const session_repository_1 = require("../../src/repository/session.repository");
+exports.checkVideoSync = checkVideoSync;
 const content_repository_1 = require("../../src/repository/content.repository");
 const orators_repository_1 = require("../../src/repository/orators.repository");
+const session_repository_1 = require("../../src/repository/session.repository");
+const congress_repository_1 = require("../../src/repository/congress.repository");
 const aws_utils_1 = require("../aws.utils");
-function syncVideo() {
+function normalizePath(path) {
+    return path.trim().replace(/ /g, "_");
+}
+function checkVideoSync() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
-        console.log("🎞️ Syncing video URLs...");
+        console.log("🔍 Vérification des vidéos S3 vs base de données...");
+        const s3Paths = yield (0, aws_utils_1.listObjectsFromPrefix)('');
+        const s3Mp4Paths = s3Paths.filter((path) => path.endsWith(".mp4"));
         const congresses = yield congress_repository_1.CongressRepository.findAll();
+        const dbPaths = [];
         for (const congress of congresses) {
             if (!congress.session_ids || congress.session_ids.length === 0)
                 continue;
@@ -34,24 +39,29 @@ function syncVideo() {
                     const orator = yield orators_repository_1.OratorsRepository.findById(content.orator_id);
                     if (!orator)
                         continue;
-                    const s3Path = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}.mp4`;
-                    try {
-                        const existingFiles = yield (0, aws_utils_1.listObjectsFromPrefix)(s3Path);
-                        if (existingFiles.length === 0) {
-                            console.log(`⚠️ Aucun fichier .mp4 trouvé pour ${s3Path}`);
-                            continue;
-                        }
-                        const signedUrl = yield (0, aws_utils_1.getPresignedUrl)(s3Path);
-                        yield content_repository_1.ContentRepository.update(content.id, content.title, content.orator_id, (_a = content.description) !== null && _a !== void 0 ? _a : "", signedUrl, (_b = content.timeStamp) !== null && _b !== void 0 ? _b : "");
-                        console.log(`✅ Synced video for content ${content.id}: ${s3Path}`);
-                    }
-                    catch (error) {
-                        const message = error instanceof Error ? error.message : "Unknown error";
-                        console.error(`❌ Error syncing video for content ${content.id}:`, message);
-                    }
+                    const expectedPath = `${congress.key}/${session.name}/${orator.name}/${normalizePath(content.title)}.mp4`;
+                    dbPaths.push(expectedPath);
                 }
             }
-            console.log("\n\n");
         }
+        const missingInS3 = dbPaths.filter((path) => !s3Mp4Paths.includes(path));
+        const missingInDB = s3Mp4Paths.filter((path) => !dbPaths.includes(path));
+        // Affichage
+        console.log("\n❌ Vidéos en DB mais absentes de S3 :");
+        if (missingInS3.length === 0)
+            console.log("✅ Aucune");
+        else
+            missingInS3.forEach((p) => console.log(`  - ${p}`));
+        console.log("\n🟡 Vidéos sur S3 mais non référencées dans la DB :");
+        if (missingInDB.length === 0)
+            console.log("✅ Aucune");
+        else
+            missingInDB.forEach((p) => console.log(`  - ${p}`));
+        console.log("\n✅ Résumé :");
+        console.log(`→ Total DB videos : ${dbPaths.length}`);
+        console.log(`→ Total S3 videos : ${s3Mp4Paths.length}`);
+        console.log(`→ Manquantes sur S3 : ${missingInS3.length}`);
+        console.log(`→ En trop sur S3 : ${missingInDB.length}`);
     });
 }
+checkVideoSync();

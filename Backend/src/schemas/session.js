@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sessionTable = void 0;
-const pg_core_1 = require("drizzle-orm/pg-core");
+var pg_core_1 = require("drizzle-orm/pg-core");
 exports.sessionTable = (0, pg_core_1.pgTable)("session", {
     id: (0, pg_core_1.serial)("id").primaryKey().unique().notNull(),
     name: (0, pg_core_1.varchar)("name", { length: 255 }).notNull(),

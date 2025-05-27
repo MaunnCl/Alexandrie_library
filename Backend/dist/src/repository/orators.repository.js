@@ -41,5 +41,15 @@ class OratorsRepository {
             return result[0];
         });
     }
+    static updateContentIds(id, contentIds) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield database_1.db
+                .update(orators_1.oratorsTable)
+                .set({ content_ids: contentIds })
+                .where((0, drizzle_orm_1.eq)(orators_1.oratorsTable.id, id))
+                .returning();
+            return result[0];
+        });
+    }
 }
 exports.OratorsRepository = OratorsRepository;

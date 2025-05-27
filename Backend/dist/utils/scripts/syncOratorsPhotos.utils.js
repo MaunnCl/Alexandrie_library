@@ -47,3 +47,4 @@ function syncOratorsPhotos() {
         }
     });
 }
+syncOratorsPhotos();
