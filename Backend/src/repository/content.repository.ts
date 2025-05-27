@@ -56,4 +56,12 @@ export class ContentRepository {
       .returning();
     return result[0];
   }
+
+  static async findByOratorId(orator_id: number) {
+    return await db
+      .select()
+      .from(contentTable)
+      .where(eq(contentTable.orator_id, orator_id));
+  }
+
 }

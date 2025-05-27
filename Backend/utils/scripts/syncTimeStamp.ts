@@ -5,7 +5,7 @@ import { OratorsRepository } from "../../src/repository/orators.repository";
 import { getPresignedUrl, listObjectsFromPrefix } from "../aws.utils";
 
 export async function syncTimeStamp(): Promise<void> {
-  console.log("🎞️ Syncing content URLs (.txt / .json)...");
+  console.log("🎞️ Syncing content timestamps (.txt / .json)...");
 
   const congresses = await CongressRepository.findAll();
 
@@ -25,40 +25,40 @@ export async function syncTimeStamp(): Promise<void> {
 
         const fileBasePath = `${congress.key}/${session.name}/${orator.name}/${content.title.replace(/ /g, "_")}`;
 
-        // Essayer d'abord avec .txt, sinon .json
-        const possibleExtensions = [".txt", ".json"];
-        let foundFilePath: string | null = null;
+        const extensionsToTry = [".txt", ".json"];
+        let synced = false;
 
-        for (const ext of possibleExtensions) {
-          const pathWithExt = `${fileBasePath}${ext}`;
-          const matchingFiles = await listObjectsFromPrefix(pathWithExt);
-          if (matchingFiles.length > 0) {
-            foundFilePath = pathWithExt;
-            break;
+        for (const ext of extensionsToTry) {
+          const fullPath = `${fileBasePath}${ext}`;
+          const files = await listObjectsFromPrefix(fullPath);
+
+          if (files.length > 0) {
+            try {
+              const signedUrl = await getPresignedUrl(fullPath);
+              await ContentRepository.update(
+                content.id,
+                content.title,
+                content.orator_id,
+                content.description ?? "",
+                content.url ?? "",
+                signedUrl
+              );
+              console.log(`✅ Synced ${ext} for content ${content.id} (${fullPath})`);
+              synced = true;
+              break; // dès qu’un des deux est trouvé et synchronisé, on arrête
+            } catch (error: unknown) {
+              const message = error instanceof Error ? error.message : "Unknown error";
+              console.error(`❌ Erreur pendant la génération du lien pour ${fullPath}:`, message);
+            }
           }
         }
 
-        if (!foundFilePath) {
-          console.warn(`⚠️ Aucun fichier .txt ou .json trouvé pour : ${fileBasePath}`);
-          continue;
-        }
-
-        try {
-          const signedUrl = await getPresignedUrl(foundFilePath);
-          await ContentRepository.update(
-            content.id,
-            content.title,
-            content.orator_id,
-            content.description ?? "",
-            content.url ?? "",
-            signedUrl
-          );
-          console.log(`✅ Synced ${foundFilePath} to content ${content.id}`);
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : "Unknown error";
-          console.error(`❌ Erreur lors du sync de ${foundFilePath} (content ${content.id}):`, message);
+        if (!synced) {
+          console.warn(`⚠️ Aucun .txt ou .json trouvé pour : ${fileBasePath}`);
         }
       }
     }
+
+    console.log("\n\n");
   }
 }

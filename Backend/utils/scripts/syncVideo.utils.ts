@@ -47,5 +47,6 @@ export async function syncVideo(): Promise<void> {
         }
       }
     }
+    console.log("\n\n");
   }
 }

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.contentTable = void 0;
-const pg_core_1 = require("drizzle-orm/pg-core");
+var pg_core_1 = require("drizzle-orm/pg-core");
 exports.contentTable = (0, pg_core_1.pgTable)("content", {
     id: (0, pg_core_1.serial)("id").primaryKey().unique().notNull(),
     title: (0, pg_core_1.varchar)("title", { length: 255 }).notNull(),

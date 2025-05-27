@@ -26,4 +26,13 @@ export class OratorsRepository {
     const result = await db.delete(oratorsTable).where(eq(oratorsTable.id, id)).returning();
     return result[0];
   }
+
+  static async updateContentIds(id: number, contentIds: number[]) {
+    const result = await db
+      .update(oratorsTable)
+      .set({ content_ids: contentIds })
+      .where(eq(oratorsTable.id, id))
+      .returning();
+    return result[0];
+  }
 }
