@@ -76,6 +76,9 @@ export default function Watch() {
   useEffect(() => {
     (async () => {
       setLoading(true);
+
+      setPreviews({});
+
       try {
         const { data: c } = await api.get<Content & { timeStamp?: string }>(`/api/contents/${id}`);
         console.log('VIDEO OBJ', c);
