@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import axios from 'axios';
 import '../styles/Watch.css';
 import siteLogo from '/logo.png';
 
@@ -64,7 +65,7 @@ export default function Watch() {
 
       if (c.timeStamp) {
         try {
-          const response = await api.get(c.timeStamp);
+          const response = await axios.get(c.timeStamp);
           if (typeof response.data === 'string') {
             const txt = response.data;
             const nums = txt.match(/set\s+vide2\s*=\s*\[([\s\S]+?)\]/i)
@@ -117,16 +118,46 @@ export default function Watch() {
     else setPending(t);
     setCurIdx(i); setShowVid(true);
   };
-  const prev = () => curIdx > 0 && seekIdx(curIdx - 1);
-  const next = () => curIdx < segments.length - 1 && seekIdx(curIdx + 1);
+  const getCurrentIdx = () => {
+    if (!videoRef.current || segments.length === 0) return -1;
+    const currentFrame = videoRef.current.currentTime * 60;
+    return segments.findIndex((seg, idx) => {
+      const start = +seg.frame;
+      const next = segments[idx + 1] ? +segments[idx + 1].frame : Infinity;
+      return currentFrame >= start && currentFrame < next;
+    });
+  };
+
+  const next = () => {
+    const idx = getCurrentIdx();
+    if (idx !== -1 && idx < segments.length - 1) seekIdx(idx + 1);
+  };
+
+  const prev = () => {
+    const idx = getCurrentIdx();
+    if (idx > 0) seekIdx(idx - 1);
+  };
   const toggle = () => videoRef.current?.paused ? videoRef.current.play()
     : videoRef.current?.pause();
   const toGrid = () => setShowVid(false);
 
   const updateProgress = () => {
-    if (!videoRef.current || !barRef.current) return;
-    const pct = (videoRef.current.currentTime / videoRef.current.duration || 0) * 100;
+    if (!videoRef.current || !barRef.current || segments.length === 0) return;
+
+    const currentTime = videoRef.current.currentTime;
+    const pct = (currentTime / videoRef.current.duration || 0) * 100;
     barRef.current.style.setProperty('--pct', `${pct}%`);
+
+    const currentFrame = currentTime * 60;
+    let newIdx = segments.findIndex((seg, idx) => {
+      const start = +seg.frame;
+      const next = segments[idx + 1] ? +segments[idx + 1].frame : Infinity;
+      return currentFrame >= start && currentFrame < next;
+    });
+
+    if (newIdx !== -1 && newIdx !== curIdx) {
+      setCurIdx(newIdx);
+    }
   };
   const clickProgress = (e: React.MouseEvent) => {
     if (!videoRef.current || !barRef.current) return;

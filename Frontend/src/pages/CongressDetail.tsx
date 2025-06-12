@@ -55,10 +55,15 @@ function CongressDetail() {
                     api.get(`/api/sessions`)
                 ]);
 
-                setCongress(cg.data);
-                setSessions(Array.isArray(allContents.data) ? allContents.data : []);
-                setOrators(Array.isArray(allOrators.data) ? allOrators.data : []);
-                setTopicSessions(Array.isArray(allTopics.data) ? allTopics.data : []);
+                const congressData = cg.data;
+                setCongress(congressData);
+
+                const filteredSessions = allContents.data.filter((s: Content) =>
+                    congressData.session_ids.includes(s.id)
+                );
+                setSessions(filteredSessions);
+                setOrators(allOrators.data);
+                setTopicSessions(allTopics.data);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
@@ -76,8 +81,8 @@ function CongressDetail() {
         const topic = topicSessions.find(t => t.id === topicId);
         if (!topic || !Array.isArray(topic.content_ids)) return [];
         return sessions.filter(s => topic.content_ids.includes(s.id));
-      };
-      
+    };
+
     return (
         <>
             <Navbar />
