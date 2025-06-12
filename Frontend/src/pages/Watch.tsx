@@ -67,11 +67,40 @@ export default function Watch() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
 
+  const [relThumbs, setRelThumbs] = useState<Record<number, string>>({});
+
   const fmtDur = (s: number) => {
     const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = Math.floor(s % 60);
     return h ? `${h}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
       : `${m}:${sec.toString().padStart(2, '0')}`;
   };
+
+  const makeThumb = (video: Content) => {
+    const vid = document.createElement('video');
+    vid.src = video.url;
+    vid.crossOrigin = 'anonymous';
+
+    vid.addEventListener('loadeddata', () => {
+      const target = Math.min(0.5, vid.duration || 0);
+      const seek = () =>
+        new Promise<void>(res => {
+          const h = () => { vid.removeEventListener('seeked', h); res(); };
+          vid.addEventListener('seeked', h);
+          vid.currentTime = target;
+        });
+
+      (async () => {
+        await seek();
+        const cvs = document.createElement('canvas');
+        cvs.width = vid.videoWidth / 4;
+        cvs.height = vid.videoHeight / 4;
+        const ctx = cvs.getContext('2d')!;
+        ctx.drawImage(vid, 0, 0, cvs.width, cvs.height);
+        setRelThumbs(t => ({ ...t, [video.id]: cvs.toDataURL('image/jpeg') }));
+      })();
+    });
+  };
+
 
   useEffect(() => {
     (async () => {
@@ -144,6 +173,15 @@ export default function Watch() {
     })();
     return () => { cancel = true };
   }, [videoUrl, segments]);
+
+  useEffect(() => {
+    related.forEach(v => {
+      if (!relThumbs[v.id] && !(v.thumbnail || v.video_thumbnail_url)) {
+        makeThumb(v);
+      }
+    });
+  }, [related]);
+
 
   const seekIdx = (i: number) => {
     const t = (+segments[i].frame + 3) / 60;
@@ -259,7 +297,7 @@ export default function Watch() {
             <h3 className="neon sub">Other videos by this speaker</h3>
 
             {related.length === 0 ? (
-              <p className="loading-text">Aucune autre vidéo pour cet orateur.</p>
+              <p className="loading-text">No other videos for this speaker.</p>
             ) : (
               <div className="suggestion-row">
                 {related.map((v, i) => (
@@ -270,8 +308,15 @@ export default function Watch() {
                     transition={{ delay: i * 0.05 }}
                     whileHover={{ scale: 1.05 }}
                     onClick={() => navigate(`/watch/${v.id}`)}>
-                    <img src={v.thumbnail || v.video_thumbnail_url || NO_THUMB} alt={v.title} />
-                    <p className="title">{v.title}</p>
+                    <img
+                      src={
+                        relThumbs[v.id]
+                        || v.thumbnail
+                        || v.video_thumbnail_url
+                        || NO_THUMB
+                      }
+                      alt={v.title}
+                    />                    <p className="title">{v.title}</p>
                     <p className="topic">{getTopic(v)}</p>
                   </motion.div>
                 ))}
