@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../lib/api';
 import axios from 'axios';
 import '../styles/Watch.css';
 import siteLogo from '/logo.png';
-
+import Footer from '../components/Footer';
+import { FaArrowLeft } from 'react-icons/fa';
 
 interface Segment { frame: string }
 
@@ -234,9 +235,26 @@ export default function Watch() {
 
   return (
     <div className="watch-page">
-      <header className="watch-header glass">
-        <img src={siteLogo} className="watch-logo" onClick={() => navigate('/')} />
-        <h1 className="session-title neon">{title}</h1>
+      <header className="watch-topbar glass">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <FaArrowLeft />
+          <span>Back</span>
+        </button>
+
+        <motion.h1
+          className="session-title neon"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          {title}
+        </motion.h1>
+
+        <img src={siteLogo}
+          className="watch-logo"
+          onClick={() => navigate('/')}
+          title="Home"
+        />
       </header>
 
       {loading ? (
@@ -261,36 +279,74 @@ export default function Watch() {
           )}
 
           <main className="right-pane">
-            {!showVid ? (
-              <>
-                <h3 className="neon sub">Choisissez un moment</h3>
-                <ul className="frame-grid">
-                  {segments.map(({ frame }, i) => (
-                    <li key={frame} className="thumb-wrapper" onClick={() => seekIdx(i)}>
-                      {previews[frame]
-                        ? <img src={previews[frame]} className="thumb" />
-                        : <div className="placeholder" />}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <>
-                <video ref={videoRef} poster={thumbnail} playsInline className="video-player glow">
-                  <source src={videoUrl!} type="video/mp4" />
-                </video>
+            <AnimatePresence mode="wait">
+              {showVid ? (
+                <motion.div
+                  key="player"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <video
+                    ref={videoRef}
+                    poster={thumbnail}
+                    playsInline
+                    className="video-player glow"
+                  >
+                    <source src={videoUrl!} type="video/mp4" />
+                  </video>
 
-                <div className="progress-bar" ref={barRef} onClick={clickProgress}>
-                  <div className="progress-fill" />
-                </div>
+                  <div
+                    className="progress-bar"
+                    ref={barRef}
+                    onClick={clickProgress}
+                  >
+                    <div className="progress-fill" />
+                  </div>
 
-                <div className="video-info-bar">
-                  <p><strong>{title}</strong></p>
-                  {orator && <p>{orator.name} — {orator.city}, {orator.country}</p>}
-                  <p>Durée : {fmtDur(videoDur)} — Slide {curIdx + 1}/{segments.length}</p>
-                </div>
-              </>
-            )}
+                  <div className="video-info-bar">
+                    <p>
+                      <strong>{title}</strong>
+                    </p>
+                    {orator && (
+                      <p>
+                        {orator.name} — {orator.city}, {orator.country}
+                      </p>
+                    )}
+                    <p>
+                      Durée : {fmtDur(videoDur)} — Slide {curIdx + 1}/
+                      {segments.length}
+                    </p>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="grid"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <h3 className="neon sub">Choisissez un moment</h3>
+                  <ul className="frame-grid">
+                    {segments.map(({ frame }, i) => (
+                      <li
+                        key={frame}
+                        className={`thumb-wrapper ${i === curIdx ? 'active' : ''}`}
+                        onClick={() => seekIdx(i)}
+                      >
+                        {previews[frame] ? (
+                          <img src={previews[frame]} className="thumb" />
+                        ) : (
+                          <div className="placeholder" />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </main>
 
           <section className="suggestions">
@@ -323,6 +379,7 @@ export default function Watch() {
               </div>
             )}
           </section>
+          <Footer />
         </section>
       )}
     </div>);

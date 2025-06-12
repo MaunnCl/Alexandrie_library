@@ -257,3 +257,42 @@
   margin-top: -.4rem;
   text-align: center;
 }
+
+.watch-topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  background: #2b2b2b;
+  border: 1px solid #550000;
+  border-radius: 8px;
+  padding: .4rem .8rem;
+  color: #eee;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+
+.back-btn:hover {
+  background: #ff0000;
+  transform: translateY(-1px);
+}
+
+.suggestions .topic {
+  margin-top: -.4rem;
+  font-size: .75rem;
+  opacity: .7;
+}
+
+.thumb-wrapper.active .thumb {
+  outline: 3px solid #ff2b2b;
+  box-shadow: 0 0 12px rgba(255, 0, 0, .6);
+}
