@@ -116,3 +116,18 @@
     background: red;
     color: white;
 }
+
+.search-input {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 1.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1f1f1f;
+    color: #fff;
+}
+
+.search-input::placeholder {
+    color: #777;
+}

@@ -7,16 +7,18 @@ import Logout from './pages/Logout';
 import Checkout from './pages/Checkout';
 import ProfileCreation from './pages/ProfileCreation';
 import Categories from './pages/Categories';
+import Home from './pages/Home';
 import CongressDirectory from './pages/CongressDirectory';
 import CongressDetail from './pages/CongressDetail';
 import VideoWatchPage from './pages/VideoWatchPage';
 import Watch from './pages/Watch';
+import SpeakerDetail from './pages/SpeakerDetail';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<CongressDirectory />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
@@ -28,6 +30,7 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/congress" element={<CongressDirectory />} />
         <Route path="/congress/:id" element={<CongressDetail />} />
+        <Route path="/speaker/:id" element={<SpeakerDetail />} />
         <Route path="/watch/:id" element={<Watch />} />
       </Routes>
     </Router>

@@ -20,8 +20,13 @@ interface Video {
 function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [search, setSearch] = useState('');
   const [videos, setVideos] = useState<Video[]>([]);
   const navigate = useNavigate();
+
+  const filteredCategories = categories.filter((cat) =>
+    cat.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   useEffect(() => {
     api.get(`/api/categories`).then((res) => {
@@ -29,6 +34,12 @@ function Categories() {
       setSelectedCategory(res.data[0]);
     });
   }, []);
+
+  useEffect(() => {
+    if (filteredCategories.length > 0 && !filteredCategories.includes(selectedCategory as Category)) {
+      setSelectedCategory(filteredCategories[0]);
+    }
+  }, [search, categories]);
 
   useEffect(() => {
     if (!selectedCategory) return;
@@ -49,9 +60,16 @@ function Categories() {
     <div className="categories-page">
       <h1 className="section-title">Browse by Category</h1>
       <hr className="section-divider" />
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Search categories"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
       <div className="category-selector">
-        {categories.map((cat) => (
+        {filteredCategories.map((cat) => (
           <button
             key={cat.id}
             className={`category-button ${selectedCategory?.name === cat.name ? 'active' : ''}`}

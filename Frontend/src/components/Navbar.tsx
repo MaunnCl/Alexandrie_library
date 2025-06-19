@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import api from '../lib/api';
+import SearchBar from './SearchBar';
 import '../styles/Navbar.css';
 
 interface User {
@@ -67,7 +68,7 @@ function Navbar() {
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
       <nav className="nav-links">
-        <Link to="/categories" className="nav-link">Categories</Link>
+        <SearchBar />
       </nav>
 
       {user && (
