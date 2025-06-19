@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import api from '../lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
@@ -44,6 +44,7 @@ function CongressDetail() {
     const [topicSessions, setTopicSessions] = useState<{ id: number; name: string; content_ids: number[] }[]>([]);
     const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         async function fetchAll() {
@@ -131,7 +132,7 @@ function CongressDetail() {
                                                 <li key={s.id} className="session-item">
                                                     <div
                                                         className="session-box speaker-box"
-                                                        onClick={() => navigate(`/watch/${s.id}`)}
+                                                        onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
                                                         style={{ cursor: 'pointer' }}
                                                     >
                                                         <div className="speaker-info">
@@ -193,7 +194,7 @@ function CongressDetail() {
                                                         <li key={s.id} className="session-item">
                                                             <div
                                                                 className="session-box"
-                                                                onClick={() => navigate(`/watch/${s.id}`)}
+                                                                onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
                                                             >
                                                                 <p className="session-title">{s.title}</p>
                                                                 <p className="speaker-name">{selectedOrator.name}</p>
@@ -243,7 +244,7 @@ function CongressDetail() {
                                                     <li key={s.id} className="session-item">
                                                         <div
                                                             className="session-box"
-                                                            onClick={() => navigate(`/watch/${s.id}`)}
+                                                            onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
                                                         >
                                                             <p className="session-title">{s.title}</p>
                                                             <p className="speaker-name">{getOratorName(s.orator_id)}</p>

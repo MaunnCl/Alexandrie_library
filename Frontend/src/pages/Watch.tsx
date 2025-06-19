@@ -46,6 +46,8 @@ const getTopic = (video: Content) => {
 export default function Watch() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: string })?.from ?? '/congress'
 
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -236,9 +238,9 @@ export default function Watch() {
   return (
     <div className="watch-page">
       <header className="watch-topbar glass">
-        <button className="back-btn" onClick={() => navigate(-1)}>
+        <button className="back-btn" onClick={() => navigate(from)}>
           <FaArrowLeft />
-          <span>Back</span>
+          <span>Sessions</span>
         </button>
 
         <motion.h1
@@ -363,7 +365,7 @@ export default function Watch() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => navigate(`/watch/${v.id}`)}>
+                    onClick={() => navigate(`/watch/${v.id}`, { state: { from } })}>
                     <img
                       src={
                         relThumbs[v.id]
