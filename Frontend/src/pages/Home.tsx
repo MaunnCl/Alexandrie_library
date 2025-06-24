@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import '../styles/Home.css';
 
 function Home() {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
     const alreadyShown = sessionStorage.getItem('introShown');
@@ -15,9 +15,6 @@ function Home() {
     if (!alreadyShown) {
       setShowIntro(true);
       sessionStorage.setItem('introShown', 'true');
-
-      const timer = setTimeout(() => setShowIntro(false), 1700);
-      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -28,11 +25,16 @@ function Home() {
           className="intro-overlay"
           initial={{ opacity: 1 }}
           animate={{ opacity: 0 }}
-          transition={{ delay: 3.2, duration: 0.6 }}
+          transition={{ delay: 3.2, duration: 0.6 }} // on attend bien que tout soit joué
           onAnimationComplete={() => setShowIntro(false)}
         >
           <div className="intro-content">
-            <motion.div className="soone-row">
+            <motion.div
+              className="soone-row"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <img src="/SoOne.png" alt="SoOne Logo" className="intro-logo soone" />
               <motion.h1
                 className="intro-text font-bold text-3xl text-secondary"
@@ -55,6 +57,7 @@ function Home() {
           </div>
         </motion.div>
       )}
+
       <Navbar />
       <section className="hero">
         <div className="hero-content">
