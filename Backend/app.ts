@@ -9,6 +9,7 @@ import oratorsRoutes from "./src/routes/orators.route";
 import contentsRoutes from "./src/routes/content.route";
 import congressRoutes from "./src/routes/congress.route";
 import sessionRoutes from "./src/routes/session.route";
+import historyRoutes from "./src/routes/history.route";
 import { setupSwagger } from "./docs/swagger";
 
 dotenv.config();
@@ -31,6 +32,7 @@ app.use("/api", oratorsRoutes);
 app.use("/api", contentsRoutes);
 app.use("/api", congressRoutes);
 app.use("/api", sessionRoutes);
+app.use("/api", historyRoutes);
 
 setupSwagger(app);
 
