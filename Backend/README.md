@@ -1,6 +1,6 @@
-# 📦 Alex Backend
+# 📦 Alexandra Library Backend
 
-Backend API for Alex Project, managing users, profiles, roles, orators, congresses, sessions, contents, and histories.
+Backend API for Alexandra Library Project, managing users, profiles, roles, orators, congresses, sessions, contents, and histories.
 
 ---
 
@@ -36,10 +36,12 @@ To run database migrations:
 ```sh
 npm run migrate
 ```
+
 To start locally:
-```
+```sh
 npm run start
 ```
+
 ---
 
 ## 🐳 Using Docker
@@ -49,8 +51,6 @@ npm run start
 ```sh
 docker-compose up --build
 ```
-- Backend exposed at http://localhost:5863 (mapped to port 8080 inside container)
-- Frontend exposed at http://localhost:3000
 
 The `.env` file is loaded from `Backend/.env`.
 
