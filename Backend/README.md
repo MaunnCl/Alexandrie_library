@@ -1,232 +1,122 @@
-# 🚀 API Documentation
+# 📦 Alex Backend
 
-Ce projet est une API REST pour gérer des utilisateurs avec **Express.js**, **PostgreSQL** et **Drizzle ORM**.  
-Elle inclut également l'**authentification avec JWT**, le **hachage des mots de passe** avec bcrypt, et une **documentation Swagger**.
-
----
-
-## 📂 **1. Structure du projet**
-┣ 📂 config/ # Configuration de la BDD  
-┃ ┣ 📜 db.ts # Connexion à PostgreSQL avec Drizzle ORM  
-┣ 📂 docs/ # Dossier pour Swagger  
-┃ ┗ 📜 swagger.ts # Configuration Swagger  
-┣ 📂 repository/ # Requêtes SQL via Drizzle ORM  
-┃ ┗ 📜 user.repository.ts  
-┣ 📂 services/ # Logique métier  
-┃ ┣ 📜 auth.service.ts # Authentification et JWT  
-┃ ┗ 📜 user.service.ts  
-┣ 📂 controllers/ # Gestion des requêtes HTTP  
-┃ ┣ 📜 auth.controller.ts  
-┃ ┗ 📜 user.controller.ts  
-┣ 📂 middlewares/ # Middleware pour protéger les routes avec JWT  
-┃ ┗ 📜 auth.middleware.ts  
-┣ 📂 routes/ # Définition des endpoints Express  
-┃ ┣ 📜 auth.routes.ts  
-┃ ┗ 📜 user.routes.ts  
-┣ 📂 schemas/ # Schémas Drizzle ORM pour PostgreSQL  
-┃ ┗ 📜 user.ts  
-┃ ┗ 📜 subscription.ts  
-┃ ┗ 📜 payment.ts  
-┣ 📜 server.ts # Point d'entrée du serveur Express  
-┗ 📜 .env # Fichier de configuration environnementale  
+Backend API for Alex Project, managing users, profiles, roles, orators, congresses, sessions, contents, and histories.
 
 ---
 
-## 🛠 **2. Installation & Configuration**
-### ✅ **1. Cloner le projet**
+## 🚀 Tech Stack
+
+- TypeScript (Node.js)
+- Express.js
+- Drizzle ORM (PostgreSQL)
+- Multer (for file uploads)
+- Docker & Docker Compose
+
+---
+
+## ⚙️ Prerequisites
+
+- Node.js >= 20.x
+- PostgreSQL >= 15 (if running locally without Docker)
+- Docker & Docker Compose (recommended)
+
+---
+
+## 🔧 Installation (Local)
+
 ```sh
-git clone https://github.com/ton-repo.git
-cd ton-repo
+git clone <repository-url>  
+cd Backend  
+npm install  
+cp .env.example .env  
+# Edit .env with your database and secrets
 ```
 
-### ✅ **2. Installer les dépendances**
+To run database migrations:
 ```sh
-npm install
+npm run migrate
 ```
-
-### ✅ **3. Configurer l’environnement**
-
-Crée un fichier .env à la racine du projet :
-```ini
-PORT=port
-DATABASE_URL=postgres://user:password@localhost:port/mydatabase
-JWT_SECRET=super_secret_key
-JWT_EXPIRES_IN=1h
+To start locally:
 ```
+npm run start
+```
+---
 
-### ✅ **4. Démarrer le serveur**
+## 🐳 Using Docker
+
+### Build and run with Docker Compose
+
 ```sh
-npm run dev
+docker-compose up --build
 ```
-L'API est maintenant disponible sur http://localhost:port/api
+- Backend exposed at http://localhost:5863 (mapped to port 8080 inside container)
+- Frontend exposed at http://localhost:3000
+
+The `.env` file is loaded from `Backend/.env`.
 
 ---
 
-## 🔑 **3. Authentification avec JWT**
+## 📦 Available Scripts
 
-L'API utilise JSON Web Tokens (JWT) pour sécuriser l'accès aux routes protégées.
-
-### ✅ **Créer un utilisateur**
-
-- Méthode : POST /api/users
-- Body :
-  ```json
-  {
-  "firstname": "Alex",
-  "lastname": "Doe",
-  "email": "alex@example.com",
-  "password": "securepassword"
-  }
-  ```
-
-### ✅ **Se connecter et récupérer un token**
-
-- Méthode : POST /api/login
-- Body :
-  ```json
-  {
-    "email": "alex@example.com",
-    "password": "securepassword"
-  }
-  ```
-
-- Réponse :
-  ```json
-  {
-    "token": "eyJhbGciOiJI...",
-    "user": {
-      "id": 1,
-      "email": "alex@example.com"
-    }
-  }
-  ```
-Ce token JWT doit être ajouté dans les requêtes protégées via Authorization: Bearer <TOKEN>.
+npm run dev        → Run in development (nodemon)  
+npm run build      → Build the project  
+npm start         → Start production build  
+npm run migrate    → Run DB migrations  
+npm test         → Run tests (if implemented)
 
 ---
 
-## 🔗 **4. Endpoints de l'API**
-### 🟢 Utilisateurs
-| Méthode        | Route      | Description     | Protection    |
-| ------|-----|-----|-----|
-| POST  	| `/api/users` 	| Créer un utilisateur 	| ❌    |
-| GET  	| `/api/users` 	| Récupérer tous les utilisateurs 	| 	✅ JWT    |
-| GET  	| `/api/users/:id` 	| Récupérer un utilisateur par ID 	| 	✅ JWT    |
-| PUT  	| `/api/users/:id` 	| Mettre à jour un utilisateur 	| 	✅ JWT    |
-| DELETE  	| `/api/users/:id` 	| Supprime un utilisateur 	| 	✅ JWT    |
+## 📁 Project Structure
 
-### 🔐 Authentification
-
-| Méthode        | Route      | Description     |
-| ------|-----|-----|
-| POST  	| `/api/login` 	| 	Connexion utilisateur (retourne un token) 	|
-
----
-
-## 📖 **5. Documentation Swagger**
-### 🔍 **Accéder à Swagger UI**
-
-Une documentation interactive est disponible via Swagger UI :
-```sh
-http://localhost:port/api-docs
-```
-Elle permet de tester directement les endpoints via une interface web.
-
-### ✍ **Exemple d’annotation Swagger**
-
-Les routes sont documentées directement dans le code :
-```ts
-/**
- * @swagger
- * /users:
- *   get:
- *     summary: Récupérer tous les utilisateurs
- *     tags: [Users]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Liste des utilisateurs
- */
-router.get("/users", authenticateJWT, UserController.getAllUsers);
-```
-
----
-## 🏗 **6. Structure de la base de données**
-
-L'API utilise PostgreSQL avec Drizzle ORM.
-### 🛠 **Table `users`**
-| Champ        | Type      | Contraintes     |
-| ------|-----|-----|
-| `id`  	| `SERIAL` 	|PRIMARY KEY, UNIQUE	|
-| `firstname`  	| `VARCHAR(255)` 	|	|
-| `lastname`  	| `VARCHAR(255)` 	|	|
-| `email`  	| `VARCHAR(255)` 	|UNIQUE, NOT NULL	|
-| `password`  	| `VARCHAR(255)` 	|NOT NULL	|
-| `date_of_birth`  	| `DATE` 	|	|
-| `address`  	| `VARCHAR(255)` 	|	|
-| `country`  	| `VARCHAR(255)` 	|	|
-| `zipcode`  	| `VARCHAR(10)` 	|	|
-| `createdat`  	| `DATE` 	|DEFAULT NOW()	|
-
-
-### 🛠 **Table `subscriptions`**
-| Champ | Type | Contraintes |
-|-------|------|------------|
-| `id` | `UUID` | PRIMARY KEY, UNIQUE |
-| `user_id` | `INTEGER` | FOREIGN KEY → `users.id` (ON DELETE CASCADE) |
-| `status` | `VARCHAR(50)` | NOT NULL |
-| `plan` | `VARCHAR(100)` | NOT NULL |
-| `price` | `INTEGER` | NOT NULL |
-| `payment_method` | `VARCHAR(50)` | NOT NULL |
-| `next_billing_date` | `DATE` | NULL |
-| `subscription_started` | `DATE` | NOT NULL |
-| `subscription_ended` | `DATE` | NULL |
-| `createdAt` | `DATE` | DEFAULT NOW() |
-| `updatedAt` | `DATE` | DEFAULT NOW() |
-
-### 🛠 **Table `payment_history`**
-| Champ | Type | Contraintes |
-|-------|------|------------|
-| `id` | `UUID` | PRIMARY KEY, UNIQUE |
-| `subscription_id` | `UUID` | FOREIGN KEY → `subscriptions.id` (ON DELETE CASCADE) |
-| `amount` | `INTEGER` | NOT NULL |
-| `payment_date` | `DATE` | NOT NULL |
-| `payment_method` | `VARCHAR(50)` | NOT NULL |
-| `status` | `VARCHAR(50)` | NOT NULL |
-| `createdAt` | `DATE` | DEFAULT NOW() |
-
-### 🔹 **Relations entre les tables**
-- **Un utilisateur (`users`) peut avoir plusieurs abonnements (`subscriptions`).**
-- **Un abonnement (`subscriptions`) peut avoir plusieurs paiements enregistré (`payment_history`)**
-- **Lorsqu’un utilisateur est supprimé, ses abonnements sont aussi supprimés (`ON DELETE CASCADE`).**
-- **Lorsqu’un abonnement est supprimé, son historique de paiements est aussi supprimé (`ON DELETE CASCADE`).**
+/migrations  
+    database.ts  
+    multerConfig.ts  
+/src  
+    /controllers  
+    /services  
+    /repositories  
+    /routes  
+    /schemas  
+    app.ts  
+    server.ts  
+Dockerfile  
+docker-compose.yaml
 
 ---
 
-## ✅ **7. Sécurité**
-### 🔒 **Hachage des mots de passe avec Bcrypt**
+## 📚 API Endpoints (Overview)
 
-Avant d'enregistrer un utilisateur, son mot de passe est hashé :
-```ts
-const hashedPassword = await bcrypt.hash(userData.password, 10);
-```
+| Entity         | Base Route          |
+|---------------|---------------------|
+| Congress      | /api/congress       |
+| Content       | /api/content        |
+| History       | /api/history        |
+| Orators       | /api/orators        |
+| Role          | /api/role           |
+| Session       | /api/session        |
+| Users         | /api/users          |
+| UsersProfiles | /api/usersProfiles  |
+| UsersRoles    | /api/usersRoles     |
 
-### 🔐 **Protection des routes avec JWT**
-
-Les routes protégées nécessitent un token JWT :
-```ts
-import jwt from "jsonwebtoken";
-
-export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(403).json({ message: "Accès interdit" });
-
-    jwt.verify(token, process.env.JWT_SECRET as string, (err, user) => {
-        if (err) return res.status(403).json({ message: "Token invalide" });
-        (req as any).user = user;
-        next();
-    });
-};
-```
+(See routes folder for details on each endpoint)
 
 ---
+
+## 🤝 Contributing
+
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feature/your-feature`)  
+3. Commit your changes (`git commit -m 'Add some feature'`)  
+4. Push to the branch (`git push origin feature/your-feature`)  
+5. Open a Pull Request
+
+---
+
+## 📬 Contact
+
+Author: Mathis Champin 
+Email: <mathis.champin@epitech.eu>  
+
+---
+
+✅ **Ready to build, run, and hack!**
