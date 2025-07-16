@@ -25,7 +25,7 @@ function Home() {
           className="intro-overlay"
           initial={{ opacity: 1 }}
           animate={{ opacity: 0 }}
-          transition={{ delay: 3.2, duration: 0.6 }} // on attend bien que tout soit joué
+          transition={{ delay: 3.2, duration: 0.6 }}
           onAnimationComplete={() => setShowIntro(false)}
         >
           <div className="intro-content">
