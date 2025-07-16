@@ -1,0 +1,22 @@
+.footer {
+    background-color: #252525;
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.footer p {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.footer a {
+    color: #ff0000;
+    text-decoration: none;
+    margin: 0 5px;
+    font-size: 14px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

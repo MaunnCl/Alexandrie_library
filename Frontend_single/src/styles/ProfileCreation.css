@@ -1,0 +1,109 @@
+.profile-creation-page {
+    background-color: #1a1a1a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #fff;
+  }
+  
+  .profile-creation-container {
+    background-color: #252525;
+    padding: 50px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  }
+  
+  .profile-creation-title {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #ff0000;
+  }
+  
+  .profile-creation-error {
+    color: #ff0000;
+    margin-bottom: 20px;
+  }
+  
+  .profile-creation-form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  
+  .profile-creation-form label {
+    margin-bottom: 6px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  
+  .profile-creation-form input,
+  .profile-creation-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #2a2a2a;
+    color: #fff;
+    font-size: 16px;
+  }
+  
+  .placeholder-images {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .placeholder-image {
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  
+  .placeholder-image:hover {
+    transform: scale(1.05);
+  }
+  
+  .placeholder-image.selected {
+    border-color: #ff0000;
+  }
+  
+  .or-text {
+    text-align: center;
+    margin: 10px 0;
+    font-style: italic;
+  }
+  
+  .profile-creation-button {
+    background-color: #ff0000;
+    color: #0e0e0e;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .profile-creation-button:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 480px) {
+    .profile-creation-container {
+      padding: 30px;
+    }
+  }
+  

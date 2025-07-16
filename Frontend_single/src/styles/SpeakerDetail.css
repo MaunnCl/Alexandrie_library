@@ -1,0 +1,228 @@
+.detail-page {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 1rem 4rem;
+}
+
+.detail-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #ff0000;
+    margin-bottom: .4rem;
+}
+
+.detail-meta {
+    text-align: center;
+    font-size: .9rem;
+    color: #bbb;
+    margin-bottom: 2.5rem;
+}
+
+.cat-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.cat-card {
+    background: #2a2a2a;
+    padding: 2rem 3rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow .3s;
+}
+
+.cat-card h3 {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.cat-card:hover {
+    box-shadow: 0 0 12px rgba(255, 0, 0, .3);
+}
+
+.cat-card.active {
+    box-shadow: 0 0 12px rgba(255, 0, 0, .6);
+    transform: scale(1.02);
+}
+
+.cat-content {
+    background: #202020;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    max-height: 65vh;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #555 #1a1a1a;
+}
+
+.cat-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cat-content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+.cat-content ul {
+    list-style: none;
+}
+
+.cat-content li {
+    margin: .35rem 0;
+    color: #eee;
+    font-size: .95rem;
+}
+
+.session-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem;
+}
+
+.session-item {
+    list-style: none;
+}
+
+.session-box {
+    padding: 1rem 1.2rem;
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    border: 1px solid #333;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.session-box:hover {
+    transform: scale(1.02);
+    background-color: #2a2a2a;
+}
+
+.session-title {
+    color: #ff4d4d;
+    font-size: 1.05rem;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+}
+
+.speaker-name {
+    color: #ff4d4d;
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+.speaker-name {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin: 0;
+}
+
+.session-button {
+    background: none;
+    border: none;
+    color: #ff0000;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.session-button:hover {
+    color: #ffffff;
+    transform: scale(1.02);
+    text-decoration: underline;
+}
+
+.speaker-box {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #550000;
+    /* Rouge sombre par défaut */
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.speaker-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.speaker-label {
+    color: #ff4d4d;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.speaker-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 1rem;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.speaker-box:hover {
+    transform: scale(1.02);
+    background-color: #2a2a2a;
+    border-color: #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.speaker-box:hover .speaker-image {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.back-button {
+    background-color: transparent;
+    border: 1px solid #ff0000;
+    color: #ff4d4d;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #ff4d4d;
+    color: #fff;
+}
+
+.speaker-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.speaker-location {
+    font-size: 0.85rem;
+    color: #bbb;
+}
