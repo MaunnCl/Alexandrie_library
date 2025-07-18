@@ -12,7 +12,7 @@ services:
 
   alex_front:
     build:
-      context: ./Frontend
+      context: ./Frontend_single
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
