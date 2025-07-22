@@ -3,6 +3,8 @@ services:
     build:
       context: ./Backend
       dockerfile: Dockerfile
+    environment:
+      - PORT=8080
     ports:
       - "5863:8080"
     env_file:
@@ -13,9 +15,13 @@ services:
   alex_front:
     build:
       context: ./Frontend_single
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
+      args:
+        VITE_API_URL: http://alex_back:8080/api
     ports:
       - "3000:3000"
+    environment:
+      - VITE_API_URL=http://alex_back:8080/api
     depends_on:
       alex_back:
         condition: service_started
