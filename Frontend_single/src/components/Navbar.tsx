@@ -19,24 +19,23 @@ function Navbar() {
 
   useEffect(() => {
     async function fetchUserData() {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          console.error('No userId found in localStorage');
-          navigate('/login');
-          return;
-        }
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.warn('No userId found in localStorage');
+        setUser(null);
+        return;
+      }
 
+      try {
         const userResponse = await api.get(`/api/users/${userId}`);
         setUser(userResponse.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        navigate('/login');
+        console.error('Error fetching user data:', error);
       }
     }
 
     fetchUserData();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -71,7 +70,7 @@ function Navbar() {
         <SearchBar />
       </nav>
 
-      {user && (
+      {user ? (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
             <img
@@ -112,6 +111,10 @@ function Navbar() {
             </div>
           )}
         </div>
+      ) : (
+        <button className="login-btn" onClick={() => navigate('/login')}>
+          Login
+        </button>
       )}
     </header>
   );
