@@ -19,7 +19,7 @@ const swagger_1 = require("./docs/swagger");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: '*' }));
 app.use((req, res, next) => {
     const time = new Date().toString();
     console.log(req.method, req.hostname, req.path, time);

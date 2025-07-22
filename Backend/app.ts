@@ -17,7 +17,11 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 app.use((req: express.Request, res, next) => {
   const time = new Date().toString();
   console.log(req.method, req.hostname, req.path, time);
