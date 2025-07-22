@@ -20,6 +20,10 @@ app.use(express.json());
 app.use(
   cors({
     origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 app.use((req: express.Request, res, next) => {
