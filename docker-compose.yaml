@@ -17,11 +17,11 @@ services:
       context: ./Frontend_single
       dockerfile: dockerfile
       args:
-        VITE_API_URL: http://alex_back:8080
+        VITE_API_URL: https://p04Owq0oo0o8k0k0o0k4kck.13.48.70.161.sslip.io
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://alex_back:8080
+      - VITE_API_URL=https://p04Owq0oo0o8k0k0o0k4kck.13.48.70.161.sslip.io
     depends_on:
       alex_back:
         condition: service_started
