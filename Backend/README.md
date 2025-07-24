@@ -4,9 +4,10 @@ npm run migrate    → Run DB migrations
 npm test         → Run tests (if implemented)
 docker-compose.yaml
 
-# 🗂️ Backend Folder Structure & File Descriptions
 
-The `Backend` folder contains all the source code and configuration for the Alexandra Library API. Here is a detailed overview of its structure and the purpose of each main part:
+# 🗂️ Structure et Description du Backend
+
+Le dossier `Backend` contient tout le code source et la configuration de l'API Alexandra Library. Voici un aperçu détaillé de sa structure et du rôle de chaque partie :
 
 ```
 Backend/
@@ -73,93 +74,98 @@ Backend/
 ## 📖 Detailed Backend Architecture
 
 
-### 1. Schemas (`src/schemas/`)
 
-Defines the structure of the database tables using Drizzle ORM. Each file corresponds to a table:
+### 1. Schémas (`src/schemas/`)
 
-- **user.ts**: Users (id, firstname, lastname, email, password, etc.)
-- **profile.ts**: User profiles (id, user_id, profilePicture, bio, preferences)
-- **role.ts**: Roles (id, role_name, description)
-- **userRole.ts**: User-role mapping (id, user_id, role_id)
-- **orators.ts**: Orators (id, name, picture, content_ids, country, city)
-- **session.ts**: Sessions (id, name, content_ids)
-- **content.ts**: Content (id, title, orator_id, description, url, timeStamp)
-- **congress.ts**: Congresses (id, name, key, session_ids, picture, date, city)
-- **history.ts**: User history (id, userId, contentId, viewedAt, timeStamp, uniqueView)
+Définit la structure des tables de la base de données avec Drizzle ORM. Chaque fichier correspond à une table :
 
-These schemas are used by the ORM to generate SQL queries and ensure type safety.
+- **user.ts** : Utilisateurs (id, prénom, nom, email, mot de passe, etc.)
+- **profile.ts** : Profils utilisateurs (id, user_id, photo de profil, bio, préférences)
+- **role.ts** : Rôles (id, nom du rôle, description)
+- **userRole.ts** : Association utilisateur-rôle (id, user_id, role_id)
+- **orators.ts** : Orateurs (id, nom, photo, content_ids, pays, ville)
+- **session.ts** : Sessions (id, nom, content_ids)
+- **content.ts** : Contenus (id, titre, orator_id, description, url, timeStamp)
+- **congress.ts** : Congrès (id, nom, clé, session_ids, photo, date, ville)
+- **history.ts** : Historique utilisateur (id, userId, contentId, viewedAt, timeStamp, uniqueView)
+
+Ces schémas sont utilisés par l'ORM pour générer les requêtes SQL et garantir la sécurité des types.
+
+---
+
+
+### 2. Contrôleurs (`src/controllers/`)
+
+Les contrôleurs gèrent les requêtes et réponses HTTP. Chaque contrôleur gère une ressource spécifique et expose des endpoints CRUD et métiers. Exemples :
+
+- **UsersController** : Créer, récupérer, mettre à jour, supprimer des utilisateurs. Gère le hash du mot de passe et délègue à UsersService.
+- **SessionController** : Gère les sessions (création, récupération, modification, suppression, ajout/retrait de contenu).
+- **HistoryController** : Ajoute à l'historique utilisateur, récupère l'historique, supprime des éléments.
+- **OratorsController** : Gère les orateurs (CRUD, gestion des contenus, mise à jour de la photo).
+- **UsersRolesController** : Gère l'association des rôles aux utilisateurs.
+- **ContentController** : Gère les contenus (CRUD).
+- **RoleController** : Gère les rôles (CRUD).
+- **UsersProfilesController** : Gère les profils utilisateurs (CRUD).
+- **CongressController** : Gère les congrès (CRUD).
+
+Les contrôleurs valident les entrées, appellent le service approprié et renvoient des réponses JSON ou des erreurs.
 
 ---
 
-### 2. Controllers (`src/controllers/`)
-
-Controllers handle HTTP requests and responses. Each controller manages a specific resource and exposes CRUD and business endpoints. Example controllers:
-
-- **UsersController**: Create, get, update, and delete users. Handles password hashing and delegates to UsersService.
-- **SessionController**: Manage sessions (create, get, update, delete, add/remove content to session).
-- **HistoryController**: Add to user history, get user history, delete history items.
-- **OratorsController**: Manage orators (create, get, update, delete, add/remove content, update photo).
-- **UsersRolesController**: Manage user-role assignments.
-- **ContentController**: Manage content (create, get, update, delete).
-- **RoleController**: Manage roles (create, get, update, delete).
-- **UsersProfilesController**: Manage user profiles (create, get, update, delete).
-- **CongressController**: Manage congresses (create, get, update, delete).
-
-Controllers validate input, call the appropriate service, and return JSON responses or errors.
-
----
 
 ### 3. Services (`src/services/`)
 
-Services contain the business logic and orchestrate complex operations. They are called by controllers and use repositories for data access. Example services:
+Les services contiennent la logique métier et orchestrent les opérations complexes. Ils sont appelés par les contrôleurs et utilisent les repositories pour accéder aux données. Exemples :
 
-- **UsersService**: User-related business logic (creation, retrieval, update, deletion, password hashing, etc.).
-- **SessionService**: Session business logic (creation, update, content management).
-- **HistoryService**: Logic for managing user history.
-- **OratorsService**: Logic for orator management and content association.
-- **UsersRolesService**: Logic for assigning/removing roles to users.
-- **ContentService**: Logic for content CRUD and association.
-- **RoleService**: Logic for role CRUD.
-- **UsersProfilesService**: Logic for user profile CRUD.
-- **CongressService**: Logic for congress CRUD and session association.
+- **UsersService** : Logique métier liée aux utilisateurs (création, récupération, mise à jour, suppression, hash du mot de passe, etc.)
+- **SessionService** : Logique métier des sessions (création, modification, gestion des contenus)
+- **HistoryService** : Logique de gestion de l'historique utilisateur
+- **OratorsService** : Logique de gestion des orateurs et de leurs contenus
+- **UsersRolesService** : Logique d'association/suppression de rôles aux utilisateurs
+- **ContentService** : Logique CRUD des contenus et associations
+- **RoleService** : Logique CRUD des rôles
+- **UsersProfilesService** : Logique CRUD des profils utilisateurs
+- **CongressService** : Logique CRUD des congrès et association de sessions
 
-Services keep controllers thin and focused on HTTP logic.
+Les services permettent de garder les contrôleurs simples et centrés sur la logique HTTP.
 
 ---
+
 
 ### 4. Repositories (`src/repository/`)
 
-Repositories abstract the data access layer and interact directly with the database via Drizzle ORM. Example repositories:
+Les repositories abstraient la couche d'accès aux données et interagissent directement avec la base via Drizzle ORM. Exemples :
 
-- **UsersRepository**: CRUD operations for users.
-- **SessionRepository**: CRUD for sessions and content association.
-- **HistoryRepository**: CRUD for user history.
-- **OratorsRepository**: CRUD for orators and content association.
-- **UsersRolesRepository**: CRUD for user-role assignments.
-- **ContentRepository**: CRUD for content.
-- **RoleRepository**: CRUD for roles.
-- **UsersProfilesRepository**: CRUD for user profiles.
-- **CongressRepository**: CRUD for congresses and session association.
+- **UsersRepository** : Opérations CRUD sur les utilisateurs
+- **SessionRepository** : CRUD sur les sessions et association de contenus
+- **HistoryRepository** : CRUD sur l'historique utilisateur
+- **OratorsRepository** : CRUD sur les orateurs et leurs contenus
+- **UsersRolesRepository** : CRUD sur l'association utilisateur-rôle
+- **ContentRepository** : CRUD sur les contenus
+- **RoleRepository** : CRUD sur les rôles
+- **UsersProfilesRepository** : CRUD sur les profils utilisateurs
+- **CongressRepository** : CRUD sur les congrès et association de sessions
 
-Repositories allow you to change the data source with minimal changes to services/controllers.
+Les repositories permettent de changer la source de données avec un minimum de modifications dans les services/contrôleurs.
 
 ---
 
+
 ### 5. Routes (`src/routes/`)
 
-Routes define the API endpoints and map them to controller functions. They also apply middleware for authentication and validation. Example routes:
+Les routes définissent les endpoints de l'API et les associent aux fonctions des contrôleurs. Elles appliquent aussi les middlewares d'authentification et de validation. Exemples :
 
-- **users.route.ts**: `/api/users` (POST, GET, GET by id, PUT, DELETE)
-- **session.route.ts**: `/api/sessions` (POST, GET, GET by id, PUT, DELETE, add/remove content)
-- **history.route.ts**: `/api/history` (POST, GET by user, DELETE)
-- **orators.route.ts**: `/api/orators` (POST, GET, GET by id, PUT, DELETE, add/remove content, update photo)
-- **usersRoles.route.ts**: `/api/users-roles` (POST, GET, GET by id, PUT, DELETE)
-- **content.route.ts**: `/api/content` (POST, GET, GET by id, PUT, DELETE)
-- **role.route.ts**: `/api/roles` (POST, GET, GET by id, PUT, DELETE)
-- **usersProfiles.route.ts**: `/api/users-profiles` (POST, GET, GET by id, PUT, DELETE)
-- **congress.route.ts**: `/api/congress` (POST, GET, GET by id, PUT, DELETE)
+- **users.route.ts** : `/api/users` (POST, GET, GET by id, PUT, DELETE)
+- **session.route.ts** : `/api/sessions` (POST, GET, GET by id, PUT, DELETE, ajout/retrait de contenu)
+- **history.route.ts** : `/api/history` (POST, GET par utilisateur, DELETE)
+- **orators.route.ts** : `/api/orators` (POST, GET, GET by id, PUT, DELETE, ajout/retrait de contenu, mise à jour photo)
+- **usersRoles.route.ts** : `/api/users-roles` (POST, GET, GET by id, PUT, DELETE)
+- **content.route.ts** : `/api/content` (POST, GET, GET by id, PUT, DELETE)
+- **role.route.ts** : `/api/roles` (POST, GET, GET by id, PUT, DELETE)
+- **usersProfiles.route.ts** : `/api/users-profiles` (POST, GET, GET by id, PUT, DELETE)
+- **congress.route.ts** : `/api/congress` (POST, GET, GET by id, PUT, DELETE)
 
-Routes are grouped by resource and follow RESTful conventions.
+Les routes sont regroupées par ressource et suivent les conventions RESTful.
 
 ---
 
