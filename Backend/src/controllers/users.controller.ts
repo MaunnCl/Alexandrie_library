@@ -57,13 +57,19 @@ export class UsersController {
 
   static async loginUser(req: Request, res: Response): Promise<void>  {
     try {
+      console.log("🔐 Login attempt:", req.body);
       const { email, password } = req.body;
+      console.log("📧 Email:", email);
       if (!email || !password)
         res.status(400).json({ error: "Email and password are required" });
+      console.log("🔍 Searching for user by email...");
       const user = await UsersService.findByEmail(email);
+      console.log("🔍 User found:", user);
       if (!user)
         res.status(401).json({ error: "Invalid credentials" });
+      console.log("🔑 Comparing passwords...");
       const isMatch = await bcrypt.compare(password, user.password);
+      console.log("🔑 Password match:", isMatch);
       if (!isMatch)
         res.status(401).json({ error: "Invalid credentials" });
       const { password: _, ...userWithoutPassword } = user;
