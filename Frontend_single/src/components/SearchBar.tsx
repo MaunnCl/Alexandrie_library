@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import '../styles/SearchBar.css';
@@ -73,18 +74,39 @@ function SearchBar() {
   }, [query, searchType, open]);
 
   return (
-    <div className="search-wrapper" ref={containerRef}>
-      <div className="search-bar" onClick={() => setOpen(true)}>
-        <input
-          type="text"
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-      </div>
-      {open && (
-        <div className="search-popup">
-          <div className="search-options">
+    <>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="search-overlay"
+            onClick={() => setOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.8 }}
+            exit={{ opacity: 0 }}
+          />
+        )}
+      </AnimatePresence>
+      <div
+        className={`search-wrapper ${open ? 'expanded' : ''}`}
+        ref={containerRef}
+      >
+        <div className="search-bar" onClick={() => setOpen(true)}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              className="search-popup"
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+            >
+              <div className="search-options">
             <button
               className={searchType === 'general' ? 'active' : ''}
               onClick={() => setSearchType('general')}
@@ -116,11 +138,15 @@ function SearchBar() {
                 {r.name || r.title}
               </li>
             ))}
-            {results.length === 0 && query && <li className="no-results">No results</li>}
+            {results.length === 0 && query && (
+              <li className="no-results">No results</li>
+            )}
           </ul>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
+    </>
   );
 }
 

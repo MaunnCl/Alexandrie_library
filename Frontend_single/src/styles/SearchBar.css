@@ -1,5 +1,31 @@
 .search-wrapper {
   position: relative;
+  max-width: 400px;
+  transition: all 0.3s ease;
+}
+
+.search-wrapper.expanded {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 800px;
+  z-index: 30;
+}
+
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(2px);
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.search-overlay.open {
+  opacity: 1;
 }
 
 .search-popup {

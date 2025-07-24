@@ -14,7 +14,7 @@ services:
 
   alex_front:
     build:
-      context: ./Frontend_single
+      context: ./Frontend
       dockerfile: dockerfile
       args:
         VITE_API_URL: http://q040wg00oo80kokko0ck4kck.13.48.70.161.sslip.io

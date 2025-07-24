@@ -19,18 +19,18 @@ function Navbar() {
 
   useEffect(() => {
     async function fetchUserData() {
-      try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          console.error('No userId found in localStorage');
-          navigate('/login');
-          return;
-        }
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.error('No userId found in localStorage');
+        navigate('/login');
+        return;
+      }
 
+      try {
         const userResponse = await api.get(`/api/users/${userId}`);
         setUser(userResponse.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
         navigate('/login');
       }
     }
