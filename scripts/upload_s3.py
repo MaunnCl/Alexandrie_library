@@ -7,8 +7,8 @@ from tkinter import filedialog, scrolledtext
 # Configuration AWS brute
 BUCKET_NAME = "greatalexandria"
 REGION = "eu-north-1"
-ACCESS_KEY = "AKIAUPMYNGMYVTD2Q274"
-SECRET_KEY = "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"
+ACCESS_KEY = "AWS_ACCESS_KEY_ID"
+SECRET_KEY = "AWS_SECRET_KEY"
 
 # Connexion client S3
 s3 = boto3.client(
