@@ -181,14 +181,15 @@ Les routes sont regroupées par ressource et suivent les conventions RESTful.
 
 ---
 
-For more details on each file or folder, see the inline comments in the code or ask for a specific section!
+
+Pour plus de détails sur chaque fichier ou dossier, consultez les commentaires dans le code ou demandez une section spécifique !
 
 ---
 
 
 ---
 
-## 📬 Example Requests & Responses
+## 📬 Exemples de Requêtes & Réponses
 
 ### Create User
 
@@ -240,64 +241,64 @@ Content-Type: application/json
 
 ---
 
-## 🔐 Authentication & Protected Routes
+## 🔐 Authentification & Routes Protégées
 
-- Most routes require a valid JWT token in the `Authorization` header:
+- La plupart des routes nécessitent un token JWT valide dans l'en-tête `Authorization` :
   ```http
   Authorization: Bearer <JWT_TOKEN>
   ```
-- Obtain a token via the `/api/login` endpoint.
-- Add the token to all requests to protected endpoints (e.g., `/api/users`, `/api/content`).
-- If the token is missing or invalid, the API returns `403 Forbidden`.
+- Obtenez un token via l'endpoint `/api/login`.
+- Ajoutez le token à toutes les requêtes vers les endpoints protégés (ex : `/api/users`, `/api/content`).
+- Si le token est manquant ou invalide, l'API retourne `403 Forbidden`.
 
 ---
 
-## 🧪 Running Tests & Coverage
+## 🧪 Lancer les Tests & Couverture
 
-- To run all tests:
+- Pour lancer tous les tests :
   ```sh
   npm test
   ```
-- Tests are located in `src/tests/` (unit and integration).
-- You can use tools like Jest to generate a coverage report:
+- Les tests se trouvent dans `src/tests/` (unitaires et intégration).
+- Vous pouvez utiliser des outils comme Jest pour générer un rapport de couverture :
   ```sh
   npm run test -- --coverage
   ```
-- Aim for high coverage on controllers, services, and repositories.
+- Essayez d'obtenir une couverture élevée sur les controllers, services et repositories.
 
 ---
 
-## 🤝 Contribution Guidelines
+## 🤝 Guide de Contribution
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
+1. Forkez le dépôt
+2. Créez une branche de fonctionnalité (`git checkout -b feature/votre-fonctionnalite`)
+3. Commitez vos changements (`git commit -m 'Ajout d'une fonctionnalité'`)
+4. Poussez la branche (`git push origin feature/votre-fonctionnalite`)
+5. Ouvrez une Pull Request
 
-Please write clear commit messages and add/maintain tests for new features.
-
----
-
-## 🛠️ Troubleshooting & FAQ
-
-**Q: I get a database connection error on startup.**
-A: Check your `.env` file for correct `DATABASE_URL` and ensure PostgreSQL is running.
-
-**Q: My JWT token is rejected.**
-A: Make sure you use the token from `/api/login` and include it as `Bearer <token>` in the `Authorization` header.
-
-**Q: Migrations fail or tables are missing.**
-A: Run `npm run migrate` to apply all migrations.
-
-**Q: File uploads fail.**
-A: Check your Multer configuration and ensure the upload directory exists and is writable.
-
-**Q: How do I reset the database?**
-A: Drop and recreate the database, then re-run migrations.
-
-For other issues, check the logs or open an issue on the repository.
+Merci d'écrire des messages de commit clairs et d'ajouter/maintenir des tests pour chaque nouvelle fonctionnalité.
 
 ---
 
-✅ **Ready to build, run, and hack!**
+## 🛠️ Dépannage & FAQ
+
+**Q : J'ai une erreur de connexion à la base de données au démarrage.**
+A : Vérifiez votre fichier `.env` pour le bon `DATABASE_URL` et assurez-vous que PostgreSQL est démarré.
+
+**Q : Mon token JWT est rejeté.**
+A : Assurez-vous d'utiliser le token obtenu via `/api/login` et de l'inclure comme `Bearer <token>` dans l'en-tête `Authorization`.
+
+**Q : Les migrations échouent ou des tables sont manquantes.**
+A : Lancez `npm run migrate` pour appliquer toutes les migrations.
+
+**Q : L'upload de fichiers échoue.**
+A : Vérifiez la configuration Multer et que le dossier d'upload existe et est accessible en écriture.
+
+**Q : Comment réinitialiser la base de données ?**
+A : Supprimez et recréez la base, puis relancez les migrations.
+
+Pour d'autres problèmes, consultez les logs ou ouvrez une issue sur le dépôt.
+
+---
+
+✅ **Prêt à builder, lancer et hacker !**
