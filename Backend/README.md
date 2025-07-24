@@ -161,45 +161,6 @@ Routes define the API endpoints and map them to controller functions. They also 
 
 Routes are grouped by resource and follow RESTful conventions.
 
-### 2. Controllers (`src/controllers/`)
-
-Controllers handle HTTP requests and responses. Each controller manages a specific resource:
-
-- **auth.controller.ts**: Handles authentication (login, register, token refresh, etc.).
-- **user.controller.ts**: CRUD operations for users.
-- **congress.controller.ts, content.controller.ts, etc.**: CRUD and business logic for other entities (congress, content, history, orators, role, session, usersProfiles, usersRoles).
-
-Controllers receive requests, validate input, call the appropriate service/repository, and return responses (JSON, errors, etc.).
-
-### 3. Services (`src/services/`)
-
-Services contain the business logic and orchestrate complex operations. They are called by controllers and may use repositories for data access:
-
-- **auth.service.ts**: Handles password hashing, JWT token generation/validation, and authentication logic.
-- **user.service.ts**: User-related business logic (e.g., profile updates, password changes).
-- **Other services**: Implement business rules for other resources as needed.
-
-Services help keep controllers thin and focused on HTTP logic.
-
-### 4. Repository (`src/repository/`)
-
-Repositories abstract the data access layer. They interact directly with the database via Drizzle ORM:
-
-- **user.repository.ts**: Functions to create, read, update, and delete users in the database.
-- **Other repositories**: Similar CRUD/data access functions for subscriptions, payments, congress, etc.
-
-Repositories allow you to change the data source (e.g., switch from PostgreSQL to another DB) with minimal changes to services/controllers.
-
-### 5. Routes (`src/routes/`)
-
-Routes define the API endpoints and map them to controller functions. They also apply middleware for authentication and validation:
-
-- **auth.route.ts**: Defines endpoints for authentication (e.g., POST /api/login, POST /api/register).
-- **user.route.ts**: Endpoints for user management (e.g., GET /api/users, GET /api/users/:id, PUT, DELETE, etc.).
-- **Other routes**: Endpoints for congress, content, history, orators, role, session, usersProfiles, usersRoles, etc.
-
-Routes are grouped by resource and follow RESTful conventions.
-
 ---
 
 ## 📝 Example Flow
