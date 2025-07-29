@@ -59,12 +59,20 @@ function CongressDetail() {
                 const congressData = cg.data;
                 setCongress(congressData);
 
-                const filteredSessions = allContents.data.filter((s: Content) =>
-                    congressData.session_ids.includes(s.id)
+                const filteredSessionList = (allTopics.data || []).filter((session: { id: number }) =>
+                    congressData.session_ids.includes(session.id)
                 );
-                setSessions(filteredSessions);
+
+                const contentIdSet = new Set<number>(
+                    filteredSessionList.flatMap((s: { content_ids: number[] }) => s.content_ids || [])
+                );
+                const filteredContents = (allContents.data || []).filter((s: Content) =>
+                    contentIdSet.has(s.id)
+                );
+
+                setTopicSessions(filteredSessionList);
+                setSessions(filteredContents);
                 setOrators(allOrators.data);
-                setTopicSessions(allTopics.data);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
