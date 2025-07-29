@@ -72,7 +72,10 @@ function CongressDetail() {
 
                 setTopicSessions(filteredSessionList);
                 setSessions(filteredContents);
-                setOrators(allOrators.data);
+                const filteredOrators = (allOrators.data || []).filter((o: Orator) =>
+                    Array.isArray(o.content_ids) && o.content_ids.some(id => contentIdSet.has(id))
+                );
+                setOrators(filteredOrators);
             } catch (err) {
                 console.error('Error loading congress', err);
             } finally {
@@ -140,7 +143,7 @@ function CongressDetail() {
                                                 <li key={s.id} className="session-item">
                                                     <div
                                                         className="session-box speaker-box"
-                                                        onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
+                                                        onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } })}
                                                         style={{ cursor: 'pointer' }}
                                                     >
                                                         <div className="speaker-info">
@@ -202,7 +205,7 @@ function CongressDetail() {
                                                         <li key={s.id} className="session-item">
                                                             <div
                                                                 className="session-box"
-                                                                onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
+                                                                onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } })}
                                                             >
                                                                 <p className="session-title">{s.title}</p>
                                                                 <p className="speaker-name">{selectedOrator.name}</p>
@@ -252,7 +255,7 @@ function CongressDetail() {
                                                     <li key={s.id} className="session-item">
                                                         <div
                                                             className="session-box"
-                                                            onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } }) }
+                                                            onClick={() => navigate(`/watch/${s.id}`, { state: { from: location.pathname } })}
                                                         >
                                                             <p className="session-title">{s.title}</p>
                                                             <p className="speaker-name">{getOratorName(s.orator_id)}</p>

@@ -65,7 +65,7 @@ function CongressDirectory() {
                       {new Date(c.date).toLocaleDateString()} — {c.city}
                     </p>
                     <p className="sessions">
-                      {c.session_ids?.length > 0 ? `${c.session_ids.length} sessions` : 'No sessions available'}
+                      {c.session_ids?.length > 0 ? `${c.session_ids.length} topics` : 'No topics available'}
                     </p>
                     {c.picture && <img src={c.picture} alt={c.name} className="congress-image" />}
                   </div>
