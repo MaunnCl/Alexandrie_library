@@ -4,7 +4,6 @@ import { syncVideo } from "./utils/scripts/syncVideo.utils";
 import { syncOratorsPhotos } from "./utils/scripts/syncOratorsPhotos.utils";
 import { syncTimeStamp } from "./utils/scripts/syncTimeStamp";
 import { syncOratorContentIds } from "./utils/scripts/syncContentForOrators";
-import { checkVideoSync } from "./utils/scripts/checkMissingVideos";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
 
@@ -42,15 +41,6 @@ const runCronJobs = async () => {
   } catch (err) {
     console.error("❌ Erreur dans syncContentsOrator :\n", err);
   }
-
-  try {
-    console.log("▶️ Lancement de checkMissingVidéos...");
-    await checkVideoSync();
-    console.log("✅ checkVideoSync terminé !\n");
-  } catch (err) {
-    console.error("❌ Erreur dans checkVideoSync :\n", err);
-  }
-
   console.log("🕒 [CRON] Tâche complète terminée.\n");
 };
 
