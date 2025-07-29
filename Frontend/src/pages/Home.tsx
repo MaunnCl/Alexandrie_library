@@ -78,7 +78,7 @@ function Home() {
           <h3>Congress Directory</h3>
           <p>Find schedules and details for upcoming meetings.</p>
         </Link>
-        <Link to="/categories" className="feature-card">
+        <Link to="/speakers" className="feature-card">
           <FaUsers />
           <h3>Expert Speakers</h3>
           <p>Discover sessions featuring renowned professionals.</p>

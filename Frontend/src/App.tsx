@@ -13,6 +13,7 @@ import CongressDetail from './pages/CongressDetail';
 import VideoWatchPage from './pages/VideoWatchPage';
 import Watch from './pages/Watch';
 import SpeakerDetail from './pages/SpeakerDetail';
+import SpeakersList from './pages/SpeakersList';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/congress/:id" element={<CongressDetail />} />
         <Route path="/speaker/:id" element={<SpeakerDetail />} />
         <Route path="/watch/:id" element={<Watch />} />
+        <Route path="/speakers" element={<SpeakersList />} />
       </Routes>
     </Router>
   );
