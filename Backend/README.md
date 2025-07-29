@@ -1,9 +1,16 @@
+# Documentation Backend du projet Great Alexandria Library - Juillet 2025
+
+réalisé par Mathis CHAMPIN
+
+## Lancer le projet
+
+```ssh
 npm run build      → Build the project  
 npm start         → Start production build  
 npm run migrate    → Run DB migrations  
 npm test         → Run tests (if implemented)
 docker-compose.yaml
-
+```
 
 # 🗂️ Structure et Description du Backend
 
@@ -301,4 +308,4 @@ Pour d'autres problèmes, consultez les logs ou ouvrez une issue sur le dépôt.
 
 ---
 
-✅ **Prêt à builder, lancer et hacker !**
+✅ **Prêt à builder, lancer !**
