@@ -59,7 +59,7 @@ const server = app_1.default.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Serveur démarré sur http://0.0.0.0:${PORT}`);
     console.log(`📄 Swagger disponible sur http://0.0.0.0:${PORT}/api-docs`);
     // Lancer tout de suite au démarrage
-    //runCronJobs();
+    runCronJobs();
     // Puis relancer chaque heure
     node_cron_1.default.schedule("0 * * * *", runCronJobs);
     console.log("🕒 Cron job planifié pour exécuter les scripts toutes les heures.");

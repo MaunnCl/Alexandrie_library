@@ -49,7 +49,7 @@ const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`📄 Swagger disponible sur http://0.0.0.0:${PORT}/api-docs`);
 
   // Lancer tout de suite au démarrage
-  //runCronJobs();
+  runCronJobs();
 
   // Puis relancer chaque heure
   cron.schedule("0 * * * *", runCronJobs);

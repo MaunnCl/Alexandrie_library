@@ -40,9 +40,7 @@ app.use("/api", oratorsRoutes);
 app.use("/api", contentsRoutes);
 app.use("/api", congressRoutes);
 app.use("/api", sessionRoutes);
-console.log("Routes history en cours de montage");
 app.use("/api", historyRoutes);
-console.log("✅ Routes history montées");
 setupSwagger(app);
 
 export default app;
