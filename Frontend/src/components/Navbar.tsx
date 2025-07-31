@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import api from '../lib/api';
 import SearchBar from './SearchBar';
+import SidebarMenu from "./SidebarMenu"; // <-- import
 import '../styles/Navbar.css';
+import enzopic from '../assets/enzo.jpg'; // <-- import
 
 interface User {
   firstname: string;
@@ -64,18 +66,23 @@ function Navbar() {
 
   return (
     <header className="navbar">
+      <div className="left-nav">
+        <SidebarMenu />
+        <div className="search-wrapper">
+          <SearchBar />
+        </div>
+      </div>
+
+      {/* Logo centré */}
       <Link to="/" className="logo-link">
         <img src="/logo_transparent.png" alt="Logo" className="logo" />
       </Link>
-      <nav className="nav-links">
-        <SearchBar />
-      </nav>
 
       {user && (
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
             <img
-              src="https://via.placeholder.com/40x40?text=👤"
+              src={enzopic} // <-- use enzopic here
               alt="User Avatar"
               className="avatar"
             />

@@ -1,0 +1,80 @@
+/* bouton hamburger */
+.hamburger-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 22px;
+  margin-right: 20px; /* espace entre bouton et search bar */
+  position: relative; /* plus de fixed */
+  top: auto;
+  left: auto;
+  z-index: 1;
+}
+/* overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1100;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-overlay.open .sidebar {
+  left: 0;
+}
+
+/* bouton fermeture */
+.close-btn {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 30px;
+}
+
+/* liens du menu */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -240px;
+  width: 240px;
+  height: 100%;
+  background: #111;
+  color: white;
+  padding: 20px;
+  transition: left 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 45px; /* ⬅️ plus d’espace (avant c’était 25px/35px) */
+  margin-top: 60px; /* ⬅️ descend les liens un peu plus sous la croix */
+}
+
+.sidebar-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.3rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+}
+
+.sidebar-links a:hover {
+  color: #e74c3c;
+  transform: translateX(8px);
+}
