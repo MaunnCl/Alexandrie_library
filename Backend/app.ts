@@ -2,9 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./src/routes/users.route";
-import userRolesRoutes from "./src/routes/usersRoles.route"
-import userProfilesRoutes from "./src/routes/usersProfiles.route"
-import roleRoutes from "./src/routes/role.route"
+import userRolesRoutes from "./src/routes/usersRoles.route";
+import userProfilesRoutes from "./src/routes/usersProfiles.route";
+import roleRoutes from "./src/routes/role.route";
 import oratorsRoutes from "./src/routes/orators.route";
 import contentsRoutes from "./src/routes/content.route";
 import congressRoutes from "./src/routes/congress.route";
@@ -40,8 +40,9 @@ app.use("/api", oratorsRoutes);
 app.use("/api", contentsRoutes);
 app.use("/api", congressRoutes);
 app.use("/api", sessionRoutes);
+console.log("Routes history en cours de montage");
 app.use("/api", historyRoutes);
-
+console.log("✅ Routes history montées");
 setupSwagger(app);
 
 export default app;

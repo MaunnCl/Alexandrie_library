@@ -39,6 +39,8 @@ app.use("/api", orators_route_1.default);
 app.use("/api", content_route_1.default);
 app.use("/api", congress_route_1.default);
 app.use("/api", session_route_1.default);
+console.log("Routes history en cours de montage");
 app.use("/api", history_route_1.default);
+console.log("✅ Routes history montées");
 (0, swagger_1.setupSwagger)(app);
 exports.default = app;
