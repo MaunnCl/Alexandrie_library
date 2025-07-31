@@ -18,54 +18,49 @@ const syncVideo_utils_1 = require("./utils/scripts/syncVideo.utils");
 const syncOratorsPhotos_utils_1 = require("./utils/scripts/syncOratorsPhotos.utils");
 const syncTimeStamp_1 = require("./utils/scripts/syncTimeStamp");
 const syncContentForOrators_1 = require("./utils/scripts/syncContentForOrators");
-const checkMissingVideos_1 = require("./utils/scripts/checkMissingVideos");
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+const runCronJobs = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("⏳ [CRON] Début de la tâche horaire...");
+    try {
+        console.log("▶️ Lancement de syncVideo...");
+        yield (0, syncVideo_utils_1.syncVideo)();
+        console.log("✅ syncVideo terminé !\n");
+    }
+    catch (err) {
+        console.error("❌ Erreur dans syncVideo :\n", err);
+    }
+    try {
+        console.log("▶️ Lancement de syncOratorsPhotos...");
+        yield (0, syncOratorsPhotos_utils_1.syncOratorsPhotos)();
+        console.log("✅ syncOratorsPhotos terminé !\n");
+    }
+    catch (err) {
+        console.error("❌ Erreur dans syncOratorsPhotos :\n", err);
+    }
+    try {
+        console.log("▶️ Lancement de syncTimeStamp...");
+        yield (0, syncTimeStamp_1.syncTimeStamp)();
+        console.log("✅ syncTimeStamp terminé !\n");
+    }
+    catch (err) {
+        console.error("❌ Erreur dans syncTimeStamp :\n", err);
+    }
+    try {
+        console.log("▶️ Lancement de syncContentsOrator...");
+        yield (0, syncContentForOrators_1.syncOratorContentIds)();
+        console.log("✅ syncContentsOrator terminé !\n");
+    }
+    catch (err) {
+        console.error("❌ Erreur dans syncContentsOrator :\n", err);
+    }
+    console.log("🕒 [CRON] Tâche complète terminée.\n");
+});
 const server = app_1.default.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Serveur démarré sur http://0.0.0.0:${PORT}`);
     console.log(`📄 Swagger disponible sur http://0.0.0.0:${PORT}/api-docs`);
-    node_cron_1.default.schedule("0 * * * *", () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("⏳ [CRON] Début de la tâche horaire...");
-        try {
-            console.log("▶️ Lancement de syncVideo...");
-            yield (0, syncVideo_utils_1.syncVideo)();
-            console.log("✅ syncVideo terminé !\n");
-        }
-        catch (err) {
-            console.error("❌ Erreur dans syncVideo :\n", err);
-        }
-        try {
-            console.log("▶️ Lancement de syncOratorsPhotos...");
-            yield (0, syncOratorsPhotos_utils_1.syncOratorsPhotos)();
-            console.log("✅ syncOratorsPhotos terminé !\n");
-        }
-        catch (err) {
-            console.error("❌ Erreur dans syncOratorsPhotos :\n", err);
-        }
-        try {
-            console.log("▶️ Lancement de syncTimeStamp...");
-            yield (0, syncTimeStamp_1.syncTimeStamp)();
-            console.log("✅ syncTimeStamp terminé !\n");
-        }
-        catch (err) {
-            console.error("❌ Erreur dans syncTimeStamp :\n", err);
-        }
-        try {
-            console.log("▶️ Lancement de syncContentsOrator...");
-            yield (0, syncContentForOrators_1.syncOratorContentIds)();
-            console.log("✅ syncContentsOrator terminé !\n");
-        }
-        catch (err) {
-            console.error("❌ Erreur dans syncContentsOrator :\n", err);
-        }
-        try {
-            console.log("▶️ Lancement de checkMissingVidéos...");
-            yield (0, checkMissingVideos_1.checkVideoSync)();
-            console.log("✅ checkVideoSync terminé !\n");
-        }
-        catch (err) {
-            console.error("❌ Erreur dans checkVideoSync :\n", err);
-        }
-        console.log("🕒 [CRON] Tâche complète terminée.\n");
-    }));
+    // Lancer tout de suite au démarrage
+    runCronJobs();
+    // Puis relancer chaque heure
+    node_cron_1.default.schedule("0 * * * *", runCronJobs);
     console.log("🕒 Cron job planifié pour exécuter les scripts toutes les heures.");
 });
