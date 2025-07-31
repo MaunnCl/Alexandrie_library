@@ -119,6 +119,20 @@ export default function Watch() {
         setTitle(c.title.replace(/\.mp4$/i, ''));
         setThumbnail(c.video_thumbnail_url || c.thumbnail || NO_THUMB);
 
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          try {
+            await api.post("/api/history", {
+              userId: parseInt(userId, 10),
+              contentId: c.id,
+              timeStamp: new Date().toISOString(),
+            });
+            console.log("✅ Ajouté à l'historique");
+          } catch (err) {
+            console.error("❌ Erreur ajout historique:", err);
+          }
+        }
+        
         if (c.orator_id) {
           try {
             const { data: o } = await api.get(`/api/orators/${c.orator_id}`);

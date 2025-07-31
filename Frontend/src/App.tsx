@@ -14,6 +14,7 @@ import VideoWatchPage from './pages/VideoWatchPage';
 import Watch from './pages/Watch';
 import SpeakerDetail from './pages/SpeakerDetail';
 import SpeakersList from './pages/SpeakersList';
+import History from './pages/History';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/speaker/:id" element={<SpeakerDetail />} />
         <Route path="/watch/:id" element={<Watch />} />
         <Route path="/speakers" element={<SpeakersList />} />
+        <Route path="/history" element={<History />} />
       </Routes>
     </Router>
   );

@@ -27,6 +27,9 @@ function SidebarMenu() {
             <Link to="/speakers" onClick={() => setOpen(false)}>
               👤 Speakers
             </Link>
+            <Link to="/history" onClick={() => setOpen(false)}>
+              🕒 History
+            </Link>
           </nav>
         </div>
       </div>

@@ -1,0 +1,60 @@
+.history-page {
+  padding: 40px;
+  background: #111;
+  color: white;
+  min-height: calc(100vh - 140px);
+}
+
+.history-page h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.history-item {
+  background: #1c1c1c;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.history-item:hover {
+  background: #222;
+}
+
+.history-title {
+  font-weight: bold;
+  margin: 0 0 5px;
+}
+
+.history-date {
+  font-size: 0.9rem;
+  color: #bbb;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+  color: #ff4d4d;
+}
