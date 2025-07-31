@@ -28,26 +28,35 @@ function History() {
 
   useEffect(() => {
     async function fetchHistory() {
-      if (!userId) return;
+      if (!userId) {
+        console.warn("⚠️ Aucun userId trouvé dans localStorage");
+        return;
+      }
       try {
-        // 1. récupérer l’historique
+        console.log(`🔍 Fetching history for userId=${userId} ...`);
         const res = await api.get<HistoryItem[]>(`/api/history/${userId}`);
+        console.log("✅ History response:", res.data);
+
         const historyData = res.data;
 
         // 2. pour chaque historique → récupérer le titre du contenu
         const contentPromises = historyData.map(async (h) => {
           try {
+            console.log(`🔍 Fetching content for contentId=${h.contentId} ...`);
             const c = await api.get<Content>(`/api/contents/${h.contentId}`);
+            console.log(`✅ Content #${h.contentId}:`, c.data.title);
             return { ...h, title: c.data.title };
-          } catch {
+          } catch (err) {
+            console.error(`❌ Erreur récupération contentId=${h.contentId}`, err);
             return { ...h, title: `Content #${h.contentId}` };
           }
         });
 
         const enriched = await Promise.all(contentPromises);
+        console.log("📦 Historique enrichi avec titres:", enriched);
         setHistory(enriched);
       } catch (err) {
-        console.error("Error fetching history:", err);
+        console.error("❌ Error fetching history:", err);
       } finally {
         setLoading(false);
       }
@@ -57,10 +66,12 @@ function History() {
 
   async function deleteItem(id: number) {
     try {
+      console.log(`🗑️ Suppression de l'historique id=${id} ...`);
       await api.delete(`/api/history/${id}`);
+      console.log(`✅ Item supprimé id=${id}`);
       setHistory((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
-      console.error("Error deleting history item:", err);
+      console.error("❌ Error deleting history item:", err);
     }
   }
 
