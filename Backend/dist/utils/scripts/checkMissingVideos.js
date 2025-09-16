@@ -44,12 +44,23 @@ function checkVideoSync() {
                 }
             }
         }
+        const missingInS3 = dbPaths.filter((path) => !s3Mp4Paths.includes(path));
         const missingInDB = s3Mp4Paths.filter((path) => !dbPaths.includes(path));
+        // Affichage
+        console.log("\n❌ Vidéos en DB mais absentes de S3 :");
+        if (missingInS3.length === 0)
+            console.log("✅ Aucune");
+        else
+            missingInS3.forEach((p) => console.log(`  - ${p}`));
         console.log("\n🟡 Vidéos sur S3 mais non référencées dans la DB :");
         if (missingInDB.length === 0)
             console.log("✅ Aucune");
         else
             missingInDB.forEach((p) => console.log(`  - ${p}`));
+        console.log("\n✅ Résumé :");
+        console.log(`→ Total DB videos : ${dbPaths.length}`);
+        console.log(`→ Total S3 videos : ${s3Mp4Paths.length}`);
+        console.log(`→ Manquantes sur S3 : ${missingInS3.length}`);
+        console.log(`→ En trop sur S3 : ${missingInDB.length}`);
     });
 }
-checkVideoSync();
