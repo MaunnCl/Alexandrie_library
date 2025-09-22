@@ -55,10 +55,10 @@ export default function Watch() {
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
-  const [thumbnail, setThumbnail] = useState('');
   const [segments, setSegments] = useState<Segment[]>([]);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [videoDur, setVideoDur] = useState(0);
+  const [firstFramePoster, setFirstFramePoster] = useState<string | null>(null);
 
   const [orator, setOrator] = useState<Orator | null>(null);
   const [related, setRelated] = useState<Content[]>([]);
@@ -117,7 +117,6 @@ export default function Watch() {
 
         setVideoUrl(c.url);
         setTitle(c.title.replace(/\.mp4$/i, ''));
-        setThumbnail(c.video_thumbnail_url || c.thumbnail || NO_THUMB);
 
         const userId = localStorage.getItem("userId");
         if (userId) {
@@ -215,7 +214,16 @@ export default function Watch() {
   };
   const next = () => { const i = getCurrentIdx(); if (i !== -1 && i < segments.length - 1) seekIdx(i + 1); }
   const prev = () => { const i = getCurrentIdx(); if (i > 0) seekIdx(i - 1); }
-  const toggle = () => videoRef.current?.paused ? videoRef.current.play() : videoRef.current?.pause();
+  const toggle = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
   const toGrid = () => setShowVid(false);
 
   const updateProgress = () => {
@@ -231,7 +239,32 @@ export default function Watch() {
   };
 
   useEffect(() => {
-    const v = videoRef.current; if (!v) return;
+    if (!videoUrl) return;
+    let cancelled = false;
+    const vid = document.createElement('video');
+    vid.src = videoUrl;
+    vid.crossOrigin = 'anonymous';
+    vid.addEventListener('loadeddata', () => {
+      if (cancelled) return;
+      vid.currentTime = 0.1;
+    });
+    vid.addEventListener('seeked', () => {
+      if (cancelled) return;
+      const cvs = document.createElement('canvas');
+      cvs.width = vid.videoWidth;
+      cvs.height = vid.videoHeight;
+      const ctx = cvs.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(vid, 0, 0, cvs.width, cvs.height);
+        setFirstFramePoster(cvs.toDataURL('image/jpeg'));
+      }
+    });
+    return () => { cancelled = true; };
+  }, [videoUrl]);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!showVid || !v) return;
     v.volume = volume;
     const onPlay = () => setIsPlaying(true), onPause = () => setIsPlaying(false), onMeta = () => setVideoDur(v.duration);
     v.addEventListener('play', onPlay); v.addEventListener('pause', onPause);
@@ -240,7 +273,7 @@ export default function Watch() {
       v.removeEventListener('play', onPlay); v.removeEventListener('pause', onPause);
       v.removeEventListener('timeupdate', updateProgress); v.removeEventListener('loadedmetadata', onMeta);
     }
-  }, [showVid, volume]);
+  }, [showVid, volume, videoRef.current]);
 
   useEffect(() => {
     if (!showVid || !videoRef.current) return;
@@ -306,7 +339,7 @@ export default function Watch() {
                 >
                   <video
                     ref={videoRef}
-                    poster={thumbnail}
+                    poster={firstFramePoster || undefined}
                     playsInline
                     className="video-player glow"
                   >
