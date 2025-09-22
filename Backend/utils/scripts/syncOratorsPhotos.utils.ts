@@ -14,11 +14,26 @@ export async function syncOratorsPhotos(): Promise<void> {
     fileMap.set(file.toLowerCase(), file);
   }
 
+  const usedFiles = new Set<string>();
+
   for (const orator of orators) {
-    const lastName = orator.name.split(' ').pop()?.toLowerCase();
+    const parts = orator.name.split(' ');
+    const lastName = parts.pop()?.toLowerCase();
+    const firstName = parts[0]?.toLowerCase();
+
     if (!lastName) continue;
 
-    const match = EXTENSIONS.map(ext => `orators/${lastName}.${ext}`)
+    const sameLastName = orators.filter(o => o.name.split(' ').pop()?.toLowerCase() === lastName);
+
+    let possibleKeys: string[];
+    if (sameLastName.length > 1 && firstName) {
+      const firstInitial = firstName[0];
+      possibleKeys = EXTENSIONS.map(ext => `orators/${firstInitial}_${lastName}.${ext}`);
+    } else {
+      possibleKeys = EXTENSIONS.map(ext => `orators/${lastName}.${ext}`);
+    }
+
+    const match = possibleKeys
       .map(key => key.toLowerCase())
       .find(normalizedKey => fileMap.has(normalizedKey));
 
@@ -28,6 +43,8 @@ export async function syncOratorsPhotos(): Promise<void> {
     }
 
     const originalKey = fileMap.get(match)!;
+    
+    usedFiles.add(originalKey);
 
     try {
       const presignedUrl = await getPresignedUrl(originalKey);
@@ -39,5 +56,12 @@ export async function syncOratorsPhotos(): Promise<void> {
     } catch (error: unknown) {
       console.error(`❌ Error syncing photo for ${orator.name}:`, (error as Error).message);
     }
+  }
+  const unusedFiles = filesInBucket.filter(f => !usedFiles.has(f));
+  if (unusedFiles.length > 3) {
+    console.log("\n📂 Fichiers inutilisés :");
+    unusedFiles.forEach(f => console.log(f));
+  } else {
+    console.log("\n✅ Tous les fichiers sont utilisés !");
   }
 }
