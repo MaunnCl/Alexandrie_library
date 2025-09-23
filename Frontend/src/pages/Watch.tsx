@@ -336,7 +336,7 @@ export default function Watch() {
         <section className="watch-layout">
           {orator && (
             <aside className="left-pane card">
-              <img src={orator.picture} className="orator-img" />
+              <img src={orator.picture  || '/public/avatar.png'} className="orator-img" />
               <h3 className="orator-name">{orator.name}</h3>
 
               <div className="controls-bar">
