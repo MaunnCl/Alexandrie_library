@@ -4,7 +4,12 @@ import { eq } from "drizzle-orm";
 
 export class HistoryRepository {
     static async addUserHistory(userId: number, contentId: number, timeStamp: string) {
-      return db.insert(userHistory).values({ userId, contentId, timeStamp });
+      return db.insert(userHistory)
+        .values({ userId, contentId, timeStamp })
+        .onConflictDoUpdate({
+          target: [userHistory.userId, userHistory.contentId],
+          set: { timeStamp },
+        });
     }
     
     static async getUserHistory(userId: number) {
