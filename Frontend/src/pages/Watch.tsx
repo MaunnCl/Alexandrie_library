@@ -58,6 +58,7 @@ export default function Watch() {
   const [segments, setSegments] = useState<Segment[]>([]);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [videoDur, setVideoDur] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [firstFramePoster, setFirstFramePoster] = useState<string | null>(null);
 
   const [orator, setOrator] = useState<Orator | null>(null);
@@ -104,6 +105,27 @@ export default function Watch() {
     });
   };
 
+  useEffect(() => {
+    if (!videoUrl) return;
+    let cancelled = false;
+
+    const vid = document.createElement('video');
+    vid.src = videoUrl;
+    vid.preload = "metadata";
+    vid.crossOrigin = 'anonymous';
+
+    const onMeta = () => {
+      if (cancelled) return;
+      setVideoDur(vid.duration || 0);
+    };
+
+    vid.addEventListener('loadedmetadata', onMeta);
+
+    return () => {
+      cancelled = true;
+      vid.removeEventListener('loadedmetadata', onMeta);
+    };
+  }, [videoUrl]);
 
   useEffect(() => {
     (async () => {
@@ -231,6 +253,8 @@ export default function Watch() {
     const pct = (videoRef.current.currentTime / videoRef.current.duration || 0) * 100;
     barRef.current.style.setProperty('--pct', `${pct}%`);
     const idx = getCurrentIdx(); if (idx !== -1 && idx !== curIdx) setCurIdx(idx);
+    setVideoDur(videoRef.current.duration || 0);
+    setCurrentTime(videoRef.current.currentTime || 0);
   };
   const clickProgress = (e: React.MouseEvent) => {
     if (!videoRef.current || !barRef.current) return;
@@ -324,6 +348,12 @@ export default function Watch() {
 
               <input type="range" className="volume" min="0" max="1" step="0.05" value={volume}
                 onChange={e => { const v = +e.target.value; setVolume(v); if (videoRef.current) videoRef.current.volume = v; }} />
+              <div className="video-meta">
+                <span>
+                  {fmtDur(currentTime)} / {fmtDur(videoDur)}
+                </span>
+                <span>Slide {curIdx + 1}/{segments.length}</span>
+              </div>
             </aside>
           )}
 
@@ -342,6 +372,7 @@ export default function Watch() {
                     poster={firstFramePoster || undefined}
                     playsInline
                     className="video-player glow"
+                    onClick={toggle}
                   >
                     <source src={videoUrl!} type="video/mp4" />
                   </video>
@@ -354,20 +385,6 @@ export default function Watch() {
                     <div className="progress-fill" />
                   </div>
 
-                  <div className="video-info-bar">
-                    <p>
-                      <strong>{title}</strong>
-                    </p>
-                    {orator && (
-                      <p>
-                        {orator.name} — {orator.city}, {orator.country}
-                      </p>
-                    )}
-                    <p>
-                      Durée : {fmtDur(videoDur)} — Slide {curIdx + 1}/
-                      {segments.length}
-                    </p>
-                  </div>
                 </motion.div>
               ) : (
                 <motion.div
@@ -397,6 +414,16 @@ export default function Watch() {
               )}
             </AnimatePresence>
           </main>
+
+                  {!loading && (
+          <div className="video-info-bar">
+            {orator && (
+              <p>
+                <strong>{title}</strong> - {orator.name} - {orator.city}, {orator.country}
+              </p>
+            )}
+          </div>
+        )}
 
           <section className="suggestions">
             <h3 className="neon sub">Other videos by this speaker</h3>

@@ -72,8 +72,9 @@
 
 .orator-img {
   width: 100%;
-  border-radius: 8px;
-  margin-bottom: .6rem
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: .6rem;
 }
 
 .orator-name {
@@ -169,11 +170,32 @@
 }
 
 /* ===== VIDEO & PROGRESS ===== */
+
+.video-meta {
+  margin-top: 1rem;
+  font-size: 0.98em;
+  color: #fff;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.video-meta span + span {
+  display: block;
+  margin-top: 0.5em;
+}
+
 .video-player {
   width: 100%;
+  max-width: 68vw;
+  aspect-ratio: 16 / 9;
+  height: auto;
   border-radius: 12px;
   border: 1px solid #333;
-  background: #000
+  background: #000;
+  box-shadow: 0 0 12px rgba(255, 0, 0, .25);
+  margin-bottom: 1rem;
+  object-fit: contain;
+  cursor: pointer;
 }
 
 .glow {
@@ -213,7 +235,6 @@
   padding: 1.1rem 2rem;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border: 2.5px solid #fff;
   position: relative;
   overflow: hidden;
 }
