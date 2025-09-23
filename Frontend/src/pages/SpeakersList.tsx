@@ -44,7 +44,7 @@ function SpeakersList() {
               <Link key={sp.id} to={`/speaker/${sp.id}`} className="speaker-card">
                 <div className="speaker-img-wrapper">
                   <img
-                    src={sp.picture || '/default-avatar.png'}
+                    src={sp.picture || '/public/avatar.png'}
                     alt={sp.name}
                     className="speaker-img"
                   />

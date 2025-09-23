@@ -5,7 +5,7 @@
   justify-content: center;
   text-align: center;
   padding: 100px 20px;
-  background: linear-gradient(to bottom right, #121212, #1f1f1f), url('/logo.png');
+  background: linear-gradient(to bottom right, #121212, #1f1f1f), url("/logo.png");
   background-size: cover;
   background-position: center;
   min-height: 400px;
@@ -28,7 +28,6 @@
   margin: 0 auto;
   text-align: center;
 }
-
 
 .hero h1 {
   font-size: 52px;
@@ -105,6 +104,129 @@
   font-size: 15px;
 }
 
+.so-one-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  position: relative;
+}
+
+.so-one-title {
+  font-size: 3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 60px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.so-one-title .highlight {
+  background: linear-gradient(45deg, #ff4757, #ff6b7a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.so-one-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.so-one-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.so-one-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff4757, #ff6b7a);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.so-one-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(255, 71, 87, 0.3);
+  box-shadow: 0 20px 40px rgba(255, 71, 87, 0.1);
+}
+
+.so-one-card:hover::before {
+  opacity: 1;
+}
+
+.so-one-card h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.so-one-card p {
+  color: #cccccc;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.so-one-commitments {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.commitment-text {
+  color: #ffffff;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  padding: 0 20px;
+  font-weight: 400;
+}
+
+.commitment-text:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .so-one-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+
+  .so-one-cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .so-one-card {
+    padding: 30px 20px;
+  }
+
+  .commitment-text {
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
+}
+
 .intro-overlay {
   position: fixed;
   inset: 0;
@@ -123,7 +245,7 @@
 }
 
 .intro-text {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   letter-spacing: 1px;
   filter: drop-shadow(0 0 5px #ffffff40);
 }
@@ -143,7 +265,7 @@
 }
 
 .intro-logo.alexandria {
-  filter: drop-shadow(0 0 10px #ff0000);
+  filter: drop-shadow(0 0 10px #ff4757);
 }
 
 .text-primary {
@@ -162,10 +284,10 @@
 
 @keyframes breathe {
   0% {
-    transform: scale(1)
+    transform: scale(1);
   }
 
   100% {
-    transform: scale(1.03)
+    transform: scale(1.03);
   }
 }
