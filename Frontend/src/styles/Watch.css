@@ -60,21 +60,17 @@
   align-items: start;
 }
 
-/* Updated layout to have sidebar on left and main content on right */
 .orator-sidebar {
   position: sticky;
   top: 2rem;
 }
 
-/* Updated main video container to take remaining space */
 .main-video-container {
   position: relative;
   width: 100%;
-  /* Ensure container doesn't inherit grid constraints */
   min-width: 0;
 }
 
-/* Netflix-style video player with overlay controls */
 .video-player {
   width: 100%;
   height: 100%;
@@ -86,7 +82,6 @@
   cursor: pointer;
 }
 
-/* Video overlay that appears on hover */
 .video-overlay {
   position: absolute;
   top: 0;
@@ -107,36 +102,35 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* Force full width and override any external max-width constraints */
   width: 100%;
   height: 100%;
   box-sizing: border-box;
 }
 
-/* Video wrapper to contain video and overlay properly */
+.video-overlay .overlay-ctrl,
+.video-overlay .progress-container,
+.video-overlay .volume-container {
+  pointer-events: auto;
+}
+
+
 .video-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  /* Ensure wrapper doesn't inherit grid constraints */
   min-width: 0;
-  /* Force container to respect its boundaries */
   overflow: hidden;
   border-radius: 12px;
 }
 
-/* Show overlay on hover of the wrapper, not just video */
 .video-wrapper:hover .video-overlay {
   opacity: 1;
-  pointer-events: all;
 }
 
-/* Top overlay info */
 .overlay-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* Reduce padding to ensure controls extend to edges */
   padding: 1rem 0;
   width: 100%;
   box-sizing: border-box;
@@ -160,12 +154,10 @@
   border: 1px solid rgba(255, 43, 43, 0.3);
 }
 
-/* Bottom overlay controls */
 .overlay-bottom {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  /* Reduce padding and ensure full width coverage */
   padding: 1rem 0;
   width: 100%;
   box-sizing: border-box;
@@ -175,7 +167,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  /* Ensure progress bar spans full width */
   width: 100%;
   padding: 0 1.5rem;
   box-sizing: border-box;
@@ -190,7 +181,6 @@
   overflow: hidden;
   cursor: pointer;
   transition: height 0.2s ease;
-  /* Ensure no margin constraints */
   margin: 0;
 }
 
@@ -205,7 +195,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Ensure controls row spans full width */
   width: 100%;
   padding: 0 1.5rem;
   box-sizing: border-box;
@@ -223,7 +212,6 @@
   gap: 1rem;
 }
 
-/* Updated control buttons for overlay */
 .overlay-ctrl {
   width: 40px;
   height: 40px;
@@ -256,7 +244,6 @@
   font-size: 1.3rem;
 }
 
-/* Time display in overlay */
 .time-display {
   color: white;
   font-size: 0.9rem;
@@ -265,7 +252,6 @@
   min-width: 100px;
 }
 
-/* Volume control in overlay */
 .volume-container {
   display: flex;
   align-items: center;
@@ -304,7 +290,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Added styling for orator location */
 .orator-location {
   color: #ccc;
   font-size: 0.9rem;
@@ -397,14 +382,12 @@
   box-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
 }
 
-/* Hide grid toggle button since we're focusing on video experience */
 .grid-toggle {
   display: none;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 720px) {
-  /* Stack layout on mobile */
   .watch-layout {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -428,7 +411,6 @@
     font-size: 1.35rem;
   }
 
-  /* Updated mobile padding for overlay sections */
   .progress-container {
     padding: 0 1rem;
   }
