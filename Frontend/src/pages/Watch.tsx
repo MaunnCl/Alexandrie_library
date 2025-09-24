@@ -397,13 +397,13 @@ export default function Watch() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.25 }}
                   className="video-wrapper"
+                  onClick={toggle}
                 >
                   <video
                     ref={videoRef}
                     poster={firstFramePoster || undefined}
                     playsInline
                     className="video-player glow"
-                    onClick={toggle}
                   >
                     <source src={videoUrl!} type="video/mp4" />
                   </video>
