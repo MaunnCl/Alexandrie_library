@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion"
 import api from "../lib/api"
 import axios from "axios"
 import "../styles/Watch.css"
-import siteLogo from "/logo.png"
 import Footer from "../components/Footer"
 import { FaArrowLeft } from "react-icons/fa"
 
@@ -407,7 +406,7 @@ useEffect(() => {
             {title}
           </motion.h1>
 
-          <img src={siteLogo || "/placeholder.svg"} className="watch-logo" onClick={() => navigate("/")} title="Home" />
+          <img src={"/logo_transparent.png"} className="watch-logo" onClick={() => navigate("/")} title="Home" />
         </header>
 
         {loading ? (

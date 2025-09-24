@@ -194,8 +194,7 @@
 
 .preview-tooltip {
   position: absolute;
-  bottom: 40px;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(-100%);
   background: rgba(0,0,0,0.8);
   border-radius: 6px;
   padding: 4px;
@@ -209,6 +208,7 @@
   height: auto;
   border-radius: 4px;
   display: block;
+  margin-bottom: 4px;
 }
 
 .preview-time {
