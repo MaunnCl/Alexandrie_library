@@ -191,6 +191,39 @@
   transition: width 0.1s ease;
 }
 
+.preview-tooltip {
+  position: absolute;
+  bottom: 40px;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  border-radius: 6px;
+  padding: 4px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.preview-img {
+  width: 160px;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.preview-time {
+  font-size: 0.8rem;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.preview-placeholder {
+  width: 160px;
+  height: 90px;
+  background: #333;
+  border-radius: 4px;
+}
+
+
 .controls-row {
   display: flex;
   justify-content: space-between;
@@ -316,10 +349,11 @@
 }
 
 .alexandria-logo {
+  display: block;
+  margin: 1rem auto 0;
   height: 80px;
   width: auto;
   object-fit: contain;
-  margin-top: 1rem;
 }
 
 /* ===== SUGGESTIONS ===== */

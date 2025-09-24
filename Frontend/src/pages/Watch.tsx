@@ -78,6 +78,33 @@ export default function Watch() {
 
   const [relThumbs, setRelThumbs] = useState<Record<number, string>>({})
 
+  const [hoverTime, setHoverTime] = useState<number | null>(null)
+  const [hoverFrame, setHoverFrame] = useState<string | null>(null)
+  const [hoverX, setHoverX] = useState<number | null>(null)
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!videoRef.current || !barRef.current) return
+
+    const { left, width } = barRef.current.getBoundingClientRect()
+    const ratio = (e.clientX - left) / width
+    const time = ratio * videoRef.current.duration
+
+    setHoverTime(time)
+    setHoverX(e.clientX - left)
+
+    const pastSegments = segments.filter((s) => +s.frame / 60 <= time)
+    const frame = pastSegments.length > 0 ? pastSegments[pastSegments.length - 1].frame : null
+    setHoverFrame(frame)
+  }
+
+  const handleMouseLeave = () => {
+    setHoverTime(null)
+    setHoverFrame(null)
+    setHoverX(null)
+  }
+
+
+
   const fmtDur = (s: number) => {
     const h = Math.floor(s / 3600),
       m = Math.floor((s % 3600) / 60),
@@ -433,9 +460,29 @@ useEffect(() => {
 
                     <div className="overlay-bottom">
                       <div className="progress-container">
-                        <div className="progress-bar" ref={barRef} onClick={clickProgress}>
+                        <div
+                          className="progress-bar"
+                          ref={barRef}
+                          onClick={clickProgress}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
                           <div className="progress-fill" />
                         </div>
+                        {hoverTime != null && (
+                          <div
+                            className="preview-tooltip"
+                            style={{ left: hoverX ?? 0 }}
+                          >
+                            {hoverFrame && previews[hoverFrame] ? (
+                              <img src={previews[hoverFrame]} alt="preview" className="preview-img" />
+                            ) : (
+                              <div className="preview-placeholder" />
+                            )}
+                            <div className="preview-time">{hoverTime ? fmtDur(hoverTime) : ""}</div>
+                          </div>
+                        )}
+
                       </div>
 
                       <div className="controls-row">
