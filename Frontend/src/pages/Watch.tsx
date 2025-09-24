@@ -81,6 +81,15 @@ export default function Watch() {
   const [hoverFrame, setHoverFrame] = useState<string | null>(null)
   const [hoverX, setHoverX] = useState<number | null>(null)
 
+  const [showLayout, setShowLayout] = useState(true)
+  const hideTimer = useRef<number | null>(null)
+
+  const handleMouseActivity = () => {
+    setShowLayout(true)
+    if (hideTimer.current) clearTimeout(hideTimer.current)
+    hideTimer.current = window.setTimeout(() => setShowLayout(false), 3000)
+  }
+
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!videoRef.current || !barRef.current) return
 
@@ -140,6 +149,16 @@ export default function Watch() {
       })()
     })
   }
+
+  useEffect(() => {
+    const handleMouseMoveGlobal = () => handleMouseActivity()
+    document.addEventListener("mousemove", handleMouseMoveGlobal)
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMoveGlobal)
+      if (hideTimer.current) clearTimeout(hideTimer.current)
+    }
+  }, [])
 
   useEffect(() => {
     if (!videoUrl) return
@@ -450,7 +469,7 @@ useEffect(() => {
                       <source src={videoUrl!} type="video/mp4" />
                     </video>
 
-                    <div className="video-overlay">
+                    <div className="video-overlay" style={{ opacity: showLayout ? 1 : 0, transition: "opacity 0.3s" }}>
                       <div className="overlay-top">
                         <div className="video-title-overlay">{title}</div>
                         <div className="slide-counter">
@@ -593,7 +612,7 @@ useEffect(() => {
           </section>
 
         )}
-      </div>
+              </div>
       <Footer />
     </>
   );
