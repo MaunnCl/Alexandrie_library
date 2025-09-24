@@ -438,7 +438,6 @@ useEffect(() => {
                 <h3 className="orator-name">{orator.name}</h3>
                 {orator.city}, {orator.country}
                 
-                <img src="/logo_transparent.png" alt="Alexandria Logo" className="alexandria-logo" />
                 <div className="so-one-end">
                   <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
                   <h3 className="so-one-text">
@@ -471,7 +470,7 @@ useEffect(() => {
 
                     <div className="video-overlay" style={{ opacity: showLayout ? 1 : 0, transition: "opacity 0.3s" }}>
                       <div className="overlay-top">
-                        <div className="video-title-overlay">{title}</div>
+                        {/* <div className="video-title-overlay">{title}</div> */}
                         <div className="slide-counter">
                           Slide {curIdx + 1}/{segments.length}
                         </div>

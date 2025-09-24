@@ -153,6 +153,7 @@
   font-weight: 600;
   color: #ff2b2b;
   border: 1px solid rgba(255, 43, 43, 0.3);
+  margin-left: 1rem;
 }
 
 .overlay-bottom {
@@ -234,6 +235,13 @@
   box-sizing: border-box;
 }
 
+.left-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem;
+}
+
 .left-controls {
   display: flex;
   align-items: center;
@@ -302,7 +310,7 @@
 /* ===== ORATOR CARD ===== */
 .card {
   background: #1c1c1c;
-  border: 1px solid #550000;
+  border: 3px solid #550000;
   border-radius: 12px;
   padding: 1.25rem;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.12);
@@ -329,14 +337,13 @@
   font-size: 0.9rem;
 }
 
+
 .so-one-end {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1rem;
-  text-align: center;
-  width: 100%;
+  margin-top: auto;
 }
 
 .so-one-logo {
