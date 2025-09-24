@@ -10,7 +10,6 @@ import Categories from './pages/Categories';
 import Home from './pages/Home';
 import CongressDirectory from './pages/CongressDirectory';
 import CongressDetail from './pages/CongressDetail';
-import VideoWatchPage from './pages/VideoWatchPage';
 import Watch from './pages/Watch';
 import SpeakerDetail from './pages/SpeakerDetail';
 import SpeakersList from './pages/SpeakersList';
@@ -28,7 +27,6 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/profile-creation" element={<ProfileCreation />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/watch" element={<VideoWatchPage />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/congress" element={<CongressDirectory />} />
         <Route path="/congress/:id" element={<CongressDetail />} />
