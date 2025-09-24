@@ -111,6 +111,12 @@ function Home() {
               The library's agreement with doctors and researchers is to provide the best tools for education and the fight against diseases.
             </p>
           </div>
+          <div className="so-one-end">
+            <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
+            <h3 className="so-one-text">
+              <span className="text-primary">So</span> One
+            </h3>
+          </div>
         </div>
       </section>
 

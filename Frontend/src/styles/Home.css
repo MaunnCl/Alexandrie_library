@@ -281,6 +281,27 @@
   filter: drop-shadow(0 0 10px #ffffff);
 }
 
+.so-one-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  padding-right: 2rem;
+}
+
+.so-one-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.so-one-text {
+  text-align: right;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
 @keyframes breathe {
   0% {
     transform: scale(1);
