@@ -390,209 +390,212 @@ useEffect(() => {
   }, [showVid])
 
   return (
-    <div className="watch-page">
-      <header className="watch-topbar glass">
-        <button className="back-btn" onClick={() => navigate(from)}>
-          <FaArrowLeft />
-          <span>Sessions</span>
-        </button>
+    <>
+      <div className="watch-page">
+        <header className="watch-topbar glass">
+          <button className="back-btn" onClick={() => navigate(from)}>
+            <FaArrowLeft />
+            <span>Sessions</span>
+          </button>
 
-        <motion.h1
-          className="session-title neon"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          {title}
-        </motion.h1>
+          <motion.h1
+            className="session-title neon"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            {title}
+          </motion.h1>
 
-        <img src={siteLogo || "/placeholder.svg"} className="watch-logo" onClick={() => navigate("/")} title="Home" />
-      </header>
+          <img src={siteLogo || "/placeholder.svg"} className="watch-logo" onClick={() => navigate("/")} title="Home" />
+        </header>
 
-      {loading ? (
-        <p className="loading-text">Chargement…</p>
-      ) : (
-        <section className="watch-layout">
-          {orator && (
-            <aside className="left-pane card">
-              <img src={orator.picture || "/public/avatar.png"} className="orator-img" />
-              <h3 className="orator-name">{orator.name}</h3>
-              {orator.city}, {orator.country}
-              
-              <img src="/logo_transparent.png" alt="Alexandria Logo" className="alexandria-logo" />
-              <div className="so-one-end">
-                <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
-                <h3 className="so-one-text">
-                  <span className="text-primary">So</span> One
-                </h3>
-              </div>
-            </aside>
-          )}
+        {loading ? (
+          <p className="loading-text">Chargement…</p>
+        ) : (
+          <section className="watch-layout">
+            {orator && (
+              <aside className="left-pane card">
+                <img src={orator.picture || "/public/avatar.png"} className="orator-img" />
+                <h3 className="orator-name">{orator.name}</h3>
+                {orator.city}, {orator.country}
+                
+                <img src="/logo_transparent.png" alt="Alexandria Logo" className="alexandria-logo" />
+                <div className="so-one-end">
+                  <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
+                  <h3 className="so-one-text">
+                    <span className="text-primary">So</span> One
+                  </h3>
+                </div>
+              </aside>
+            )}
 
-          <main className="right-pane">
-            <AnimatePresence mode="wait">
-              {showVid ? (
-                <motion.div
-                  key="player"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.25 }}
-                  className="video-wrapper"
-                >
-                  <video
-                    ref={videoRef}
-                    poster={firstFramePoster || undefined}
-                    playsInline
-                    className="video-player glow"
-                    onClick={toggle}
-                  >
-                    <source src={videoUrl!} type="video/mp4" />
-                  </video>
-
-                  <div className="video-overlay">
-                    <div className="overlay-top">
-                      <div className="video-title-overlay">{title}</div>
-                      <div className="slide-counter">
-                        Slide {curIdx + 1}/{segments.length}
-                      </div>
-                    </div>
-
-                    <div className="overlay-bottom">
-                      <div className="progress-container">
-                        <div
-                          className="progress-bar"
-                          ref={barRef}
-                          onClick={clickProgress}
-                          onMouseMove={handleMouseMove}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          <div className="progress-fill" />
-                        </div>
-                        {hoverTime != null && (
-                          <div
-                            className="preview-tooltip"
-                            style={{ left: hoverX ?? 0 }}
-                          >
-                            {hoverFrame && previews[hoverFrame] ? (
-                              <img src={previews[hoverFrame]} alt="preview" className="preview-img" />
-                            ) : (
-                              <div className="preview-placeholder" />
-                            )}
-                            <div className="preview-time">{hoverTime ? fmtDur(hoverTime) : ""}</div>
-                          </div>
-                        )}
-
-                      </div>
-
-                      <div className="controls-row">
-                        <div className="left-controls">
-                          <button className="overlay-ctrl" onClick={prev} disabled={curIdx <= 0}>
-                            ⏮
-                          </button>
-                          <button className="overlay-ctrl play-pause-btn" onClick={toggle}>
-                            {isPlaying ? "⏸" : "▶"}
-                          </button>
-                          <button className="overlay-ctrl" onClick={next} disabled={curIdx >= segments.length - 1}>
-                            ⏭
-                          </button>
-                          <div className="time-display">
-                            {fmtDur(currentTime)} / {fmtDur(videoDur)}
-                          </div>
-                        </div>
-
-                        <div className="right-controls">
-                          <div className="volume-container">
-                            <span style={{ color: "white", fontSize: "1.1rem" }}>🔊</span>
-                            <input
-                              type="range"
-                              className="volume-overlay"
-                              min="0"
-                              max="1"
-                              step="0.05"
-                              value={volume}
-                              onChange={(e) => {
-                                const v = +e.target.value
-                                setVolume(v)
-                                if (videoRef.current) videoRef.current.volume = v
-                              }}
-                            />
-                          </div>
-                          <button className="overlay-ctrl" onClick={toGrid}>
-                            🖼
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="grid"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <h3 className="neon sub">Choisissez un moment</h3>
-                  <ul className="frame-grid">
-                    {segments.map(({ frame }, i) => (
-                      <li
-                        key={frame}
-                        className={`thumb-wrapper ${i === curIdx ? "active" : ""}`}
-                        onClick={() => seekIdx(i)}
-                      >
-                        {previews[frame] ? (
-                          <img src={previews[frame] || "/placeholder.svg"} className="thumb" />
-                        ) : (
-                          <div className="placeholder" />
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </main>
-
-          {!loading && (
-            <div className="video-info-bar">
-              {orator && (
-                <p>
-                  <strong>{title}</strong> - {orator.name}
-                </p>
-              )}
-            </div>
-          )}
-
-          <section className="suggestions">
-            <h3 className="neon sub">Other videos by this speaker</h3>
-
-            {related.length === 0 ? (
-              <p className="loading-text">No other videos for this speaker.</p>
-            ) : (
-              <div className="suggestion-row">
-                {related.map((v, i) => (
+            <main className="right-pane">
+              <AnimatePresence mode="wait">
+                {showVid ? (
                   <motion.div
-                    key={v.id}
-                    className="suggest-card"
+                    key="player"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25 }}
+                    className="video-wrapper"
+                  >
+                    <video
+                      ref={videoRef}
+                      poster={firstFramePoster || undefined}
+                      playsInline
+                      className="video-player glow"
+                      onClick={toggle}
+                    >
+                      <source src={videoUrl!} type="video/mp4" />
+                    </video>
+
+                    <div className="video-overlay">
+                      <div className="overlay-top">
+                        <div className="video-title-overlay">{title}</div>
+                        <div className="slide-counter">
+                          Slide {curIdx + 1}/{segments.length}
+                        </div>
+                      </div>
+
+                      <div className="overlay-bottom">
+                        <div className="progress-container">
+                          <div
+                            className="progress-bar"
+                            ref={barRef}
+                            onClick={clickProgress}
+                            onMouseMove={handleMouseMove}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            <div className="progress-fill" />
+                          </div>
+                          {hoverTime != null && (
+                            <div
+                              className="preview-tooltip"
+                              style={{ left: hoverX ?? 0 }}
+                            >
+                              {hoverFrame && previews[hoverFrame] ? (
+                                <img src={previews[hoverFrame]} alt="preview" className="preview-img" />
+                              ) : (
+                                <div className="preview-placeholder" />
+                              )}
+                              <div className="preview-time">{hoverTime ? fmtDur(hoverTime) : ""}</div>
+                            </div>
+                          )}
+
+                        </div>
+
+                        <div className="controls-row">
+                          <div className="left-controls">
+                            <button className="overlay-ctrl" onClick={prev} disabled={curIdx <= 0}>
+                              ⏮
+                            </button>
+                            <button className="overlay-ctrl play-pause-btn" onClick={toggle}>
+                              {isPlaying ? "⏸" : "▶"}
+                            </button>
+                            <button className="overlay-ctrl" onClick={next} disabled={curIdx >= segments.length - 1}>
+                              ⏭
+                            </button>
+                            <div className="time-display">
+                              {fmtDur(currentTime)} / {fmtDur(videoDur)}
+                            </div>
+                          </div>
+
+                          <div className="right-controls">
+                            <div className="volume-container">
+                              <span style={{ color: "white", fontSize: "1.1rem" }}>🔊</span>
+                              <input
+                                type="range"
+                                className="volume-overlay"
+                                min="0"
+                                max="1"
+                                step="0.05"
+                                value={volume}
+                                onChange={(e) => {
+                                  const v = +e.target.value
+                                  setVolume(v)
+                                  if (videoRef.current) videoRef.current.volume = v
+                                }}
+                              />
+                            </div>
+                            <button className="overlay-ctrl" onClick={toGrid}>
+                              🖼
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="grid"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => navigate(`/watch/${v.id}`, { state: { from } })}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.25 }}
                   >
-                    <img src={relThumbs[v.id] || v.thumbnail || v.video_thumbnail_url || NO_THUMB} alt={v.title} />
-                    <p className="title">{v.title}</p>
-                    <p className="topic">{getTopic(v)}</p>
+                    <h3 className="neon sub">Choisissez un moment</h3>
+                    <ul className="frame-grid">
+                      {segments.map(({ frame }, i) => (
+                        <li
+                          key={frame}
+                          className={`thumb-wrapper ${i === curIdx ? "active" : ""}`}
+                          onClick={() => seekIdx(i)}
+                        >
+                          {previews[frame] ? (
+                            <img src={previews[frame] || "/placeholder.svg"} className="thumb" />
+                          ) : (
+                            <div className="placeholder" />
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   </motion.div>
-                ))}
+                )}
+              </AnimatePresence>
+            </main>
+
+            {!loading && (
+              <div className="video-info-bar">
+                {orator && (
+                  <p>
+                    <strong>{title}</strong> - {orator.name}
+                  </p>
+                )}
               </div>
             )}
+
+            <section className="suggestions">
+              <h3 className="neon sub">Other videos by this speaker</h3>
+
+              {related.length === 0 ? (
+                <p className="loading-text">No other videos for this speaker.</p>
+              ) : (
+                <div className="suggestion-row">
+                  {related.map((v, i) => (
+                    <motion.div
+                      key={v.id}
+                      className="suggest-card"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => navigate(`/watch/${v.id}`, { state: { from } })}
+                    >
+                      <img src={relThumbs[v.id] || v.thumbnail || v.video_thumbnail_url || NO_THUMB} alt={v.title} />
+                      <p className="title">{v.title}</p>
+                      <p className="topic">{getTopic(v)}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </section>
           </section>
-          <Footer />
-        </section>
-      )}
-    </div>
-  )
+
+        )}
+      </div>
+      <Footer />
+    </>
+  );
 }
