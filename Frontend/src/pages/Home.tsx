@@ -74,7 +74,7 @@ function Home() {
      <section className="so-one-section">
         <div className="container">
           <h2 className="so-one-title">
-            THE <span className="highlight">SO ONE</span> ALEXANDRIE PROJECT
+            THE <span className="highlight">SO ONE</span> ALEXANDRIE LIBRARY
           </h2>
 
           <div className="so-one-cards">
@@ -100,15 +100,15 @@ function Home() {
 
           <div className="so-one-commitments">
             <p className="commitment-text">
-              The project's commitment is to make its content accessible to everyone, in partnership with scholarly societies.
+              The library's commitment is to make its content accessible to everyone, in partnership with scholarly societies.
             </p>
 
             <p className="commitment-text">
-              The project's guarantee is to publish reliable, verified, and secure scientific content.
+              The library's guarantee is to publish reliable, verified, and secure scientific content.
             </p>
 
             <p className="commitment-text">
-              The project's agreement with doctors and researchers is to provide the best tools for education and the fight against diseases.
+              The library's agreement with doctors and researchers is to provide the best tools for education and the fight against diseases.
             </p>
           </div>
         </div>

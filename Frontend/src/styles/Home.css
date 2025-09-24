@@ -251,7 +251,7 @@
 }
 
 .intro-logo {
-  height: 120px;
+  height: 220px;
   width: auto;
   will-change: transform, opacity;
 }
@@ -278,7 +278,6 @@
 
 .intro-logo.soone {
   height: 64px;
-  width: auto;
   filter: drop-shadow(0 0 10px #ffffff);
 }
 
