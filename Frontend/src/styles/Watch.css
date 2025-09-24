@@ -295,6 +295,33 @@
   font-size: 0.9rem;
 }
 
+.so-one-end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.so-one-logo {
+  height: 50px;
+  width: auto;
+}
+
+.so-one-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.alexandria-logo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  margin-top: 1rem;
+}
+
 /* ===== SUGGESTIONS ===== */
 .suggestions {
   width: 100%;

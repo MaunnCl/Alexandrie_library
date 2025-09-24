@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 
 import { useEffect, useState, useRef } from "react"
@@ -328,24 +326,33 @@ export default function Watch() {
     }
   }, [videoUrl])
 
-  useEffect(() => {
-    const v = videoRef.current
-    if (!showVid || !v) return
-    v.volume = volume
-    const onPlay = () => setIsPlaying(true),
-      onPause = () => setIsPlaying(false),
-      onMeta = () => setVideoDur(v.duration)
-    v.addEventListener("play", onPlay)
-    v.addEventListener("pause", onPause)
-    v.addEventListener("timeupdate", updateProgress)
-    v.addEventListener("loadedmetadata", onMeta)
-    return () => {
-      v.removeEventListener("play", onPlay)
-      v.removeEventListener("pause", onPause)
-      v.removeEventListener("timeupdate", updateProgress)
-      v.removeEventListener("loadedmetadata", onMeta)
-    }
-  }, [showVid, volume, videoRef.current])
+useEffect(() => {
+  const v = videoRef.current
+  if (!showVid || !v) return
+  v.volume = volume
+
+  const onPlay = () => setIsPlaying(true)
+  const onPause = () => setIsPlaying(false)
+  const onMeta = () => setVideoDur(v.duration)
+  const onTime = () => updateProgress()
+  const onSeek = () => {
+    updateProgress()
+  }
+
+  v.addEventListener("play", onPlay)
+  v.addEventListener("pause", onPause)
+  v.addEventListener("timeupdate", onTime)
+  v.addEventListener("loadedmetadata", onMeta)
+  v.addEventListener("seeked", onSeek)
+
+  return () => {
+    v.removeEventListener("play", onPlay)
+    v.removeEventListener("pause", onPause)
+    v.removeEventListener("timeupdate", onTime)
+    v.removeEventListener("loadedmetadata", onMeta)
+    v.removeEventListener("seeked", onSeek)
+  }
+}, [showVid, volume, videoRef.current])
 
   useEffect(() => {
     if (!showVid || !videoRef.current) return
@@ -383,7 +390,15 @@ export default function Watch() {
             <aside className="left-pane card">
               <img src={orator.picture || "/public/avatar.png"} className="orator-img" />
               <h3 className="orator-name">{orator.name}</h3>
-               {orator.city}, {orator.country}
+              {orator.city}, {orator.country}
+              
+              <img src="/logo_transparent.png" alt="Alexandria Logo" className="alexandria-logo" />
+              <div className="so-one-end">
+                <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
+                <h3 className="so-one-text">
+                  <span className="text-primary">So</span> One
+                </h3>
+              </div>
             </aside>
           )}
 
