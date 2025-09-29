@@ -83,11 +83,22 @@ export default function Watch() {
 
   const [showLayout, setShowLayout] = useState(true)
   const hideTimer = useRef<number | null>(null)
+  const [hideCursor, setHideCursor] = useState(false)
 
   const handleMouseActivity = () => {
     setShowLayout(true)
+    setHideCursor(false)
     if (hideTimer.current) clearTimeout(hideTimer.current)
-    hideTimer.current = window.setTimeout(() => setShowLayout(false), 3000)
+    hideTimer.current = window.setTimeout(() => {
+      setShowLayout(false)
+      setHideCursor(true)
+    }, 3000)
+  }
+
+  const handleMouseLeaveWrapper = () => {
+    setShowLayout(false)
+    setHideCursor(false)
+    if (hideTimer.current) clearTimeout(hideTimer.current)
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -149,16 +160,6 @@ export default function Watch() {
       })()
     })
   }
-
-  useEffect(() => {
-    const handleMouseMoveGlobal = () => handleMouseActivity()
-    document.addEventListener("mousemove", handleMouseMoveGlobal)
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMoveGlobal)
-      if (hideTimer.current) clearTimeout(hideTimer.current)
-    }
-  }, [])
 
   useEffect(() => {
     if (!videoUrl) return
@@ -302,11 +303,16 @@ export default function Watch() {
   const getCurrentIdx = () => {
     if (!videoRef.current) return -1
     const cf = videoRef.current.currentTime * 60
-    return segments.findIndex((s, idx) => {
-      const start = +s.frame,
-        next = segments[idx + 1] ? +segments[idx + 1].frame : Number.POSITIVE_INFINITY
-      return cf >= start && cf < next
-    })
+    let idx = -1
+    for (let i = 0; i < segments.length; i++) {
+      const start = +segments[i].frame
+      const next = segments[i + 1] ? +segments[i + 1].frame : Number.POSITIVE_INFINITY
+      if (cf >= start && cf < next) {
+        idx = i
+        break
+      }
+    }
+    return idx
   }
 
   const next = () => {
@@ -334,7 +340,7 @@ export default function Watch() {
     const pct = (videoRef.current.currentTime / videoRef.current.duration || 0) * 100
     barRef.current.style.setProperty("--pct", `${pct}%`)
     const idx = getCurrentIdx()
-    if (idx !== -1 && idx !== curIdx) setCurIdx(idx)
+    if (idx !== -1) setCurIdx(idx)
     setVideoDur(videoRef.current.duration || 0)
     setCurrentTime(videoRef.current.currentTime || 0)
   }
@@ -450,14 +456,16 @@ useEffect(() => {
             <main className="right-pane">
               <AnimatePresence mode="wait">
                 {showVid ? (
-                  <motion.div
-                    key="player"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.25 }}
-                    className="video-wrapper"
-                  >
+                    <motion.div
+                      key="player"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.25 }}
+                      className={`video-wrapper${hideCursor ? " hide-cursor" : ""}`}
+                      onMouseMove={handleMouseActivity}
+                      onMouseLeave={handleMouseLeaveWrapper}
+                    >
                     <video
                       ref={videoRef}
                       poster={firstFramePoster || undefined}

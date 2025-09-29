@@ -225,7 +225,6 @@
   border-radius: 4px;
 }
 
-
 .controls-row {
   display: flex;
   justify-content: space-between;
@@ -305,6 +304,15 @@
   accent-color: #ff0000;
   background: transparent;
   cursor: pointer;
+}
+
+.video-wrapper.hide-cursor .video-player,
+.video-wrapper.hide-cursor .video-overlay {
+  cursor: inherit !important;
+}
+
+.hide-cursor {
+  cursor: none !important;
 }
 
 /* ===== ORATOR CARD ===== */
