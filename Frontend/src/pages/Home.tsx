@@ -74,7 +74,7 @@ function Home() {
      <section className="so-one-section">
         <div className="container">
           <h2 className="so-one-title">
-            THE <span className="highlight">SO ONE</span> ALEXANDRIE LIBRARY
+            THE <span className="highlight">SO ONE</span> ALEXANDRIA LIBRARY
           </h2>
 
           <div className="so-one-cards">
@@ -93,7 +93,7 @@ function Home() {
             <div className="so-one-card">
               <h3>DURABILITY</h3>
               <p>
-                Unlike the ancient library, the So-One Alexandrie Library aims to endure for the benefit of humanity.
+                Unlike the ancient library, the So-One Alexandria Library aims to endure for the benefit of humanity.
               </p>
             </div>
           </div>
