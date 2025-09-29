@@ -102,20 +102,18 @@ function Home() {
             <p className="commitment-text">
               The library's commitment is to make its content accessible to everyone, in partnership with scholarly societies.
             </p>
-
             <p className="commitment-text">
               The library's guarantee is to publish reliable, verified, and secure scientific content.
             </p>
-
             <p className="commitment-text">
               The library's agreement with doctors and researchers is to provide the best tools for education and the fight against diseases.
             </p>
-          </div>
-          <div className="so-one-end">
-            <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
-            <h3 className="so-one-text">
-              <span className="text-primary">So</span> One
-            </h3>
+            <div className="so-one-end">
+              <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
+              <h3 className="so-one-text">
+                <span className="text-primary">So</span> One
+              </h3>
+            </div>
           </div>
         </div>
       </section>
