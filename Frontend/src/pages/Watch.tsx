@@ -449,7 +449,7 @@ export default function Watch() {
                     onMouseLeave={handleMouseLeaveWrapper}
                   >
                     {isAudioOnly ? (
-                      <div className="audio-placeholder">
+                      <div className="audio-placeholder" onClick={toggle} style={{ cursor: 'pointer' }}>
                         <p className="audio-message">No video available for this orator</p>
                         <audio ref={videoRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
                       </div>
