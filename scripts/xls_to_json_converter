@@ -1,0 +1,76 @@
+import pandas as pd
+import json
+import os
+import numpy as np
+
+def detect_columns(df):
+    """
+    Détecte automatiquement les deux colonnes principales contenant des valeurs temporelles.
+    """
+    numeric_cols = [col for col in df.columns if pd.api.types.is_numeric_dtype(df[col])]
+    if len(numeric_cols) < 2:
+        raise ValueError("❌ Moins de deux colonnes numériques détectées.")
+    
+    # On garde les deux colonnes qui varient le plus (donc les plus pertinentes)
+    variances = {col: df[col].var(skipna=True) for col in numeric_cols}
+    top_cols = sorted(variances, key=variances.get, reverse=True)[:2]
+    return top_cols
+
+def convert_xls_to_json(path):
+    print(f"\n📂 Lecture du fichier : {path}")
+    df = pd.read_excel(path, header=None)
+    print(f"🔍 Dimensions du fichier : {df.shape}")
+
+    # Supprime les lignes complètement vides
+    df = df.dropna(how="all")
+
+    # Détection automatique des colonnes
+    try:
+        col_minutes, col_frames = detect_columns(df)
+    except ValueError as e:
+        print(e)
+        return
+
+    print(f"✅ Colonnes détectées → minutes : {col_minutes}, frames : {col_frames}")
+
+    starts = []
+    for _, row in df.iterrows():
+        minutes = row[col_minutes]
+        frames = row[col_frames]
+
+        # Vérifie qu'on a bien des nombres
+        if pd.isna(minutes) or pd.isna(frames):
+            continue
+
+        try:
+            minutes = float(minutes)
+            frames = float(frames)
+
+            # Conversion : frames sont souvent 30 ou 60 fps
+            if frames > 1000:
+                start = frames / 60
+            else:
+                start = minutes * 60 + frames
+
+            starts.append(round(start, 3))
+        except:
+            continue
+
+    # Filtre les valeurs incohérentes (négatives, nulles, trop grandes)
+    starts = [s for s in starts if 0 < s < 36000]  # max 10h
+
+    # Sauvegarde JSON
+    output_path = os.path.splitext(path)[0] + ".json"
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(starts, f, indent=2, ensure_ascii=False)
+
+    print(f"✅ Fichier JSON généré : {output_path}")
+    print(f"⏱ Nombre d’entrées : {len(starts)}")
+    if starts:
+        print(f"📊 Exemple : {starts[:10]}")
+    else:
+        print("⚠️ Aucune valeur valide trouvée (le fichier est peut-être vide ou mal formaté).")
+
+if __name__ == "__main__":
+    path = input("🗂️ Entrez le chemin du fichier XLS : ").strip()
+    convert_xls_to_json(path)
