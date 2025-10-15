@@ -1,5 +1,3 @@
-import type React from "react"
-
 import { useEffect, useState, useRef } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
@@ -54,7 +52,7 @@ export default function Watch() {
   const location = useLocation()
   const from = (location.state as { from?: string })?.from ?? "/congress"
 
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const videoRef = useRef<HTMLVideoElement | HTMLAudioElement>(null)
   const barRef = useRef<HTMLDivElement>(null)
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
@@ -63,7 +61,6 @@ export default function Watch() {
   const [previews, setPreviews] = useState<Record<string, string>>({})
   const [videoDur, setVideoDur] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
-  const [firstFramePoster, setFirstFramePoster] = useState<string | null>(null)
 
   const [orator, setOrator] = useState<Orator | null>(null)
   const [related, setRelated] = useState<Content[]>([])
@@ -84,6 +81,8 @@ export default function Watch() {
   const [showLayout, setShowLayout] = useState(true)
   const hideTimer = useRef<number | null>(null)
   const [hideCursor, setHideCursor] = useState(false)
+
+  const [isAudioOnly, setIsAudioOnly] = useState(false)
 
   const handleMouseActivity = () => {
     setShowLayout(true)
@@ -121,8 +120,6 @@ export default function Watch() {
     setHoverFrame(null)
     setHoverX(null)
   }
-
-
 
   const fmtDur = (s: number) => {
     const h = Math.floor(s / 3600),
@@ -184,7 +181,7 @@ export default function Watch() {
   }, [videoUrl])
 
   useEffect(() => {
-    ;(async () => {
+    const loadVideoData = async () => {
       setLoading(true)
       setPreviews({})
 
@@ -229,9 +226,14 @@ export default function Watch() {
                   return nums.slice(0, -1).map(Number)
                 })()
             setSegments(frames.map((f) => ({ frame: f.toString() })))
+            setIsAudioOnly(false)
           } catch (e) {
             console.error("❌ Timestamps fetch fail", e)
+            setIsAudioOnly(true)
           }
+        } else {
+          setIsAudioOnly(true)
+          setShowVid(true)
         }
 
         try {
@@ -247,13 +249,15 @@ export default function Watch() {
       } finally {
         setLoading(false)
       }
-    })()
+    }
+
+    loadVideoData()
   }, [id])
 
   useEffect(() => {
     if (!videoUrl || segments.length === 0) return
     let cancel = false
-    ;(async () => {
+    const createPreviews = async () => {
       const vid = document.createElement("video")
       vid.src = videoUrl
       vid.crossOrigin = "anonymous"
@@ -278,7 +282,9 @@ export default function Watch() {
         if (cancel) return
       }
       if (!cancel) setPreviews(map)
-    })()
+    }
+
+    createPreviews()
     return () => {
       cancel = true
     }
@@ -352,58 +358,32 @@ export default function Watch() {
   }
 
   useEffect(() => {
-    if (!videoUrl) return
-    let cancelled = false
-    const vid = document.createElement("video")
-    vid.src = videoUrl
-    vid.crossOrigin = "anonymous"
-    vid.addEventListener("loadeddata", () => {
-      if (cancelled) return
-      vid.currentTime = 0.1
-    })
-    vid.addEventListener("seeked", () => {
-      if (cancelled) return
-      const cvs = document.createElement("canvas")
-      cvs.width = vid.videoWidth
-      cvs.height = vid.videoHeight
-      const ctx = cvs.getContext("2d")
-      if (ctx) {
-        ctx.drawImage(vid, 0, 0, cvs.width, cvs.height)
-        setFirstFramePoster(cvs.toDataURL("image/jpeg"))
-      }
-    })
-    return () => {
-      cancelled = true
+    const v = videoRef.current
+    if (!showVid || !v) return
+    v.volume = volume
+
+    const onPlay = () => setIsPlaying(true)
+    const onPause = () => setIsPlaying(false)
+    const onMeta = () => setVideoDur(v.duration)
+    const onTime = () => updateProgress()
+    const onSeek = () => {
+      updateProgress()
     }
-  }, [videoUrl])
 
-useEffect(() => {
-  const v = videoRef.current
-  if (!showVid || !v) return
-  v.volume = volume
+    v.addEventListener("play", onPlay)
+    v.addEventListener("pause", onPause)
+    v.addEventListener("timeupdate", onTime)
+    v.addEventListener("loadedmetadata", onMeta)
+    v.addEventListener("seeked", onSeek)
 
-  const onPlay = () => setIsPlaying(true)
-  const onPause = () => setIsPlaying(false)
-  const onMeta = () => setVideoDur(v.duration)
-  const onTime = () => updateProgress()
-  const onSeek = () => {
-    updateProgress()
-  }
-
-  v.addEventListener("play", onPlay)
-  v.addEventListener("pause", onPause)
-  v.addEventListener("timeupdate", onTime)
-  v.addEventListener("loadedmetadata", onMeta)
-  v.addEventListener("seeked", onSeek)
-
-  return () => {
-    v.removeEventListener("play", onPlay)
-    v.removeEventListener("pause", onPause)
-    v.removeEventListener("timeupdate", onTime)
-    v.removeEventListener("loadedmetadata", onMeta)
-    v.removeEventListener("seeked", onSeek)
-  }
-}, [showVid, volume, videoRef.current])
+    return () => {
+      v.removeEventListener("play", onPlay)
+      v.removeEventListener("pause", onPause)
+      v.removeEventListener("timeupdate", onTime)
+      v.removeEventListener("loadedmetadata", onMeta)
+      v.removeEventListener("seeked", onSeek)
+    }
+  }, [showVid, volume, videoRef.current])
 
   useEffect(() => {
     if (!showVid || !videoRef.current) return
@@ -435,15 +415,17 @@ useEffect(() => {
         </header>
 
         {loading ? (
-          <p className="loading-text">Chargement…</p>
+          <p className="loading-text">Loading...</p>
         ) : (
           <section className="watch-layout">
             {orator && (
               <aside className="left-pane card">
                 <img src={orator.picture || "/public/avatar.png"} className="orator-img" />
                 <h3 className="orator-name">{orator.name}</h3>
-                {orator.city}, {orator.country}
-                
+                <div className="orator-location">
+                  {orator.city}, {orator.country}
+                </div>
+
                 <div className="so-one-end">
                   <img src="/SoOne.png" alt="SoOne Logo" className="so-one-logo" />
                   <h3 className="so-one-text">
@@ -455,33 +437,41 @@ useEffect(() => {
 
             <main className="right-pane">
               <AnimatePresence mode="wait">
-                {showVid ? (
-                    <motion.div
-                      key="player"
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.25 }}
-                      className={`video-wrapper${hideCursor ? " hide-cursor" : ""}`}
-                      onMouseMove={handleMouseActivity}
-                      onMouseLeave={handleMouseLeaveWrapper}
-                    >
-                    <video
-                      ref={videoRef}
-                      poster={firstFramePoster || undefined}
-                      playsInline
-                      className="video-player glow"
-                      onClick={toggle}
-                    >
-                      <source src={videoUrl!} type="video/mp4" />
-                    </video>
+                {showVid || isAudioOnly ? (
+                  <motion.div
+                    key="player"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.25 }}
+                    className={`video-wrapper${hideCursor ? " hide-cursor" : ""}`}
+                    onMouseMove={handleMouseActivity}
+                    onMouseLeave={handleMouseLeaveWrapper}
+                  >
+                    {isAudioOnly ? (
+                      <div className="audio-placeholder">
+                        <p className="audio-message">No video available for this orator</p>
+                        <audio ref={videoRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
+                      </div>
+                    ) : (
+                      <video
+                        ref={videoRef as any}
+                        poster={undefined}
+                        playsInline
+                        className="video-player glow"
+                        onClick={toggle}
+                      >
+                        <source src={videoUrl!} type="video/mp4" />
+                      </video>
+                    )}
 
                     <div className="video-overlay" style={{ opacity: showLayout ? 1 : 0, transition: "opacity 0.3s" }}>
                       <div className="overlay-top">
-                        {/* <div className="video-title-overlay">{title}</div> */}
-                        <div className="slide-counter">
-                          Slide {curIdx + 1}/{segments.length}
-                        </div>
+                        {!isAudioOnly && segments.length > 0 && (
+                          <div className="slide-counter">
+                            Slide {curIdx + 1}/{segments.length}
+                          </div>
+                        )}
                       </div>
 
                       <div className="overlay-bottom">
@@ -495,33 +485,37 @@ useEffect(() => {
                           >
                             <div className="progress-fill" />
                           </div>
-                          {hoverTime != null && (
-                            <div
-                              className="preview-tooltip"
-                              style={{ left: hoverX ?? 0 }}
-                            >
+                          {!isAudioOnly && hoverTime != null && (
+                            <div className="preview-tooltip" style={{ left: hoverX ?? 0 }}>
                               {hoverFrame && previews[hoverFrame] ? (
-                                <img src={previews[hoverFrame]} alt="preview" className="preview-img" />
+                                <img
+                                  src={previews[hoverFrame] || "/placeholder.svg"}
+                                  alt="preview"
+                                  className="preview-img"
+                                />
                               ) : (
                                 <div className="preview-placeholder" />
                               )}
                               <div className="preview-time">{hoverTime ? fmtDur(hoverTime) : ""}</div>
                             </div>
                           )}
-
                         </div>
 
                         <div className="controls-row">
                           <div className="left-controls">
-                            <button className="overlay-ctrl" onClick={prev} disabled={curIdx <= 0}>
-                              ⏮
-                            </button>
+                            {!isAudioOnly && (
+                              <button className="overlay-ctrl" onClick={prev} disabled={curIdx <= 0}>
+                                ⏮
+                              </button>
+                            )}
                             <button className="overlay-ctrl play-pause-btn" onClick={toggle}>
                               {isPlaying ? "⏸" : "▶"}
                             </button>
-                            <button className="overlay-ctrl" onClick={next} disabled={curIdx >= segments.length - 1}>
-                              ⏭
-                            </button>
+                            {!isAudioOnly && (
+                              <button className="overlay-ctrl" onClick={next} disabled={curIdx >= segments.length - 1}>
+                                ⏭
+                              </button>
+                            )}
                             <div className="time-display">
                               {fmtDur(currentTime)} / {fmtDur(videoDur)}
                             </div>
@@ -544,9 +538,11 @@ useEffect(() => {
                                 }}
                               />
                             </div>
-                            <button className="overlay-ctrl" onClick={toGrid}>
-                              🖼
-                            </button>
+                            {!isAudioOnly && segments.length > 0 && (
+                              <button className="overlay-ctrl" onClick={toGrid}>
+                                🖼
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -560,7 +556,7 @@ useEffect(() => {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <h3 className="neon sub">Choisissez un moment</h3>
+                    <h3 className="neon sub">Choose a slide</h3>
                     <ul className="frame-grid">
                       {segments.map(({ frame }, i) => (
                         <li
@@ -569,7 +565,7 @@ useEffect(() => {
                           onClick={() => seekIdx(i)}
                         >
                           {previews[frame] ? (
-                            <img src={previews[frame] || "/placeholder.svg"} className="thumb" />
+                            <img src={previews[frame] || "/placeholder.svg"} className="thumb" alt="thumbnail" />
                           ) : (
                             <div className="placeholder" />
                           )}
@@ -617,10 +613,9 @@ useEffect(() => {
               )}
             </section>
           </section>
-
         )}
-              </div>
+      </div>
       <Footer />
     </>
-  );
+  )
 }
