@@ -423,7 +423,9 @@ export default function Watch() {
                 <img src={orator.picture || "/public/avatar.png"} className="orator-img" />
                 <h3 className="orator-name">{orator.name}</h3>
                 <div className="orator-location">
-                  {orator.city}, {orator.country}
+                  {orator.city && orator.country
+                    ? `${orator.city}, ${orator.country}`
+                    : orator.city || orator.country || "Location not specified"}
                 </div>
 
                 <div className="so-one-end">
@@ -581,7 +583,7 @@ export default function Watch() {
               <div className="video-info-bar">
                 {orator && (
                   <p>
-                    <strong>{title}</strong> - {orator.name}
+                    <strong>{title}</strong>
                   </p>
                 )}
               </div>
