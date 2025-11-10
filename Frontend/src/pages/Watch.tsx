@@ -1,3 +1,4 @@
+import type React from "react"
 import { useEffect, useState, useRef } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
@@ -83,6 +84,9 @@ export default function Watch() {
   const [hideCursor, setHideCursor] = useState(false)
 
   const [isAudioOnly, setIsAudioOnly] = useState(false)
+
+  const [previewsLoading, setPreviewsLoading] = useState(false)
+  const [previewsProgress, setPreviewsProgress] = useState(0)
 
   const handleMouseActivity = () => {
     setShowLayout(true)
@@ -257,18 +261,26 @@ export default function Watch() {
   useEffect(() => {
     if (!videoUrl || segments.length === 0) return
     let cancel = false
+
     const createPreviews = async () => {
+      setPreviewsLoading(true)
+      setPreviewsProgress(0)
+
       const vid = document.createElement("video")
       vid.src = videoUrl
       vid.crossOrigin = "anonymous"
       await new Promise((r) => vid.addEventListener("loadeddata", r, { once: true }))
+
       const cvs = document.createElement("canvas")
       cvs.width = vid.videoWidth / 4
       cvs.height = vid.videoHeight / 4
-      const ctx = cvs.getContext("2d")!,
-        map: Record<string, string> = {}
-      for (const { frame } of segments) {
+      const ctx = cvs.getContext("2d")!
+      const map: Record<string, string> = {}
+
+      for (let i = 0; i < segments.length; i++) {
+        const { frame } = segments[i]
         const t = (+frame + 20) / 60
+
         await new Promise<void>((res) => {
           const h = () => {
             vid.removeEventListener("seeked", h)
@@ -277,11 +289,20 @@ export default function Watch() {
           vid.addEventListener("seeked", h)
           vid.currentTime = t
         })
+
         ctx.drawImage(vid, 0, 0, cvs.width, cvs.height)
         map[frame] = cvs.toDataURL("image/jpeg")
+
         if (cancel) return
+
+        const progress = ((i + 1) / segments.length) * 100
+        setPreviewsProgress(progress)
       }
-      if (!cancel) setPreviews(map)
+
+      if (!cancel) {
+        setPreviews(map)
+        setPreviewsLoading(false)
+      }
     }
 
     createPreviews()
@@ -451,7 +472,7 @@ export default function Watch() {
                     onMouseLeave={handleMouseLeaveWrapper}
                   >
                     {isAudioOnly ? (
-                      <div className="audio-placeholder" onClick={toggle} style={{ cursor: 'pointer' }}>
+                      <div className="audio-placeholder" onClick={toggle} style={{ cursor: "pointer" }}>
                         <p className="audio-message">No video available for this orator</p>
                         <audio ref={videoRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
                       </div>
@@ -559,21 +580,73 @@ export default function Watch() {
                     transition={{ duration: 0.25 }}
                   >
                     <h3 className="neon sub">Choose a slide</h3>
-                    <ul className="frame-grid">
-                      {segments.map(({ frame }, i) => (
-                        <li
-                          key={frame}
-                          className={`thumb-wrapper ${i === curIdx ? "active" : ""}`}
-                          onClick={() => seekIdx(i)}
+
+                    {previewsLoading ? (
+                      <div className="previews-loading-container">
+                        <motion.div
+                          className="loading-dots"
+                          style={{ display: "flex", gap: "8px", justifyContent: "center", alignItems: "center" }}
                         >
-                          {previews[frame] ? (
-                            <img src={previews[frame] || "/placeholder.svg"} className="thumb" alt="thumbnail" />
-                          ) : (
-                            <div className="placeholder" />
-                          )}
-                        </li>
-                      ))}
-                    </ul>
+                          {[0, 1, 2].map((i) => (
+                            <motion.div
+                              key={i}
+                              style={{
+                                width: "12px",
+                                height: "12px",
+                                borderRadius: "50%",
+                                background: "linear-gradient(135deg, #ff4d4d, #550000)",
+                              }}
+                              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 1.4, delay: i * 0.2, repeat: Number.POSITIVE_INFINITY }}
+                            />
+                          ))}
+                        </motion.div>
+
+                        <motion.p
+                          className="loading-text neon"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          Generating slide previews...
+                        </motion.p>
+
+                        <div className="progress-bar-container">
+                          <div className="progress-bar-bg">
+                            <motion.div
+                              className="progress-bar-fill"
+                              initial={{ width: 0 }}
+                              animate={{ width: `${previewsProgress}%` }}
+                              transition={{ duration: 0.3 }}
+                            />
+                          </div>
+                          <p className="progress-percentage">{Math.round(previewsProgress)}%</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <ul className="frame-grid">
+                        {segments.map(({ frame }, i) => (
+                          <li
+                            key={frame}
+                            className={`thumb-wrapper ${i === curIdx ? "active" : ""}`}
+                            onClick={() => seekIdx(i)}
+                          >
+                            {previews[frame] ? (
+                              <motion.img
+                                src={previews[frame] || "/placeholder.svg"}
+                                className="thumb"
+                                alt="thumbnail"
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.02 }}
+                              />
+                            ) : (
+                              <div className="placeholder" />
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

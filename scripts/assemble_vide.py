@@ -549,7 +549,7 @@ def choose_and_run(log_box: scrolledtext.ScrolledText, prog: ttk.Progressbar) ->
     tk.Button(btn_bar, text="Cancel", command=sel.destroy).pack(side="right", padx=4)
     tk.Button(btn_bar, text="OK", command=launch).pack(side="right", padx=4)
 
-# ───────────────────────────────── main ────────────────────────────────
+# ────────────────────────────────── main ────────────────────────────────
 
 def main_gui():
     root = tk.Tk()

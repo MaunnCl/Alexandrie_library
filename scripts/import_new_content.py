@@ -9,13 +9,199 @@ from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
 
 # Configuration
 API_BASE_URL = "http://localhost:8080/api"
-CONGRESS_NAME = "ISICEM_2007"  # À modifier selon tes besoins
-SESSION_NAME = "30"  # À modifier selon tes besoins
-SESSION_ID = 334  # À modifier selon tes besoins
+CONGRESS_NAME = "BANGKOK_2005"  # À modifier selon tes besoins
+SESSION_NAME = "05"  # À modifier selon tes besoins
+SESSION_ID = 398  # À modifier selon tes besoins
 
 def similarity(a, b):
     """Calcule la similarité entre deux chaînes (0-1)"""
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
+
+def extract_last_name(full_name):
+    """
+    Extrait le nom de famille d'un nom complet
+    Gère les formats: "Prénom Nom", "P. Nom", "P. Q. Nom", etc.
+    Le nom de famille est le dernier mot qui n'est pas une initiale
+    """
+    parts = full_name.strip().split()
+    if not parts:
+        return ""
+    
+    # Parcourir de la fin vers le début pour trouver le premier mot qui n'est pas une initiale
+    for i in range(len(parts) - 1, -1, -1):
+        word = parts[i]
+        # Un mot n'est pas une initiale s'il fait plus de 2 caractères OU s'il ne contient pas de point
+        if len(word) > 2 or (len(word) == 2 and '.' not in word) or len(word.replace('.', '')) > 1:
+            return word
+    
+    # Si tous les mots sont des initiales, prendre le dernier
+    return parts[-1]
+
+def extract_initials(full_name):
+    """
+    Extrait toutes les initiales d'un nom
+    Ex: "N.S. Hill" -> ['N', 'S']
+    Ex: "Nicholas S. Hill" -> ['N', 'S']
+    Ex: "Nicholas Stephen Hill" -> ['N', 'S']
+    """
+    parts = full_name.strip().split()
+    initials = []
+    
+    for part in parts[:-1]:  # Tous les mots sauf le dernier (nom de famille)
+        # Si c'est une initiale (1-2 caractères avec ou sans point)
+        if len(part) <= 2 or (len(part) == 3 and part.endswith('.')):
+            initial = part[0].upper()
+            initials.append(initial)
+        # Si c'est un prénom complet, prendre la première lettre
+        elif len(part) > 2:
+            initials.append(part[0].upper())
+    
+    return initials
+
+def names_match(input_name, db_name, threshold=0.85):
+    """
+    Compare deux noms en mettant l'accent sur le nom de famille
+    Gère les initiales multiples (ex: "N.S. Hill" vs "Nicholas S. Hill")
+    
+    Args:
+        input_name: Nom entré par l'utilisateur (ex: "N.S. Hill")
+        db_name: Nom dans la DB (ex: "Nicholas S. Hill")
+        threshold: Seuil de similarité (0-1)
+    
+    Returns:
+        tuple: (match: bool, score: float, match_type: str)
+    """
+    input_name = input_name.strip()
+    db_name = db_name.strip()
+    
+    # Extraction des noms de famille
+    input_last = extract_last_name(input_name)
+    db_last = extract_last_name(db_name)
+
+    # Si les noms de famille sont vides, on ne peut pas comparer
+    if not input_last or not db_last:
+        return False, 0.0, "invalid"
+
+    # 1. Test exact sur le nom de famille (insensible à la casse)
+    if input_last.lower() == db_last.lower():
+        # Cas 1a: Noms complets identiques
+        if input_name.lower() == db_name.lower():
+            return True, 1.0, "exact_match"
+        
+        # Cas 1b: Nom de famille identique + initiales correspondantes
+        input_initials = extract_initials(input_name)
+        db_initials = extract_initials(db_name)
+        
+        # Vérifier si toutes les initiales correspondent
+        if input_initials and db_initials:
+            # Comparer jusqu'au nombre minimum d'initiales
+            min_length = min(len(input_initials), len(db_initials))
+            
+            if min_length > 0:
+                matches = sum(1 for i in range(min_length) if input_initials[i] == db_initials[i])
+                
+                # Si toutes les initiales comparées correspondent
+                if matches == min_length:
+                    # Score selon le nombre d'initiales correspondantes
+                    if len(input_initials) == len(db_initials) and matches == len(input_initials):
+                        return True, 0.95, "lastname_initials_match"
+                    else:
+                        return True, 0.90, "lastname_partial_initials_match"
+        
+        # Cas 1c: Même nom de famille, mais prénom/initiales différents
+        return True, 0.80, "lastname_only_match"
+    
+    # 2. Test de similarité sur le nom de famille
+    lastname_similarity = similarity(input_last, db_last)
+    
+    if lastname_similarity >= threshold:
+        # Vérifier aussi les initiales/prénoms si disponibles
+        input_initials = extract_initials(input_name)
+        db_initials = extract_initials(db_name)
+        
+        if input_initials and db_initials:
+            min_length = min(len(input_initials), len(db_initials))
+            if min_length > 0:
+                matches = sum(1 for i in range(min_length) if input_initials[i] == db_initials[i])
+                initial_match_ratio = matches / min_length
+                
+                # Score pondéré: 70% nom de famille, 30% initiales
+                combined_score = lastname_similarity * 0.7 + initial_match_ratio * 0.3
+                
+                if combined_score >= threshold:
+                    return True, combined_score, "fuzzy_match"
+        
+        return True, lastname_similarity, "lastname_fuzzy_match"
+    
+    # 3. Aucune correspondance
+    return False, 0.0, "no_match"
+
+def find_similar_orator(orator_name, orators_list, threshold=0.85):
+    """Trouve un orateur similaire en se basant principalement sur le nom de famille"""
+    matches = []
+    
+    # Parcourir tous les orateurs et calculer les scores
+    for orator in orators_list:
+        is_match, score, match_type = names_match(orator_name, orator["name"], threshold)
+        
+        if is_match:
+            matches.append({
+                "orator": orator,
+                "score": score,
+                "match_type": match_type
+            })
+    
+    # Trier par score décroissant
+    matches.sort(key=lambda x: x["score"], reverse=True)
+    
+    # Afficher tous les matchs trouvés
+    if matches:
+        print(f"\n🔍 {len(matches)} orateur(s) similaire(s) trouvé(s) pour '{orator_name}':")
+        
+        for idx, match in enumerate(matches, 1):
+            orator = match["orator"]
+            score = match["score"]
+            match_type = match["match_type"]
+            
+            # Emoji selon le type de match
+            emoji = {
+                "exact_match": "✅",
+                "lastname_initials_match": "🎯",
+                "lastname_partial_initials_match": "🎯",
+                "lastname_only_match": "👤",
+                "fuzzy_match": "🔍",
+                "lastname_fuzzy_match": "🔎"
+            }.get(match_type, "❓")
+            
+            match_type_label = {
+                "exact_match": "Correspondance exacte",
+                "lastname_initials_match": "Nom + initiales",
+                "lastname_partial_initials_match": "Nom + initiales partielles",
+                "lastname_only_match": "Nom de famille uniquement",
+                "fuzzy_match": "Correspondance approximative",
+                "lastname_fuzzy_match": "Nom de famille approximatif"
+            }.get(match_type, "Type inconnu")
+            
+            print(f"\n   {emoji} Match #{idx}: {orator['name']}")
+            print(f"      ID: {orator['id']}")
+            print(f"      Ville: {orator.get('city', 'Non spécifiée')}")
+            print(f"      Pays: {orator.get('country', 'Non spécifié')}")
+            print(f"      Type: {match_type_label}")
+            print(f"      Score: {score:.2%}")
+            
+            confirm = input(f"\n   ❓ Est-ce le bon orateur ? (o/n/s pour suivant): ").strip().lower()
+            
+            if confirm in ['o', 'oui', 'y', 'yes']:
+                print(f"   ✅ Orateur confirmé: {orator['name']}")
+                return orator
+            elif confirm in ['s', 'suivant', 'next']:
+                continue
+            else:
+                print(f"   ❌ Orateur rejeté")
+                continue
+    
+    print(f"\n❌ Aucun orateur correspondant trouvé ou confirmé pour '{orator_name}'")
+    return None
 
 def get_user_input():
     """Demande les informations utilisateur dans le terminal"""
@@ -41,27 +227,6 @@ def get_all_orators():
     except requests.RequestException as e:
         print(f"❌ Erreur lors de la récupération des orateurs: {e}")
         return []
-
-def find_similar_orator(orator_name, orators_list, threshold=0.8):
-    """Trouve un orateur similaire dans la liste avec confirmation utilisateur"""
-    for orator in orators_list:
-        similarity_score = similarity(orator_name, orator["name"])
-        if similarity_score >= threshold:
-            print(f"\n🔍 Orateur similaire trouvé:")
-            print(f"   Nom recherché: {orator_name}")
-            print(f"   Nom trouvé: {orator['name']}")
-            print(f"   Ville: {orator.get('city', 'Non spécifiée')}")
-            print(f"   Pays: {orator.get('country', 'Non spécifié')}")
-            print(f"   Similarité: {similarity_score:.2f}")
-            
-            confirm = input("\n❓ S'agit-il du même orateur ? (o/n): ").strip().lower()
-            if confirm in ['o', 'oui', 'y', 'yes']:
-                print(f"✅ Orateur confirmé: {orator['name']}")
-                return orator
-            else:
-                print("❌ Orateur rejeté, recherche d'autres correspondances...")
-                continue
-    return None
 
 def create_orator(orator_data):
     """Crée un nouvel orateur"""
@@ -193,13 +358,12 @@ def process_content_creation():
     
     if existing_orator:
         # Cas 1: Orateur existant
-        print(f"👤 Utilisation de l'orateur existant: {existing_orator['name']}")
+        print(f"\n👤 Utilisation de l'orateur existant: {existing_orator['name']}")
         orator_id = existing_orator["id"]
         orator_name = existing_orator["name"]
     else:
         # Cas 2: Création d'un nouvel orateur
-        print(f"👤 Aucun orateur similaire trouvé ou confirmé.")
-        print(f"👤 Création d'un nouvel orateur: {user_data['orator_name']}")
+        print(f"\n👤 Création d'un nouvel orateur: {user_data['orator_name']}")
         new_orator = create_orator(user_data)
         if not new_orator:
             print("❌ Échec de la création de l'orateur")
@@ -224,15 +388,29 @@ def process_content_creation():
         print(f"   - Orateur: {orator_name} (ID: {orator_id})")
         print(f"   - Contenu: {user_data['content_name']} (ID: {content['id']})")
         print(f"   - Session: {SESSION_ID}")
-        return user_data["content_name"], orator_name  # Retourne le nom du contenu et de l'orateur
+        return user_data["content_name"], orator_name
     else:
         print("❌ Échec de l'ajout du contenu à la session")
         return None, None
 
 def extract_number(filename):
-    """Extrait le premier nombre trouvé dans un nom de fichier."""
-    match = re.search(r'(\d+)', filename)
-    return int(match.group(1)) if match else None
+    """
+    Extrait le numéro de séquence (supporte entiers et décimaux)
+    
+    Exemples:
+        "01.jpg"     → 1.0
+        "2.jpg"      → 2.0
+        "2.1.jpg"    → 2.1
+        "2.2.mp3"    → 2.2
+        "10.5.jpg"   → 10.5
+    """
+    # Cherche un pattern: nombre optionnel + point + nombre
+    # Exemple: "2.1" dans "slide_2.1.jpg"
+    match = re.search(r'(\d+(?:\.\d+)?)', filename)
+    
+    if match:
+        return float(match.group(1))
+    return None
 
 def handle_single(folder, content_name=None, orator_name=None):
     """Mode single: une audio + plusieurs images avec JSON de timings"""
@@ -249,15 +427,13 @@ def handle_single(folder, content_name=None, orator_name=None):
         raise ValueError("Aucun fichier JSON trouvé dans le dossier.")
     json_path = os.path.join(folder, json_files[0])
     with open(json_path, "r", encoding="utf-8") as f:
-        starts = json.load(f)  # [{ "start": 0 }, { "start": 10 }, ...]
+        starts = json.load(f)
 
     # Cherche les images et les trie par numéro croissant
     images = [f for f in os.listdir(folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
-    # Crée une liste de tuples (numéro, nom_fichier) et trie par numéro
     image_list = [(extract_number(img), img) for img in images if extract_number(img) is not None]
-    image_list.sort(key=lambda x: x[0])  # Trie par numéro croissant
+    image_list.sort(key=lambda x: x[0])
     
-    # Vérifie que le nombre d'images correspond au nombre d'entrées JSON
     if len(image_list) != len(starts):
         print(f"Warning: {len(image_list)} images trouvées, mais {len(starts)} entrées dans le JSON")
         min_count = min(len(image_list), len(starts))
@@ -274,9 +450,9 @@ def handle_single(folder, content_name=None, orator_name=None):
         
         print(f"Traitement: {img_filename} (numéro {img_number}) -> timer index {i}")
 
-        if "start" in entry:  # si c'est l'ancien format en secondes
+        if "start" in entry:
             start = entry["start"]
-        elif "min" in entry and "sec" in entry:  # nouveau format min/sec
+        elif "min" in entry and "sec" in entry:
             start = entry["min"] * 60 + entry["sec"]
         else:
             raise ValueError("Format de JSON inconnu, attend 'start' ou 'min'/'sec'")
@@ -307,7 +483,6 @@ def handle_single(folder, content_name=None, orator_name=None):
     video = concatenate_videoclips(clips, method="compose")
     final = video.set_audio(audio)
     
-    # Utilise le nom du contenu pour les fichiers de sortie
     if content_name:
         filename = sanitize_filename(content_name)
         out_path = os.path.join(folder, f"{filename}.mp4")
@@ -318,14 +493,12 @@ def handle_single(folder, content_name=None, orator_name=None):
     
     final.write_videofile(out_path, fps=24)
 
-    # Sauvegarde le JSON
     with open(json_path_out, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
 
     print(f"✅ Vidéo générée : {out_path}")
     print(f"✅ JSON généré : {json_path_out}")
     
-    # Upload vers S3 si on a les informations
     if orator_name:
         upload_files_to_s3(out_path, json_path_out, orator_name)
     
@@ -336,36 +509,90 @@ def handle_multiple(folder, content_name=None, orator_name=None):
     media_files = [f for f in os.listdir(folder) if f.lower().endswith((".mp3", ".mp4"))]
     image_files = [f for f in os.listdir(folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
 
-    media_map = {extract_number(f): f for f in media_files if extract_number(f) is not None}
-    image_map = {extract_number(f): f for f in image_files if extract_number(f) is not None}
+    print(f"\n📂 Scan du dossier: {folder}")
+    print(f"🎵 {len(media_files)} fichiers audio détectés")
+    print(f"📸 {len(image_files)} images détectées")
+
+    # Extraction et tri des fichiers par numéro
+    media_list = []
+    for f in media_files:
+        num = extract_number(f)
+        if num is not None:
+            media_list.append((num, f))
+    media_list.sort(key=lambda x: x[0])  # Tri par numéro croissant
+    
+    image_list = []
+    for f in image_files:
+        num = extract_number(f)
+        if num is not None:
+            image_list.append((num, f))
+    image_list.sort(key=lambda x: x[0])  # Tri par numéro croissant
+
+    # 🔍 DEBUG: Afficher les listes triées
+    print(f"\n🔢 Fichiers audio triés (par ordre):")
+    for idx, (num, filename) in enumerate(media_list, 1):
+        print(f"   Position {idx}: {filename} (numéro {num})")
+    
+    print(f"\n🔢 Fichiers images triés (par ordre):")
+    for idx, (num, filename) in enumerate(image_list, 1):
+        print(f"   Position {idx}: {filename} (numéro {num})")
+
+    # Vérifier les quantités
+    if len(media_list) != len(image_list):
+        print(f"\n⚠️  ATTENTION: Nombre différent de fichiers!")
+        print(f"   Audio: {len(media_list)}")
+        print(f"   Images: {len(image_list)}")
+        
+        # Demander confirmation
+        confirm = input(f"\n   Continuer avec {min(len(media_list), len(image_list))} paires ? (o/n): ").strip().lower()
+        if confirm not in ['o', 'oui', 'y', 'yes']:
+            print("❌ Opération annulée")
+            return None, None
+        
+        # Tronquer à la longueur minimale
+        min_length = min(len(media_list), len(image_list))
+        media_list = media_list[:min_length]
+        image_list = image_list[:min_length]
 
     clips = []
     metadata = []
     current_time = 0.0
 
-    for num in sorted(media_map.keys()):
-        media_file = media_map[num]
-        media_path = os.path.join(folder, media_file)
+    print(f"\n🎬 Traitement de {len(media_list)} paires (appariement par position)...")
+    
+    # Appariement par POSITION (index) au lieu de numéro
+    for idx, ((audio_num, audio_file), (img_num, img_file)) in enumerate(zip(media_list, image_list), 1):
+        media_path = os.path.join(folder, audio_file)
+        img_path = os.path.join(folder, img_file)
 
-        if num not in image_map:
-            raise ValueError(f"Pas d'image correspondante trouvée pour {media_file}")
-        img_path = os.path.join(folder, image_map[num])
+        print(f"\n   Paire #{idx}:")
+        print(f"      Audio: {audio_file} (numéro {audio_num})")
+        print(f"      Image: {img_file} (numéro {img_num})")
 
-        # On prend uniquement l'audio
-        audio = AudioFileClip(media_path)
-        clip = ImageClip(img_path).set_duration(audio.duration).set_audio(audio)
-        clips.append(clip)
+        try:
+            audio = AudioFileClip(media_path)
+            clip = ImageClip(img_path).set_duration(audio.duration).set_audio(audio)
+            clips.append(clip)
 
-        metadata.append({
-            "slide": f"seg_{num:03d}.mp4",
-            "start": round(current_time, 3),
-            "duration": round(clip.duration, 3)
-        })
-        current_time += clip.duration
+            metadata.append({
+                "slide": f"seg_{idx:03d}.mp4",
+                "start": round(current_time, 3),
+                "duration": round(clip.duration, 3)
+            })
+            current_time += clip.duration
+            
+            print(f"      ✅ Traité ({clip.duration:.1f}s)")
+        
+        except Exception as e:
+            print(f"      ❌ Erreur: {e}")
+            continue
 
+    if not clips:
+        raise ValueError("❌ Aucun clip créé!")
+
+    print(f"\n🎥 Assemblage de {len(clips)} clips...")
     final = concatenate_videoclips(clips, method="compose")
     
-    # Utilise le nom du contenu pour les fichiers de sortie
     if content_name:
         filename = sanitize_filename(content_name)
         out_path = os.path.join(folder, f"{filename}.mp4")
@@ -382,7 +609,6 @@ def handle_multiple(folder, content_name=None, orator_name=None):
     print(f"✅ Vidéo générée : {out_path}")
     print(f"✅ JSON généré : {json_path}")
     
-    # Upload vers S3 si on a les informations
     if orator_name:
         upload_files_to_s3(out_path, json_path, orator_name)
     
@@ -400,7 +626,6 @@ if __name__ == "__main__":
     if args.create_content:
         process_content_creation()
     elif args.with_content:
-        # Mode combiné : création de contenu + génération vidéo + upload S3
         content_name, orator_name = process_content_creation()
         if content_name and orator_name:
             folder = input("\n📁 Chemin du dossier contenant les fichiers (audio/images/JSON) : ").strip()
