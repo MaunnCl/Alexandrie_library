@@ -6,12 +6,13 @@ import requests
 import subprocess
 from difflib import SequenceMatcher
 from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
+from PIL import Image
 
 # Configuration
 API_BASE_URL = "http://localhost:8080/api"
-CONGRESS_NAME = "BANGKOK_2005"  # À modifier selon tes besoins
-SESSION_NAME = "05"  # À modifier selon tes besoins
-SESSION_ID = 398  # À modifier selon tes besoins
+CONGRESS_NAME = "JAVA_2006"  # À modifier selon tes besoins
+SESSION_NAME = "VNI"  # À modifier selon tes besoins
+SESSION_ID = 408  # À modifier selon tes besoins
 
 def similarity(a, b):
     """Calcule la similarité entre deux chaînes (0-1)"""
@@ -412,10 +413,45 @@ def extract_number(filename):
         return float(match.group(1))
     return None
 
+def convert_image_to_rgb(image_path):
+    """
+    Convertit une image en RGB si elle ne l'est pas déjà
+    
+    Args:
+        image_path: Chemin de l'image source
+    
+    Returns:
+        str: Chemin de l'image RGB (même fichier ou temporaire)
+    """
+    try:
+        img = Image.open(image_path)
+        
+        # Si l'image est déjà en RGB, retourner le chemin original
+        if img.mode == 'RGB':
+            img.close()
+            return image_path
+        
+        # Sinon, convertir en RGB
+        print(f"      🔄 Conversion {img.mode} → RGB: {os.path.basename(image_path)}")
+        rgb_img = img.convert('RGB')
+        
+        # Sauvegarder temporairement (ou écraser)
+        temp_path = image_path.replace('.jpg', '_rgb.jpg').replace('.jpeg', '_rgb.jpeg').replace('.png', '_rgb.png')
+        rgb_img.save(temp_path, quality=95)
+        
+        img.close()
+        rgb_img.close()
+        
+        return temp_path
+    
+    except Exception as e:
+        print(f"      ⚠️  Erreur conversion RGB: {e}")
+        return image_path
+
 def handle_single(folder, content_name=None, orator_name=None):
     """Mode single: une audio + plusieurs images avec JSON de timings"""
     # Cherche l'audio (mp3 ou mp4)
-    audio_files = [f for f in os.listdir(folder) if f.lower().endswith((".mp3", ".mp4"))]
+    audio_files = [f for f in os.listdir(folder) if f.lower().endswith((".mp3", ".mp4", ".mov"))]
     if not audio_files:
         raise ValueError("Aucun fichier audio trouvé dans le dossier.")
     audio_path = os.path.join(folder, audio_files[0])
@@ -446,6 +482,10 @@ def handle_single(folder, content_name=None, orator_name=None):
     
     for i, (img_number, img_filename) in enumerate(image_list):
         img_path = os.path.join(folder, img_filename)
+        
+        # 🔧 FIX: Convertir l'image en RGB si nécessaire
+        rgb_img_path = convert_image_to_rgb(img_path)
+        
         entry = starts[i]
         
         print(f"Traitement: {img_filename} (numéro {img_number}) -> timer index {i}")
@@ -471,7 +511,9 @@ def handle_single(folder, content_name=None, orator_name=None):
         print(start, end)
         duration = end - start
         print(duration)
-        clip = ImageClip(img_path).set_duration(duration)
+        
+        # Utiliser le chemin RGB
+        clip = ImageClip(rgb_img_path).set_duration(duration)
         clips.append(clip)
 
         metadata.append({
@@ -505,8 +547,8 @@ def handle_single(folder, content_name=None, orator_name=None):
     return out_path, json_path_out
 
 def handle_multiple(folder, content_name=None, orator_name=None):
-    """Mode multiple: plusieurs fichiers audio (mp3 ou mp4) + images"""
-    media_files = [f for f in os.listdir(folder) if f.lower().endswith((".mp3", ".mp4"))]
+    """Mode multiple: plusieurs fichiers audio (mp3, mp4 ou mov) + images"""
+    media_files = [f for f in os.listdir(folder) if f.lower().endswith((".mp3", ".mp4", ".mov"))]
     image_files = [f for f in os.listdir(folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
 
     print(f"\n📂 Scan du dossier: {folder}")
@@ -519,14 +561,14 @@ def handle_multiple(folder, content_name=None, orator_name=None):
         num = extract_number(f)
         if num is not None:
             media_list.append((num, f))
-    media_list.sort(key=lambda x: x[0])  # Tri par numéro croissant
+    media_list.sort(key=lambda x: x[0])
     
     image_list = []
     for f in image_files:
         num = extract_number(f)
         if num is not None:
             image_list.append((num, f))
-    image_list.sort(key=lambda x: x[0])  # Tri par numéro croissant
+    image_list.sort(key=lambda x: x[0])
 
     # 🔍 DEBUG: Afficher les listes triées
     print(f"\n🔢 Fichiers audio triés (par ordre):")
@@ -543,13 +585,11 @@ def handle_multiple(folder, content_name=None, orator_name=None):
         print(f"   Audio: {len(media_list)}")
         print(f"   Images: {len(image_list)}")
         
-        # Demander confirmation
         confirm = input(f"\n   Continuer avec {min(len(media_list), len(image_list))} paires ? (o/n): ").strip().lower()
         if confirm not in ['o', 'oui', 'y', 'yes']:
             print("❌ Opération annulée")
             return None, None
         
-        # Tronquer à la longueur minimale
         min_length = min(len(media_list), len(image_list))
         media_list = media_list[:min_length]
         image_list = image_list[:min_length]
@@ -560,10 +600,12 @@ def handle_multiple(folder, content_name=None, orator_name=None):
 
     print(f"\n🎬 Traitement de {len(media_list)} paires (appariement par position)...")
     
-    # Appariement par POSITION (index) au lieu de numéro
     for idx, ((audio_num, audio_file), (img_num, img_file)) in enumerate(zip(media_list, image_list), 1):
         media_path = os.path.join(folder, audio_file)
         img_path = os.path.join(folder, img_file)
+        
+        # 🔧 FIX: Convertir l'image en RGB si nécessaire
+        rgb_img_path = convert_image_to_rgb(img_path)
 
         print(f"\n   Paire #{idx}:")
         print(f"      Audio: {audio_file} (numéro {audio_num})")
@@ -571,7 +613,7 @@ def handle_multiple(folder, content_name=None, orator_name=None):
 
         try:
             audio = AudioFileClip(media_path)
-            clip = ImageClip(img_path).set_duration(audio.duration).set_audio(audio)
+            clip = ImageClip(rgb_img_path).set_duration(audio.duration).set_audio(audio)
             clips.append(clip)
 
             metadata.append({

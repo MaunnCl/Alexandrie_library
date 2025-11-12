@@ -3,12 +3,50 @@ import os
 import re
 import json
 from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
+from PIL import Image
 
 
 def extract_number(filename):
     """Extrait le premier nombre trouvé dans un nom de fichier."""
     match = re.search(r'(\d+)', filename)
     return int(match.group(1)) if match else None
+
+
+def convert_image_to_rgb(image_path):
+    """
+    Convertit une image en RGB si elle ne l'est pas déjà
+    
+    Args:
+        image_path: Chemin de l'image source
+    
+    Returns:
+        str: Chemin de l'image RGB (même fichier ou temporaire)
+    """
+    try:
+        img = Image.open(image_path)
+        
+        # Si l'image est déjà en RGB, retourner le chemin original
+        if img.mode == 'RGB':
+            img.close()
+            return image_path
+        
+        # Sinon, convertir en RGB
+        print(f"   🔄 Conversion {img.mode} → RGB: {os.path.basename(image_path)}")
+        rgb_img = img.convert('RGB')
+        
+        # Sauvegarder temporairement
+        base, ext = os.path.splitext(image_path)
+        temp_path = f"{base}_rgb{ext}"
+        rgb_img.save(temp_path, quality=95)
+        
+        img.close()
+        rgb_img.close()
+        
+        return temp_path
+    
+    except Exception as e:
+        print(f"   ⚠️  Erreur conversion RGB: {e}")
+        return image_path
 
 
 def handle_single(folder):
@@ -26,15 +64,13 @@ def handle_single(folder):
         raise ValueError("Aucun fichier JSON trouvé dans le dossier.")
     json_path = os.path.join(folder, json_files[0])
     with open(json_path, "r", encoding="utf-8") as f:
-        starts = json.load(f)  # [{ "start": 0 }, { "start": 10 }, ...]
+        starts = json.load(f)
 
     # Cherche les images et les trie par numéro croissant
     images = [f for f in os.listdir(folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
-    # Crée une liste de tuples (numéro, nom_fichier) et trie par numéro
     image_list = [(extract_number(img), img) for img in images if extract_number(img) is not None]
-    image_list.sort(key=lambda x: x[0])  # Trie par numéro croissant
+    image_list.sort(key=lambda x: x[0])
     
-    # Vérifie que le nombre d'images correspond au nombre d'entrées JSON
     if len(image_list) != len(starts):
         print(f"Warning: {len(image_list)} images trouvées, mais {len(starts)} entrées dans le JSON")
         min_count = min(len(image_list), len(starts))
@@ -47,13 +83,17 @@ def handle_single(folder):
     
     for i, (img_number, img_filename) in enumerate(image_list):
         img_path = os.path.join(folder, img_filename)
+        
+        # 🔧 FIX: Convertir l'image en RGB si nécessaire
+        rgb_img_path = convert_image_to_rgb(img_path)
+        
         entry = starts[i]
         
         print(f"Traitement: {img_filename} (numéro {img_number}) -> timer index {i}")
 
-        if "start" in entry:  # si c'est l'ancien format en secondes
+        if "start" in entry:
             start = entry["start"]
-        elif "min" in entry and "sec" in entry:  # nouveau format min/sec
+        elif "min" in entry and "sec" in entry:
             start = entry["min"] * 60 + entry["sec"]
         else:
             raise ValueError("Format de JSON inconnu, attend 'start' ou 'min'/'sec'")
@@ -72,7 +112,9 @@ def handle_single(folder):
         print(start, end)
         duration = end - start
         print(duration)
-        clip = ImageClip(img_path).set_duration(duration)
+        
+        # Utiliser le chemin RGB
+        clip = ImageClip(rgb_img_path).set_duration(duration)
         clips.append(clip)
 
         metadata.append({
@@ -86,7 +128,6 @@ def handle_single(folder):
     out_path = os.path.join(folder, "output_single.mp4")
     final.write_videofile(out_path, fps=24)
 
-    # Sauvegarde le JSON
     json_path_out = os.path.join(folder, "output_single.json")
     with open(json_path_out, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
@@ -113,11 +154,16 @@ def handle_multiple(folder):
 
         if num not in image_map:
             raise ValueError(f"Pas d'image correspondante trouvée pour {media_file}")
+        
         img_path = os.path.join(folder, image_map[num])
+        
+        # 🔧 FIX: Convertir l'image en RGB si nécessaire
+        rgb_img_path = convert_image_to_rgb(img_path)
 
-        # On prend uniquement l'audio
+        print(f"Traitement: {media_file} + {image_map[num]}")
+
         audio = AudioFileClip(media_path)
-        clip = ImageClip(img_path).set_duration(audio.duration).set_audio(audio)
+        clip = ImageClip(rgb_img_path).set_duration(audio.duration).set_audio(audio)
         clips.append(clip)
 
         metadata.append({
