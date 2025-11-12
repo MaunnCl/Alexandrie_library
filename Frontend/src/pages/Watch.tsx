@@ -153,11 +153,11 @@ export default function Watch() {
       ;(async () => {
         await seek()
         const cvs = document.createElement("canvas")
-        cvs.width = vid.videoWidth / 4
-        cvs.height = vid.videoHeight / 4
+        cvs.width = vid.videoWidth / 2
+        cvs.height = vid.videoHeight / 2
         const ctx = cvs.getContext("2d")!
         ctx.drawImage(vid, 0, 0, cvs.width, cvs.height)
-        setRelThumbs((t) => ({ ...t, [video.id]: cvs.toDataURL("image/jpeg") }))
+        setRelThumbs((t) => ({ ...t, [video.id]: cvs.toDataURL("image/jpeg", 0.90) }))
       })()
     })
   }
@@ -272,8 +272,8 @@ export default function Watch() {
       await new Promise((r) => vid.addEventListener("loadeddata", r, { once: true }))
 
       const cvs = document.createElement("canvas")
-      cvs.width = vid.videoWidth / 4
-      cvs.height = vid.videoHeight / 4
+      cvs.width = vid.videoWidth / 2 
+      cvs.height = vid.videoHeight / 2
       const ctx = cvs.getContext("2d")!
       const map: Record<string, string> = {}
 
@@ -291,7 +291,7 @@ export default function Watch() {
         })
 
         ctx.drawImage(vid, 0, 0, cvs.width, cvs.height)
-        map[frame] = cvs.toDataURL("image/jpeg")
+        map[frame] = cvs.toDataURL("image/jpeg", 0.90)
 
         if (cancel) return
 

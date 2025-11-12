@@ -2,3 +2,4 @@ venv
 test
 orators
 audio
+.DS_Store
