@@ -9,6 +9,7 @@ export async function syncVideo(): Promise<void> {
   const congresses = await CongressRepository.findAll();
 
   for (const congress of congresses) {
+    if (congress.key !== "ISICEM_2006") continue; // Pour tests locaux uniquement
     if (!congress.session_ids || congress.session_ids.length === 0) continue;
 
     for (const sessionId of congress.session_ids) {

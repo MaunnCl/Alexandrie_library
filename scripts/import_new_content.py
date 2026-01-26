@@ -4,15 +4,17 @@ import re
 import json
 import requests
 import subprocess
+import tempfile
+import shutil
 from difflib import SequenceMatcher
 from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
 from PIL import Image
 
 # Configuration
 API_BASE_URL = "http://localhost:8080/api"
-CONGRESS_NAME = "JAVA_2006"  # À modifier selon tes besoins
-SESSION_NAME = "VNI"  # À modifier selon tes besoins
-SESSION_ID = 408  # À modifier selon tes besoins
+CONGRESS_NAME = "GARCHES_2006"  # À modifier selon tes besoins
+SESSION_NAME = "Approches thérapeutiques"  # À modifier selon tes besoins
+SESSION_ID = 533  # À modifier selon tes besoins
 
 def similarity(a, b):
     """Calcule la similarité entre deux chaînes (0-1)"""
@@ -448,6 +450,56 @@ def convert_image_to_rgb(image_path):
         print(f"      ⚠️  Erreur conversion RGB: {e}")
         return image_path
 
+def safe_audio_clip(audio_path):
+    """
+    Charge un AudioFileClip en gérant les erreurs d'encodage FFmpeg
+    
+    Args:
+        audio_path: Chemin du fichier audio
+    
+    Returns:
+        AudioFileClip: Clip audio chargé
+    """
+    try:
+        # Tentative normale
+        return AudioFileClip(audio_path)
+    except UnicodeDecodeError as e:
+        print(f"      ⚠️  Erreur d'encodage FFmpeg détectée")
+        print(f"      📋 Le fichier audio contient des métadonnées non-UTF8")
+        print(f"      🔧 Création d'une copie temporaire sans métadonnées...")
+        
+        # Créer un fichier temporaire
+        temp_fd, temp_path = tempfile.mkstemp(suffix=os.path.splitext(audio_path)[1])
+        os.close(temp_fd)
+        
+        # Copier l'audio sans les métadonnées (strip metadata)
+        try:
+            subprocess.run([
+                'ffmpeg', '-i', audio_path,
+                '-map', '0:a',  # Copier seulement l'audio
+                '-c', 'copy',    # Sans réencodage
+                '-map_metadata', '-1',  # Supprimer toutes les métadonnées
+                '-y',            # Écraser si existe
+                temp_path
+            ], check=True, capture_output=True)
+            
+            print(f"      ✅ Copie temporaire créée: {temp_path}")
+            
+            # Charger le fichier temporaire
+            clip = AudioFileClip(temp_path)
+            
+            # Marquer pour suppression après traitement
+            clip._temp_audio_path = temp_path
+            
+            return clip
+        
+        except Exception as inner_e:
+            print(f"      ❌ Échec de la copie: {inner_e}")
+            # Nettoyage
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            raise
+
 def handle_single(folder, content_name=None, orator_name=None):
     """Mode single: une audio + plusieurs images avec JSON de timings"""
     # Cherche l'audio (mp3 ou mp4)
@@ -455,7 +507,10 @@ def handle_single(folder, content_name=None, orator_name=None):
     if not audio_files:
         raise ValueError("Aucun fichier audio trouvé dans le dossier.")
     audio_path = os.path.join(folder, audio_files[0])
-    audio = AudioFileClip(audio_path)
+    
+    # 🔧 FIX: Remplacer cette ligne 458
+    # audio = AudioFileClip(audio_path)  # ❌ ANCIEN
+    audio = safe_audio_clip(audio_path)  # ✅ NOUVEAU
 
     # Cherche le JSON (start times)
     json_files = [f for f in os.listdir(folder) if f.lower().endswith(".json")]

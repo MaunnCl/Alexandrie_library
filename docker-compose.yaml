@@ -36,5 +36,4 @@ services:
 networks:
   alex_net:
     driver: bridge
-  traefik:
-    external: true
+
