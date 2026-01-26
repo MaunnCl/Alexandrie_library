@@ -1,6 +1,29 @@
 version: "3.9"
 
+networks:
+  alex_net:
+    driver: bridge
+
 services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=TON_EMAIL@exemple.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+    networks:
+      - alex_net
+
   alex_back:
     build:
       context: ./Backend
@@ -10,12 +33,12 @@ services:
     networks:
       - alex_net
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.alex_back.rule=Host(`api.great-alexandria-library.eu`)
-      - traefik.http.routers.alex_back.entrypoints=websecure
-      - traefik.http.routers.alex_back.tls=true
-      - traefik.http.routers.alex_back.tls.certresolver=myresolver
-      - traefik.http.services.alex_back.loadbalancer.server.port=8080
+      - "traefik.enable=true"
+      - "traefik.http.routers.alex_back.rule=Host(`api.great-alexandria-library.eu`)"
+      - "traefik.http.routers.alex_back.entrypoints=websecure"
+      - "traefik.http.routers.alex_back.tls=true"
+      - "traefik.http.routers.alex_back.tls.certresolver=myresolver"
+      - "traefik.http.services.alex_back.loadbalancer.server.port=8080"
 
   alex_front:
     build:
@@ -26,15 +49,11 @@ services:
     networks:
       - alex_net
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`,`www.great-alexandria-library.eu`)
-      - traefik.http.routers.alex_front.entrypoints=websecure
-      - traefik.http.routers.alex_front.tls=true
-      - traefik.http.routers.alex_front.tls.certresolver=myresolver
-      - traefik.http.services.alex_front.loadbalancer.server.port=3000
+      - "traefik.enable=true"
+      - "traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)"
+      - "traefik.http.routers.alex_front.entrypoints=websecure"
+      - "traefik.http.routers.alex_front.tls=true"
+      - "traefik.http.routers.alex_front.tls.certresolver=myresolver"
+      - "traefik.http.services.alex_front.loadbalancer.server.port=3000"
     depends_on:
       - alex_back
-
-networks:
-  alex_net:
-    driver: bridge
