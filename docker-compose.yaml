@@ -11,8 +11,10 @@ services:
       - alex_net
     labels:
       - traefik.enable=true
-      - traefik.http.routers.alex_back.rule=Host(`13.48.70.161.sslip.io`) # temporaire
-      - traefik.http.routers.alex_back.entrypoints=http
+      - traefik.http.routers.alex_back.rule=Host(`api.great-alexandria-library.eu`)
+      - traefik.http.routers.alex_back.entrypoints=websecure
+      - traefik.http.routers.alex_back.tls=true
+      - traefik.http.routers.alex_back.tls.certresolver=myresolver
       - traefik.http.services.alex_back.loadbalancer.server.port=8080
 
   alex_front:
@@ -20,13 +22,15 @@ services:
       context: ./Frontend
       dockerfile: dockerfile
       args:
-        VITE_API_URL: http://13.48.70.161.sslip.io
+        VITE_API_URL: https://api.great-alexandria-library.eu
     networks:
       - alex_net
     labels:
       - traefik.enable=true
-      - traefik.http.routers.alex_front.rule=Host(`13.48.70.161.sslip.io`) && PathPrefix(`/`)
-      - traefik.http.routers.alex_front.entrypoints=http
+      - traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)
+      - traefik.http.routers.alex_front.entrypoints=websecure
+      - traefik.http.routers.alex_front.tls=true
+      - traefik.http.routers.alex_front.tls.certresolver=myresolver
       - traefik.http.services.alex_front.loadbalancer.server.port=3000
     depends_on:
       - alex_back
@@ -34,4 +38,3 @@ services:
 networks:
   alex_net:
     driver: bridge
-
