@@ -1,17 +1,18 @@
+version: "3.9"
+
 services:
   alex_back:
     build:
       context: ./Backend
       dockerfile: Dockerfile
-    environment:
-      - PORT=8080
     env_file:
       - Backend/.env
     networks:
       - alex_net
+      - traefik
     labels:
       - traefik.enable=true
-      - traefik.http.routers.alex_back.rule=Host(`q040wg00oo80kokko0ck4kck.13.48.70.161.sslip.io`)
+      - traefik.http.routers.alex_back.rule=Host(`13.48.70.161.sslip.io`) # temporaire
       - traefik.http.routers.alex_back.entrypoints=http
       - traefik.http.services.alex_back.loadbalancer.server.port=8080
 
@@ -20,17 +21,20 @@ services:
       context: ./Frontend
       dockerfile: dockerfile
       args:
-        VITE_API_URL: http://q040wg00oo80kokko0ck4kck.13.48.70.161.sslip.io
-    ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_URL=http://q040wg00oo80kokko0ck4kck.13.48.70.161.sslip.io
-    depends_on:
-      alex_back:
-        condition: service_started
+        VITE_API_URL: http://13.48.70.161.sslip.io
     networks:
       - alex_net
+      - traefik
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.alex_front.rule=Host(`13.48.70.161.sslip.io`) && PathPrefix(`/`)
+      - traefik.http.routers.alex_front.entrypoints=http
+      - traefik.http.services.alex_front.loadbalancer.server.port=3000
+    depends_on:
+      - alex_back
 
 networks:
   alex_net:
     driver: bridge
+  traefik:
+    external: true
