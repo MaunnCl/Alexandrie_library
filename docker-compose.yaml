@@ -27,7 +27,7 @@ services:
       - alex_net
     labels:
       - traefik.enable=true
-      - traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)
+      - traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`,`www.great-alexandria-library.eu`)
       - traefik.http.routers.alex_front.entrypoints=websecure
       - traefik.http.routers.alex_front.tls=true
       - traefik.http.routers.alex_front.tls.certresolver=myresolver
