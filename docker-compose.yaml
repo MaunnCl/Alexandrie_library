@@ -9,7 +9,6 @@ services:
       - Backend/.env
     networks:
       - alex_net
-      - traefik
     labels:
       - traefik.enable=true
       - traefik.http.routers.alex_back.rule=Host(`13.48.70.161.sslip.io`) # temporaire
@@ -24,7 +23,6 @@ services:
         VITE_API_URL: http://13.48.70.161.sslip.io
     networks:
       - alex_net
-      - traefik
     labels:
       - traefik.enable=true
       - traefik.http.routers.alex_front.rule=Host(`13.48.70.161.sslip.io`) && PathPrefix(`/`)
