@@ -7,12 +7,10 @@ services:
       dockerfile: Dockerfile
     env_file:
       - Backend/.env
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.alex_back.rule=Host(`api.great-alexandria-library.eu`)
-      - traefik.http.routers.alex_back.entrypoints=websecure
-      - traefik.http.routers.alex_back.tls=true
-      - traefik.http.services.alex_back.loadbalancer.server.port=8080
+    networks:
+      - alex_net
+    expose:
+      - "8080"
 
   alex_front:
     build:
@@ -20,11 +18,13 @@ services:
       dockerfile: dockerfile
       args:
         VITE_API_URL: https://api.great-alexandria-library.eu
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)
-      - traefik.http.routers.alex_front.entrypoints=websecure
-      - traefik.http.routers.alex_front.tls=true
-      - traefik.http.services.alex_front.loadbalancer.server.port=3000
+    networks:
+      - alex_net
+    expose:
+      - "3000"
     depends_on:
       - alex_back
+
+networks:
+  alex_net:
+    driver: bridge
