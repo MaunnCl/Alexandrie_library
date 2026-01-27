@@ -11,15 +11,6 @@ services:
       - alex_net
     expose:
       - "8080"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.alex_back.rule=Host(`api.great-alexandria-library.eu`)"
-      - "traefik.http.routers.alex_back.entrypoints=http"
-      - "traefik.http.services.alex_back.loadbalancer.server.port=8080"
-      - "traefik.http.routers.alex_back_secure.rule=Host(`api.great-alexandria-library.eu`)"
-      - "traefik.http.routers.alex_back_secure.entrypoints=https"
-      - "traefik.http.routers.alex_back_secure.tls=true"
-      - "traefik.http.routers.alex_back_secure.tls.certresolver=letsencrypt"
 
   alex_front:
     build:
@@ -33,15 +24,6 @@ services:
       - "3000"
     depends_on:
       - alex_back
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.alex_front.rule=Host(`great-alexandria-library.eu`)"
-      - "traefik.http.routers.alex_front.entrypoints=http"
-      - "traefik.http.services.alex_front.loadbalancer.server.port=3000"
-      - "traefik.http.routers.alex_front_secure.rule=Host(`great-alexandria-library.eu`)"
-      - "traefik.http.routers.alex_front_secure.entrypoints=https"
-      - "traefik.http.routers.alex_front_secure.tls=true"
-      - "traefik.http.routers.alex_front_secure.tls.certresolver=letsencrypt"
 
 networks:
   alex_net:
