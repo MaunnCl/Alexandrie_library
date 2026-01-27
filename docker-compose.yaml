@@ -16,12 +16,13 @@ services:
       - "traefik.http.routers.alex_back_http.rule=Host(`api.great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_back_http.entrypoints=http"
       - "traefik.http.routers.alex_back_http.middlewares=redirect-to-https"
-      - "traefik.http.services.alex_back.loadbalancer.server.port=8080"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
       - "traefik.http.routers.alex_back_https.rule=Host(`api.great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_back_https.entrypoints=https"
       - "traefik.http.routers.alex_back_https.tls=true"
       - "traefik.http.routers.alex_back_https.tls.certresolver=letsencrypt"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.services.alex_back.loadbalancer.server.port=8080"
 
   alex_front:
     build:
@@ -40,11 +41,11 @@ services:
       - "traefik.http.routers.alex_front_http.rule=Host(`great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_front_http.entrypoints=http"
       - "traefik.http.routers.alex_front_http.middlewares=redirect-to-https"
-      - "traefik.http.services.alex_front.loadbalancer.server.port=3000"
       - "traefik.http.routers.alex_front_https.rule=Host(`great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_front_https.entrypoints=https"
       - "traefik.http.routers.alex_front_https.tls=true"
       - "traefik.http.routers.alex_front_https.tls.certresolver=letsencrypt"
+      - "traefik.http.services.alex_front.loadbalancer.server.port=3000"
 
 networks:
   alex_net:
