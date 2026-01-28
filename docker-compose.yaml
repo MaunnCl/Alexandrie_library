@@ -38,10 +38,10 @@ services:
       - alex_back
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.alex_front_http.rule=Host(`great-alexandria-library.eu`)"
+      - "traefik.http.routers.alex_front_http.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_front_http.entrypoints=http"
       - "traefik.http.routers.alex_front_http.middlewares=redirect-to-https"
-      - "traefik.http.routers.alex_front_https.rule=Host(`great-alexandria-library.eu`)"
+      - "traefik.http.routers.alex_front_https.rule=Host(`great-alexandria-library.eu`) || Host(`www.great-alexandria-library.eu`)"
       - "traefik.http.routers.alex_front_https.entrypoints=https"
       - "traefik.http.routers.alex_front_https.tls=true"
       - "traefik.http.routers.alex_front_https.tls.certresolver=letsencrypt"
