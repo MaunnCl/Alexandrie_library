@@ -6,7 +6,7 @@ import Plans from './pages/Plans';
 import Logout from './pages/Logout';
 import Checkout from './pages/Checkout';
 import ProfileCreation from './pages/ProfileCreation';
-import Categories from './pages/Categories';
+import Topics from './pages/Topics';
 import Home from './pages/Home';
 import CongressDirectory from './pages/CongressDirectory';
 import CongressDetail from './pages/CongressDetail';
@@ -27,7 +27,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/profile-creation" element={<ProfileCreation />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/categories" element={<Categories />} />
+        <Route path="/topics/:id" element={<Topics />} />
         <Route path="/congress" element={<CongressDirectory />} />
         <Route path="/congress/:id" element={<CongressDetail />} />
         <Route path="/speaker/:id" element={<SpeakerDetail />} />

@@ -13,7 +13,7 @@ interface SearchResult {
 function SearchBar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [searchType, setSearchType] = useState<'general' | 'congress' | 'topic' | 'speaker'>('general');
+  const [searchType, setSearchType] = useState<'session' | 'congress' | 'topic' | 'speaker'>('session');
   const [results, setResults] = useState<SearchResult[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ function SearchBar() {
       if (searchType === 'congress') {
         navigate(`/congress/${r.id}`);
       } else if (searchType === 'topic') {
-        navigate(`/categories?search=${encodeURIComponent(r.name || '')}`);
+        navigate(`/topics/${r.id}`);
       } else if (searchType === 'speaker') {
         navigate(`/speaker/${r.id}`);
       } else {
@@ -57,7 +57,7 @@ function SearchBar() {
           const res = await api.get('/api/congress');
           setResults(res.data.filter((c: any) => c.name.toLowerCase().includes(query.toLowerCase())));
         } else if (searchType === 'topic') {
-          const res = await api.get('/api/categories');
+          const res = await api.get('/api/sessions');
           setResults(res.data.filter((t: any) => t.name.toLowerCase().includes(query.toLowerCase())));
         } else if (searchType === 'speaker') {
           const res = await api.get('/api/orators');
@@ -108,10 +108,10 @@ function SearchBar() {
             >
               <div className="search-options">
             <button
-              className={searchType === 'general' ? 'active' : ''}
-              onClick={() => setSearchType('general')}
+              className={searchType === 'session' ? 'active' : ''}
+              onClick={() => setSearchType('session')}
             >
-              General
+              Sessions
             </button>
             <button
               className={searchType === 'congress' ? 'active' : ''}

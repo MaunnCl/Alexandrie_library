@@ -119,7 +119,7 @@ function Home() {
       </section>
 
       <section className="features">
-        <Link to="/categories" className="feature-card">
+        <Link to="/congress" className="feature-card">
           <FaVideo />
           <h3>Video Library</h3>
           <p>Browse sessions by specialty and watch when it suits you.</p>
