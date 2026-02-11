@@ -19,6 +19,16 @@ interface Content {
   orator_id: number;
 }
 
+function formatTimestamp(iso?: string) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const date = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  const time = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return `${date}, ${time}`;
+}
+
 function History() {
   const [history, setHistory] = useState<(HistoryItem & { title?: string })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,7 +101,7 @@ function History() {
                   onClick={() => navigate(`/watch/${item.contentId}`)}
                 >
                   <p className="history-title">{item.title}</p>
-                  <p className="history-date">Viewed at: {item.timeStamp}</p>
+                  <p className="history-date">Viewed at: {formatTimestamp(item.timeStamp)}</p>
                 </div>
                 <button
                   className="delete-btn"
