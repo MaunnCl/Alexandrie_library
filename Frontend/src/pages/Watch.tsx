@@ -485,6 +485,7 @@ export default function Watch() {
                     className={`video-wrapper${hideCursor ? " hide-cursor" : ""}`}
                     onMouseMove={handleMouseActivity}
                     onMouseLeave={handleMouseLeaveWrapper}
+                    onTouchStart={handleMouseActivity}
                   >
                     {isAudioOnly ? (
                       <div className="audio-placeholder" onClick={toggle} style={{ cursor: "pointer" }}>

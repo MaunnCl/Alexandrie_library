@@ -72,6 +72,11 @@
   min-width: 0;
 }
 
+.right-pane {
+  min-width: 0;
+  width: 100%;
+}
+
 .video-player {
   width: 100%;
   height: 100%;
@@ -443,11 +448,13 @@
 
 .watch-topbar {
   width: 100%;
+  max-width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: .5rem 1rem;
   margin-bottom: 1.2rem;
+  box-sizing: border-box;
 }
 
 .back-btn {
@@ -484,42 +491,270 @@
   display: none;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE MOBILE ===== */
 @media (max-width: 720px) {
+
+  /* --- Page --- */
+  .watch-page {
+    padding: 0;
+    overflow-x: hidden;
+    width: 100vw;
+  }
+
+  /* --- Header topbar --- */
+  .watch-topbar {
+    padding: 0.4rem 0.75rem;
+    gap: 0.5rem;
+    border-radius: 0;
+    margin-bottom: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .watch-topbar .session-title {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+    padding-bottom: 0;
+  }
+
+  .watch-logo {
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .back-btn span {
+    display: none;
+  }
+
+  /* --- Grid layout → single column stack --- */
   .watch-layout {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    display: flex !important;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 100vw;
+    padding: 0;
   }
 
-  .orator-sidebar {
-    position: static;
-    order: -1;
+  /* --- Video: full width, no border-radius on top --- */
+  .right-pane {
+    min-width: 0;
+    width: 100%;
+    order: 1;
   }
 
-  .card {
-    max-width: 280px;
-    margin: 0 auto;
+  .video-wrapper {
+    border-radius: 0;
+    width: 100%;
   }
 
-  .frame-grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  .video-player {
+    border-radius: 0;
   }
 
-  .session-title {
-    font-size: 1.35rem;
+  .video-overlay {
+    border-radius: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0) 20%,
+      rgba(0, 0, 0, 0) 70%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+  }
+
+  .audio-message {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  /* --- Contrôles vidéo --- */
+  .overlay-top {
+    padding: 0.4rem 0;
+  }
+
+  .overlay-bottom {
+    gap: 0.4rem;
+    padding: 0.4rem 0;
+  }
+
+  .overlay-ctrl {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+  }
+
+  .play-pause-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .left-controls {
+    gap: 0.4rem;
+  }
+
+  .right-controls {
+    gap: 0.4rem;
+  }
+
+  .time-display {
+    font-size: 0.75rem;
+    min-width: auto;
+  }
+
+  .volume-container {
+    display: none;
   }
 
   .progress-container {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
   }
 
   .controls-row {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
   }
 
-  .video-title-overlay,
   .slide-counter {
-    margin: 0 1rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    margin-left: 0.75rem;
+  }
+
+  .preview-tooltip {
+    display: none;
+  }
+
+  /* --- Orator card: compact horizontal banner --- */
+  .left-pane {
+    order: 2;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid #330000;
+    border-bottom: 1px solid #330000;
+  }
+
+  .card {
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid #330000;
+    border-bottom: 1px solid #330000;
+    box-shadow: none;
+  }
+
+  .orator-img {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .orator-name {
+    font-size: 0.95rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .orator-location {
+    font-size: 0.8rem;
+  }
+
+  .so-one-end {
+    display: none;
+  }
+
+  /* --- Video info bar --- */
+  .video-info-bar {
+    order: 3;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+    letter-spacing: 0;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .video-info-bar::before {
+    width: 8px;
+    border-radius: 0;
+  }
+
+  /* --- Slide grid --- */
+  .frame-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0 0.75rem;
+  }
+
+  .neon.sub {
+    font-size: 1rem;
+    text-align: center;
+    padding: 0.75rem 0 0;
+  }
+
+  /* --- Suggestions: horizontal scroll carousel --- */
+  .suggestions {
+    order: 4;
+    margin-top: 0;
+    padding: 0.75rem;
+  }
+
+  .suggestions h3 {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .suggestion-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.75rem;
+    padding-bottom: 0.75rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .suggestion-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .suggest-card {
+    width: 44vw;
+    min-width: 44vw;
+    max-width: 200px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    border-radius: 10px;
+  }
+
+  .suggest-card .title {
+    font-size: 0.8rem;
+    padding: 0.4rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .suggest-card .topic {
+    font-size: 0.7rem;
+    padding-bottom: 0.3rem;
   }
 }
 

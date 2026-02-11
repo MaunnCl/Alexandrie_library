@@ -215,24 +215,73 @@
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding: 60px 16px;
+    min-height: 300px;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    word-break: break-word;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .cta-button {
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+    padding: 30px 16px;
+    gap: 16px;
+  }
+
+  .feature-card {
+    padding: 24px 16px;
+  }
+
+  .feature-card svg {
+    font-size: 36px;
+  }
+
   .so-one-title {
-    font-size: 2rem;
-    margin-bottom: 40px;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    padding: 0 16px;
   }
 
   .so-one-cards {
     grid-template-columns: 1fr;
-    gap: 20px;
-    margin-bottom: 40px;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding: 0 16px;
   }
 
   .so-one-card {
-    padding: 30px 20px;
+    padding: 24px 16px;
   }
 
   .commitment-text {
-    font-size: 1rem;
-    margin-bottom: 25px;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    padding: 0 16px;
+  }
+
+  .so-one-section {
+    padding: 40px 0;
+  }
+
+  .soone-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .intro-logo {
+    height: 140px;
   }
 }
 

@@ -94,3 +94,23 @@
   padding: 6px;
   color: #ccc;
 }
+
+@media (max-width: 768px) {
+  .search-wrapper.expanded {
+    width: 92%;
+    top: 20px;
+  }
+
+  .search-popup {
+    max-width: 100%;
+  }
+
+  .search-options {
+    flex-wrap: wrap;
+  }
+
+  .search-options button {
+    font-size: 12px;
+    padding: 5px;
+  }
+}
