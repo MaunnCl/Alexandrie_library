@@ -8,6 +8,8 @@
   color: #f0f0f0;
   padding: 2rem 1rem;
   font-family: system-ui, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* ========= HEADER ========= */
@@ -507,17 +509,20 @@
     gap: 0.5rem;
     border-radius: 0;
     margin-bottom: 0;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 10;
   }
 
   .watch-topbar .session-title {
+    display: block;
     font-size: 0.85rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     min-width: 0;
+    max-width: 100%;
     flex: 1;
     padding-bottom: 0;
   }
@@ -615,7 +620,12 @@
   }
 
   .volume-container {
-    display: none;
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .volume-overlay {
+    width: 50px;
   }
 
   .progress-container {

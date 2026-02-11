@@ -6,7 +6,7 @@ import api from "../lib/api"
 import axios from "axios"
 import "../styles/Watch.css"
 import Footer from "../components/Footer"
-import { FaArrowLeft } from "react-icons/fa"
+import { FaArrowLeft, FaStepBackward, FaStepForward, FaPlay, FaPause, FaVolumeUp, FaTh } from "react-icons/fa"
 
 interface Segment {
   frame: string
@@ -544,15 +544,15 @@ export default function Watch() {
                           <div className="left-controls">
                             {!isAudioOnly && (
                               <button className="overlay-ctrl" onClick={prev} disabled={curIdx <= 0}>
-                                ⏮
+                                <FaStepBackward />
                               </button>
                             )}
                             <button className="overlay-ctrl play-pause-btn" onClick={toggle}>
-                              {isPlaying ? "⏸" : "▶"}
+                              {isPlaying ? <FaPause /> : <FaPlay />}
                             </button>
                             {!isAudioOnly && (
                               <button className="overlay-ctrl" onClick={next} disabled={curIdx >= segments.length - 1}>
-                                ⏭
+                                <FaStepForward />
                               </button>
                             )}
                             <div className="time-display">
@@ -562,7 +562,7 @@ export default function Watch() {
 
                           <div className="right-controls">
                             <div className="volume-container">
-                              <span style={{ color: "white", fontSize: "1.1rem" }}>🔊</span>
+                              <FaVolumeUp style={{ color: "white", fontSize: "1.1rem" }} />
                               <input
                                 type="range"
                                 className="volume-overlay"
@@ -579,7 +579,7 @@ export default function Watch() {
                             </div>
                             {!isAudioOnly && segments.length > 0 && (
                               <button className="overlay-ctrl" onClick={toGrid}>
-                                🖼
+                                <FaTh />
                               </button>
                             )}
                           </div>
