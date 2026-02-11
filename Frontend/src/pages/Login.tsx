@@ -27,7 +27,7 @@ function Login() {
       localStorage.setItem('userId', data.id);
       localStorage.setItem('user', JSON.stringify(data));
 
-      navigate('/congress');
+      navigate('/');
     } catch (err: any) {
       console.error('Error during login:', err);
       console.log('Full error response:', err?.response);
