@@ -53,8 +53,28 @@ export default function Watch() {
   const location = useLocation()
   const from = (location.state as { from?: string })?.from ?? "/congress"
 
-  const videoRef = useRef<HTMLVideoElement | HTMLAudioElement>(null)
+  const videoRef = useRef<HTMLVideoElement | HTMLAudioElement | null>(null)
   const barRef = useRef<HTMLDivElement>(null)
+
+  const videoMountRef = (el: HTMLVideoElement | HTMLAudioElement | null) => {
+    videoRef.current = el
+    if (!el) return
+    const seekTime = pendingSeekRef.current
+    if (seekTime == null) return
+
+    const applySeek = () => {
+      el.currentTime = seekTime
+      pendingSeekRef.current = null
+      setCurrentTime(seekTime)
+      setVideoDur(el.duration || 0)
+    }
+
+    if (el.readyState >= 1) {
+      applySeek()
+    } else {
+      el.addEventListener("loadedmetadata", applySeek, { once: true })
+    }
+  }
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
   const [title, setTitle] = useState("")
@@ -68,7 +88,7 @@ export default function Watch() {
 
   const [loading, setLoading] = useState(true)
   const [showVid, setShowVid] = useState(false)
-  const [pendingSeek, setPending] = useState<number | null>(null)
+  const pendingSeekRef = useRef<number | null>(null)
   const [curIdx, setCurIdx] = useState(-1)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(1)
@@ -321,8 +341,11 @@ export default function Watch() {
 
   const seekIdx = (i: number) => {
     const t = (+segments[i].frame + 3) / 60
-    if (videoRef.current) videoRef.current.currentTime = t
-    else setPending(t)
+    pendingSeekRef.current = t
+    if (videoRef.current && videoRef.current.readyState >= 2) {
+      videoRef.current.currentTime = t
+      videoRef.current.play().catch(() => {})
+    }
     setCurIdx(i)
     setShowVid(true)
   }
@@ -406,14 +429,6 @@ export default function Watch() {
     }
   }, [showVid, volume, videoRef.current])
 
-  useEffect(() => {
-    if (!showVid || !videoRef.current) return
-    const v = videoRef.current
-    if (pendingSeek != null) v.currentTime = pendingSeek
-    const start = () => v.play().catch(() => {})
-    v.readyState >= 2 ? start() : v.addEventListener("canplay", start, { once: true })
-  }, [showVid])
-
   return (
     <>
       <div className="watch-page">
@@ -474,11 +489,11 @@ export default function Watch() {
                     {isAudioOnly ? (
                       <div className="audio-placeholder" onClick={toggle} style={{ cursor: "pointer" }}>
                         <p className="audio-message">No video available for this orator</p>
-                        <audio ref={videoRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
+                        <audio ref={videoMountRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
                       </div>
                     ) : (
                       <video
-                        ref={videoRef as any}
+                        ref={videoMountRef as any}
                         poster={undefined}
                         playsInline
                         className="video-player glow"
