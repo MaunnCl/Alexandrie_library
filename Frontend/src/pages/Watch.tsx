@@ -54,6 +54,7 @@ export default function Watch() {
   const from = (location.state as { from?: string })?.from ?? "/congress"
 
   const videoRef = useRef<HTMLVideoElement | HTMLAudioElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const barRef = useRef<HTMLDivElement>(null)
 
   const videoMountRef = (el: HTMLVideoElement | HTMLAudioElement | null) => {
@@ -102,6 +103,7 @@ export default function Watch() {
   const [showLayout, setShowLayout] = useState(true)
   const hideTimer = useRef<number | null>(null)
   const [hideCursor, setHideCursor] = useState(false)
+  const isTouchDevice = useRef(false)
 
   const [isAudioOnly, setIsAudioOnly] = useState(false)
 
@@ -122,6 +124,26 @@ export default function Watch() {
     setShowLayout(false)
     setHideCursor(false)
     if (hideTimer.current) clearTimeout(hideTimer.current)
+  }
+
+  const handleTouchStart = () => {
+    isTouchDevice.current = true
+    handleMouseActivity()
+  }
+
+  const handleVideoClick = () => {
+    if (isTouchDevice.current) {
+      // On touch: tap toggles controls visibility, not play/pause
+      if (showLayout) {
+        setShowLayout(false)
+        if (hideTimer.current) clearTimeout(hideTimer.current)
+      } else {
+        handleMouseActivity()
+      }
+    } else {
+      // On desktop: click toggles play/pause
+      toggle()
+    }
   }
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -254,6 +276,7 @@ export default function Watch() {
           } catch (e) {
             console.error("❌ Timestamps fetch fail", e)
             setIsAudioOnly(true)
+            setShowVid(true)
           }
         } else {
           setIsAudioOnly(true)
@@ -374,60 +397,36 @@ export default function Watch() {
     if (i > 0) seekIdx(i - 1)
   }
   const toggle = () => {
-    if (!videoRef.current) return
-    if (videoRef.current.paused) {
-      videoRef.current.play()
+    const el = isAudioOnly ? audioRef.current : videoRef.current
+    if (!el) return
+    if (el.paused) {
+      el.play()
       setIsPlaying(true)
     } else {
-      videoRef.current.pause()
+      el.pause()
       setIsPlaying(false)
     }
   }
   const toGrid = () => setShowVid(false)
 
-  const updateProgress = () => {
-    if (!videoRef.current || !barRef.current) return
-    const pct = (videoRef.current.currentTime / videoRef.current.duration || 0) * 100
-    barRef.current.style.setProperty("--pct", `${pct}%`)
-    const idx = getCurrentIdx()
-    if (idx !== -1) setCurIdx(idx)
-    setVideoDur(videoRef.current.duration || 0)
-    setCurrentTime(videoRef.current.currentTime || 0)
-  }
-
   const clickProgress = (e: React.MouseEvent) => {
-    if (!videoRef.current || !barRef.current) return
+    const el = isAudioOnly ? audioRef.current : videoRef.current
+    if (!el || !barRef.current) return
     const { left, width } = barRef.current.getBoundingClientRect()
-    videoRef.current.currentTime = ((e.clientX - left) / width) * videoRef.current.duration
+    el.currentTime = ((e.clientX - left) / width) * el.duration
   }
 
   useEffect(() => {
     const v = videoRef.current
-    if (!showVid || !v) return
+    if (!v) return
     v.volume = volume
+  }, [volume])
 
-    const onPlay = () => setIsPlaying(true)
-    const onPause = () => setIsPlaying(false)
-    const onMeta = () => setVideoDur(v.duration)
-    const onTime = () => updateProgress()
-    const onSeek = () => {
-      updateProgress()
-    }
-
-    v.addEventListener("play", onPlay)
-    v.addEventListener("pause", onPause)
-    v.addEventListener("timeupdate", onTime)
-    v.addEventListener("loadedmetadata", onMeta)
-    v.addEventListener("seeked", onSeek)
-
-    return () => {
-      v.removeEventListener("play", onPlay)
-      v.removeEventListener("pause", onPause)
-      v.removeEventListener("timeupdate", onTime)
-      v.removeEventListener("loadedmetadata", onMeta)
-      v.removeEventListener("seeked", onSeek)
-    }
-  }, [showVid, volume, videoRef.current])
+  useEffect(() => {
+    const a = audioRef.current
+    if (!a) return
+    a.volume = volume
+  }, [volume])
 
   return (
     <>
@@ -485,12 +484,29 @@ export default function Watch() {
                     className={`video-wrapper${hideCursor ? " hide-cursor" : ""}`}
                     onMouseMove={handleMouseActivity}
                     onMouseLeave={handleMouseLeaveWrapper}
-                    onTouchStart={handleMouseActivity}
+                    onTouchStart={handleTouchStart}
                   >
                     {isAudioOnly ? (
-                      <div className="audio-placeholder" onClick={toggle} style={{ cursor: "pointer" }}>
+                      <div className="audio-placeholder" onClick={handleVideoClick} style={{ cursor: "pointer" }}>
                         <p className="audio-message">No video available for this orator</p>
-                        <audio ref={videoMountRef as any} src={videoUrl || undefined} style={{ display: "none" }} />
+                        <audio
+                          ref={audioRef}
+                          src={videoUrl || undefined}
+                          preload="metadata"
+                          onLoadedMetadata={(e) => setVideoDur(e.currentTarget.duration || 0)}
+                          onTimeUpdate={(e) => {
+                            const cur = e.currentTarget.currentTime || 0
+                            const dur = e.currentTarget.duration || 0
+                            setCurrentTime(cur)
+                            setVideoDur(dur)
+                            if (barRef.current && dur > 0) {
+                              barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
+                            }
+                          }}
+                          onPlay={() => setIsPlaying(true)}
+                          onPause={() => setIsPlaying(false)}
+                          style={{ display: "none" }}
+                        />
                       </div>
                     ) : (
                       <video
@@ -498,7 +514,35 @@ export default function Watch() {
                         poster={undefined}
                         playsInline
                         className="video-player glow"
-                        onClick={toggle}
+                        onClick={handleVideoClick}
+                        onLoadedMetadata={(e) => {
+                          setVideoDur(e.currentTarget.duration || 0)
+                          e.currentTarget.volume = volume
+                        }}
+                        onTimeUpdate={(e) => {
+                          const cur = e.currentTarget.currentTime || 0
+                          const dur = e.currentTarget.duration || 0
+                          setCurrentTime(cur)
+                          setVideoDur(dur)
+                          if (barRef.current && dur > 0) {
+                            barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
+                          }
+                          const idx = getCurrentIdx()
+                          if (idx !== -1) setCurIdx(idx)
+                        }}
+                        onSeeked={(e) => {
+                          const cur = e.currentTarget.currentTime || 0
+                          const dur = e.currentTarget.duration || 0
+                          setCurrentTime(cur)
+                          setVideoDur(dur)
+                          if (barRef.current && dur > 0) {
+                            barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
+                          }
+                          const idx = getCurrentIdx()
+                          if (idx !== -1) setCurIdx(idx)
+                        }}
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
                       >
                         <source src={videoUrl!} type="video/mp4" />
                       </video>
@@ -574,6 +618,7 @@ export default function Watch() {
                                   const v = +e.target.value
                                   setVolume(v)
                                   if (videoRef.current) videoRef.current.volume = v
+                                  if (audioRef.current) audioRef.current.volume = v
                                 }}
                               />
                             </div>
