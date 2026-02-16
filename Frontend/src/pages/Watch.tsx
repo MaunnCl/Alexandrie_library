@@ -6,7 +6,7 @@ import api from "../lib/api"
 import axios from "axios"
 import "../styles/Watch.css"
 import Footer from "../components/Footer"
-import { FaArrowLeft, FaStepBackward, FaStepForward, FaPlay, FaPause, FaVolumeUp, FaTh } from "react-icons/fa"
+import { FaArrowLeft, FaStepBackward, FaStepForward, FaPlay, FaPause, FaVolumeUp, FaTh, FaExpand } from "react-icons/fa"
 
 interface Segment {
   frame: string
@@ -365,12 +365,16 @@ export default function Watch() {
   const seekIdx = (i: number) => {
     const t = (+segments[i].frame + 3) / 60
     pendingSeekRef.current = t
-    if (videoRef.current && videoRef.current.readyState >= 2) {
-      videoRef.current.currentTime = t
-      videoRef.current.play().catch(() => {})
-    }
     setCurIdx(i)
+    setCurrentTime(t)
     setShowVid(true)
+
+    // If video is already mounted and ready, seek directly
+    const v = videoRef.current as HTMLVideoElement | null
+    if (v && v.readyState >= 1) {
+      v.currentTime = t
+      pendingSeekRef.current = null
+    }
   }
 
   const getCurrentIdx = () => {
@@ -430,28 +434,36 @@ export default function Watch() {
 
   useEffect(() => {
     let rafId: number
+    let lastTime = -1
     const tick = () => {
       const el = isAudioOnly ? audioRef.current : videoRef.current
-      if (el) {
-        const cur = el.currentTime || 0
-        const dur = el.duration || 0
-        setCurrentTime(cur)
-        if (dur > 0) {
+      if (el && el.duration) {
+        const cur = el.currentTime
+        const dur = el.duration
+        if (Math.abs(cur - lastTime) > 0.05) {
+          lastTime = cur
+          setCurrentTime(cur)
           setVideoDur(dur)
           if (barRef.current) {
             barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
           }
-        }
-        if (!isAudioOnly) {
-          const idx = getCurrentIdx()
-          if (idx !== -1) setCurIdx(idx)
+          if (!isAudioOnly) {
+            const cf = cur * 60
+            let idx = -1
+            for (let i = 0; i < segments.length; i++) {
+              const start = +segments[i].frame
+              const nxt = segments[i + 1] ? +segments[i + 1].frame : Number.POSITIVE_INFINITY
+              if (cf >= start && cf < nxt) { idx = i; break }
+            }
+            if (idx !== -1) setCurIdx(idx)
+          }
         }
       }
       rafId = requestAnimationFrame(tick)
     }
     rafId = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafId)
-  }, [showVid, isAudioOnly])
+  }, [isAudioOnly, segments])
 
   return (
     <>
@@ -527,8 +539,11 @@ export default function Watch() {
                     ) : (
                       <video
                         ref={videoMountRef as any}
+                        src={videoUrl!}
                         poster={undefined}
                         playsInline
+                        // @ts-ignore — Safari iOS needs this attribute
+                        webkit-playsinline="true"
                         className="video-player glow"
                         onClick={handleVideoClick}
                         onLoadedMetadata={(e) => {
@@ -537,9 +552,7 @@ export default function Watch() {
                         }}
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
-                      >
-                        <source src={videoUrl!} type="video/mp4" />
-                      </video>
+                      />
                     )}
 
                     <div className="video-overlay" style={{ opacity: showLayout ? 1 : 0, transition: "opacity 0.3s" }}>
@@ -621,6 +634,27 @@ export default function Watch() {
                                 <FaTh />
                               </button>
                             )}
+                            <button
+                              className="overlay-ctrl fullscreen-btn"
+                              onClick={() => {
+                                const wrapper = document.querySelector(".video-wrapper") as HTMLElement
+                                if (!wrapper) return
+                                if (document.fullscreenElement) {
+                                  document.exitFullscreen().catch(() => {})
+                                } else if ((document as any).webkitFullscreenElement) {
+                                  (document as any).webkitExitFullscreen()
+                                } else if (wrapper.requestFullscreen) {
+                                  wrapper.requestFullscreen().catch(() => {})
+                                } else if ((wrapper as any).webkitRequestFullscreen) {
+                                  (wrapper as any).webkitRequestFullscreen()
+                                } else if (videoRef.current && (videoRef.current as any).webkitEnterFullscreen) {
+                                  // iOS Safari fallback: native video fullscreen
+                                  (videoRef.current as any).webkitEnterFullscreen()
+                                }
+                              }}
+                            >
+                              <FaExpand />
+                            </button>
                           </div>
                         </div>
                       </div>
