@@ -428,6 +428,31 @@ export default function Watch() {
     a.volume = volume
   }, [volume])
 
+  useEffect(() => {
+    let rafId: number
+    const tick = () => {
+      const el = isAudioOnly ? audioRef.current : videoRef.current
+      if (el) {
+        const cur = el.currentTime || 0
+        const dur = el.duration || 0
+        setCurrentTime(cur)
+        if (dur > 0) {
+          setVideoDur(dur)
+          if (barRef.current) {
+            barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
+          }
+        }
+        if (!isAudioOnly) {
+          const idx = getCurrentIdx()
+          if (idx !== -1) setCurIdx(idx)
+        }
+      }
+      rafId = requestAnimationFrame(tick)
+    }
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [showVid, isAudioOnly])
+
   return (
     <>
       <div className="watch-page">
@@ -494,15 +519,6 @@ export default function Watch() {
                           src={videoUrl || undefined}
                           preload="metadata"
                           onLoadedMetadata={(e) => setVideoDur(e.currentTarget.duration || 0)}
-                          onTimeUpdate={(e) => {
-                            const cur = e.currentTarget.currentTime || 0
-                            const dur = e.currentTarget.duration || 0
-                            setCurrentTime(cur)
-                            setVideoDur(dur)
-                            if (barRef.current && dur > 0) {
-                              barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
-                            }
-                          }}
                           onPlay={() => setIsPlaying(true)}
                           onPause={() => setIsPlaying(false)}
                           style={{ display: "none" }}
@@ -518,28 +534,6 @@ export default function Watch() {
                         onLoadedMetadata={(e) => {
                           setVideoDur(e.currentTarget.duration || 0)
                           e.currentTarget.volume = volume
-                        }}
-                        onTimeUpdate={(e) => {
-                          const cur = e.currentTarget.currentTime || 0
-                          const dur = e.currentTarget.duration || 0
-                          setCurrentTime(cur)
-                          setVideoDur(dur)
-                          if (barRef.current && dur > 0) {
-                            barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
-                          }
-                          const idx = getCurrentIdx()
-                          if (idx !== -1) setCurIdx(idx)
-                        }}
-                        onSeeked={(e) => {
-                          const cur = e.currentTarget.currentTime || 0
-                          const dur = e.currentTarget.duration || 0
-                          setCurrentTime(cur)
-                          setVideoDur(dur)
-                          if (barRef.current && dur > 0) {
-                            barRef.current.style.setProperty("--pct", `${(cur / dur) * 100}%`)
-                          }
-                          const idx = getCurrentIdx()
-                          if (idx !== -1) setCurIdx(idx)
                         }}
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
