@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UsersRolesController } from "../controllers/usersRoles.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -34,7 +35,7 @@ const router = Router();
  *       201:
  *         description: Assignment created
  */
-router.post("/users-roles", UsersRolesController.create);
+router.post("/users-roles", authenticateJWT, UsersRolesController.create);
 
 /**
  * @swagger
@@ -46,7 +47,7 @@ router.post("/users-roles", UsersRolesController.create);
  *       200:
  *         description: List of assignments
  */
-router.get("/users-roles", UsersRolesController.getAll);
+router.get("/users-roles", authenticateJWT, UsersRolesController.getAll);
 
 /**
  * @swagger
@@ -66,7 +67,7 @@ router.get("/users-roles", UsersRolesController.getAll);
  *       404:
  *         description: Not found
  */
-router.get("/users-roles/:id", UsersRolesController.getById);
+router.get("/users-roles/:id", authenticateJWT, UsersRolesController.getById);
 
 /**
  * @swagger
@@ -95,7 +96,7 @@ router.get("/users-roles/:id", UsersRolesController.getById);
  *       200:
  *         description: Assignment updated
  */
-router.put("/users-roles/:id", UsersRolesController.update);
+router.put("/users-roles/:id", authenticateJWT, UsersRolesController.update);
 
 /**
  * @swagger
@@ -113,6 +114,6 @@ router.put("/users-roles/:id", UsersRolesController.update);
  *       204:
  *         description: Assignment deleted
  */
-router.delete("/users-roles/:id", UsersRolesController.delete);
+router.delete("/users-roles/:id", authenticateJWT, UsersRolesController.delete);
 
 export default router;

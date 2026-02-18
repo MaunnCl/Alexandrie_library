@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UsersController } from "../controllers/users.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -43,7 +44,7 @@ router.post("/users", UsersController.create);
  *       200:
  *         description: List of users
  */
-router.get("/users", UsersController.getAll);
+router.get("/users", authenticateJWT, UsersController.getAll);
 
 /**
  * @swagger
@@ -63,7 +64,7 @@ router.get("/users", UsersController.getAll);
  *       404:
  *         description: User not found
  */
-router.get("/users/:id", UsersController.getById);
+router.get("/users/:id", authenticateJWT, UsersController.getById);
 
 /**
  * @swagger
@@ -92,7 +93,7 @@ router.get("/users/:id", UsersController.getById);
  *       200:
  *         description: User updated
  */
-router.put("/users/:id", UsersController.update);
+router.put("/users/:id", authenticateJWT, UsersController.update);
 
 /**
  * @swagger
@@ -110,7 +111,7 @@ router.put("/users/:id", UsersController.update);
  *       204:
  *         description: User deleted
  */
-router.delete("/users/:id", UsersController.delete);
+router.delete("/users/:id", authenticateJWT, UsersController.delete);
 
 
 router.post("/login", UsersController.loginUser);

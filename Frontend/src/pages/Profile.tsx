@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import api from "../lib/api";
 import "../styles/Profile.css";
-import enzopic from "../assets/enzo.jpg";
 
 interface User {
   firstname: string;
@@ -37,7 +36,7 @@ function Profile() {
       {user ? (
         <div className="profile-page-card">  {/* <-- changé ici */}
           <img
-            src={enzopic}
+            src="/public/avatar.png"
             alt="User Avatar"
             className="profile-avatar"
           />

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { UsersProfilesController } from "../controllers/usersProfiles.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -30,7 +31,7 @@ const router = Router();
  *       400:
  *         description: Invalid input
  */
-router.post("/users-profiles", UsersProfilesController.create);
+router.post("/users-profiles", authenticateJWT, UsersProfilesController.create);
 
 /**
  * @swagger
@@ -42,7 +43,7 @@ router.post("/users-profiles", UsersProfilesController.create);
  *       200:
  *         description: Successful retrieval
  */
-router.get("/users-profiles", UsersProfilesController.getAll);
+router.get("/users-profiles", authenticateJWT, UsersProfilesController.getAll);
 
 /**
  * @swagger
@@ -63,7 +64,7 @@ router.get("/users-profiles", UsersProfilesController.getAll);
  *       404:
  *         description: Profile not found
  */
-router.get("/users-profiles/:id", UsersProfilesController.getById);
+router.get("/users-profiles/:id", authenticateJWT, UsersProfilesController.getById);
 
 /**
  * @swagger
@@ -97,7 +98,7 @@ router.get("/users-profiles/:id", UsersProfilesController.getById);
  *       404:
  *         description: Profile not found
  */
-router.put("/users-profiles/:id", UsersProfilesController.update);
+router.put("/users-profiles/:id", authenticateJWT, UsersProfilesController.update);
 
 /**
  * @swagger
@@ -116,6 +117,6 @@ router.put("/users-profiles/:id", UsersProfilesController.update);
  *       204:
  *         description: Profile deleted successfully
  */
-router.delete("/users-profiles/:id", UsersProfilesController.delete);
+router.delete("/users-profiles/:id", authenticateJWT, UsersProfilesController.delete);
 
 export default router;

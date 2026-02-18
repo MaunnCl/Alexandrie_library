@@ -22,8 +22,7 @@ function Login() {
 
       const data = response.data;
 
-      console.log('Login response:', data);
-
+      localStorage.setItem('token', data.token);
       localStorage.setItem('userId', data.id);
       localStorage.setItem('user', JSON.stringify(data));
 

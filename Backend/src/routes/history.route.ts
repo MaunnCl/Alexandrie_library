@@ -1,5 +1,6 @@
 import express from "express";
 import {historyController} from "../controllers/history.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ const router = express.Router();
  *       500:
  *         description: Erreur serveur
  */
-router.post("/history", historyController.addToHistory);
+router.post("/history", authenticateJWT, historyController.addToHistory);
 
 /**
  * @swagger
@@ -62,7 +63,7 @@ router.post("/history", historyController.addToHistory);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/history/:userId", historyController.getUserHistory);
+router.get("/history/:userId", authenticateJWT, historyController.getUserHistory);
 
 /**
  * @swagger
@@ -86,6 +87,6 @@ router.get("/history/:userId", historyController.getUserHistory);
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/history/:id", historyController.deleteHistoryItem);
+router.delete("/history/:id", authenticateJWT, historyController.deleteHistoryItem);
 
 export default router;

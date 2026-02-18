@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ContentController } from "../controllers/content.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 const router = Router();
 
 /**
@@ -32,7 +33,7 @@ const router = Router();
  *       201:
  *         description: Content created successfully
  */
-router.post("/contents", ContentController.create);
+router.post("/contents", authenticateJWT, ContentController.create);
 
 /**
  * @swagger
@@ -44,7 +45,7 @@ router.post("/contents", ContentController.create);
  *       200:
  *         description: Successful retrieval
  */
-router.get("/contents", ContentController.getAll);
+router.get("/contents", authenticateJWT, ContentController.getAll);
 
 /**
  * @swagger
@@ -63,7 +64,7 @@ router.get("/contents", ContentController.getAll);
  *       404:
  *         description: Content not found
  */
-router.get("/contents/:id", ContentController.getById);
+router.get("/contents/:id", authenticateJWT, ContentController.getById);
 
 /**
  * @swagger
@@ -95,7 +96,7 @@ router.get("/contents/:id", ContentController.getById);
  *       200:
  *         description: Content updated successfully
  */
-router.put("/contents/:id", ContentController.update);
+router.put("/contents/:id", authenticateJWT, ContentController.update);
 
 /**
  * @swagger
@@ -112,7 +113,7 @@ router.put("/contents/:id", ContentController.update);
  *       204:
  *         description: Content deleted successfully
  */
-router.delete("/contents/:id", ContentController.delete);
+router.delete("/contents/:id", authenticateJWT, ContentController.delete);
 
 /**
  * @swagger
@@ -133,7 +134,7 @@ router.delete("/contents/:id", ContentController.delete);
  *       200:
  *         description: Content linked to orator successfully
  */
-router.put("/contents/:contentId/orator/:oratorId", ContentController.addContentToOrator);
+router.put("/contents/:contentId/orator/:oratorId", authenticateJWT, ContentController.addContentToOrator);
 
 /**
  * @swagger
@@ -150,6 +151,6 @@ router.put("/contents/:contentId/orator/:oratorId", ContentController.addContent
  *       200:
  *         description: Content removed from orator successfully
  */
-router.delete("/contents/:contentId/orator", ContentController.removeContentFromOrator);
+router.delete("/contents/:contentId/orator", authenticateJWT, ContentController.removeContentFromOrator);
 
 export default router;

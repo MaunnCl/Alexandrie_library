@@ -63,6 +63,7 @@ function Register() {
         throw new Error(errorData.message || 'Error creating user');
       }
       const createdUser = await response.json();
+      localStorage.setItem('token', createdUser.token);
       localStorage.setItem('userId', createdUser.id);
       navigate('/plans');
     } catch (err: any) {

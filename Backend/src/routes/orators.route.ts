@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { OratorsController } from "../controllers/orators.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -35,7 +36,7 @@ const router = Router();
  *       400:
  *         description: Orator already exists or invalid input
  */
-router.post("/orators", OratorsController.create);
+router.post("/orators", authenticateJWT, OratorsController.create);
 
 /**
  * @swagger
@@ -47,7 +48,7 @@ router.post("/orators", OratorsController.create);
  *       200:
  *         description: Successful retrieval
  */
-router.get("/orators", OratorsController.getAll);
+router.get("/orators", authenticateJWT, OratorsController.getAll);
 
 /**
  * @swagger
@@ -66,7 +67,7 @@ router.get("/orators", OratorsController.getAll);
  *       404:
  *         description: Orator not found
  */
-router.get("/orators/:id", OratorsController.getById);
+router.get("/orators/:id", authenticateJWT, OratorsController.getById);
 
 /**
  * @swagger
@@ -105,7 +106,7 @@ router.get("/orators/:id", OratorsController.getById);
  *       404:
  *         description: Orator not found
  */
-router.put("/orators/:id", OratorsController.update);
+router.put("/orators/:id", authenticateJWT, OratorsController.update);
 
 /**
  * @swagger
@@ -122,7 +123,7 @@ router.put("/orators/:id", OratorsController.update);
  *       204:
  *         description: Orator deleted successfully
  */
-router.delete("/orators/:id", OratorsController.delete);
+router.delete("/orators/:id", authenticateJWT, OratorsController.delete);
 
 /**
  * @swagger
@@ -181,7 +182,7 @@ router.delete("/orators/:id", OratorsController.delete);
  *       500:
  *         description: Server error
  */
-router.post("/orators/:oratorId/content/:contentId", OratorsController.addContentToOrator);
+router.post("/orators/:oratorId/content/:contentId", authenticateJWT, OratorsController.addContentToOrator);
 
 /**
  * @swagger
@@ -240,7 +241,7 @@ router.post("/orators/:oratorId/content/:contentId", OratorsController.addConten
  *       500:
  *         description: Server error
  */
-router.delete("/orators/:oratorId/content/:contentId", OratorsController.removeContentFromOrator);
+router.delete("/orators/:oratorId/content/:contentId", authenticateJWT, OratorsController.removeContentFromOrator);
 
 
 /**
@@ -273,6 +274,6 @@ router.delete("/orators/:oratorId/content/:contentId", OratorsController.removeC
  *       500:
  *         description: Server error
  */
-router.put("/orators/:id/photo", OratorsController.updatePhoto);
+router.put("/orators/:id/photo", authenticateJWT, OratorsController.updatePhoto);
 
 export default router;

@@ -5,7 +5,6 @@ import api from '../lib/api';
 import SearchBar from './SearchBar';
 import SidebarMenu from "./SidebarMenu"; // <-- import
 import '../styles/Navbar.css';
-import enzopic from '../assets/enzo.jpg'; // <-- import
 
 interface User {
   firstname: string;
@@ -58,6 +57,7 @@ function Navbar() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('userId');
     setProfileOpen(false);
@@ -82,7 +82,7 @@ function Navbar() {
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
             <img
-              src={enzopic} // <-- use enzopic here
+              src="/public/avatar.png"
               alt="User Avatar"
               className="avatar"
             />
@@ -94,7 +94,7 @@ function Navbar() {
             <div className="profile-card animate-slideDown">
               <div className="profile-card-header">
                 <img
-                  src="https://via.placeholder.com/60x60?text=👤"
+                  src="/public/avatar.png"
                   alt="User Avatar"
                   className="avatar"
                 />

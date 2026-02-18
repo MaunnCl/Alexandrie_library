@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { RoleController } from "../controllers/role.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -34,7 +35,7 @@ const router = Router();
  *       201:
  *         description: Role created successfully
  */
-router.post("/roles", RoleController.create);
+router.post("/roles", authenticateJWT, RoleController.create);
 
 /**
  * @swagger
@@ -46,7 +47,7 @@ router.post("/roles", RoleController.create);
  *       200:
  *         description: List of roles
  */
-router.get("/roles", RoleController.getAll);
+router.get("/roles", authenticateJWT, RoleController.getAll);
 
 /**
  * @swagger
@@ -66,7 +67,7 @@ router.get("/roles", RoleController.getAll);
  *       404:
  *         description: Role not found
  */
-router.get("/roles/:id", RoleController.getById);
+router.get("/roles/:id", authenticateJWT, RoleController.getById);
 
 /**
  * @swagger
@@ -95,7 +96,7 @@ router.get("/roles/:id", RoleController.getById);
  *       200:
  *         description: Role updated successfully
  */
-router.put("/roles/:id", RoleController.update);
+router.put("/roles/:id", authenticateJWT, RoleController.update);
 
 /**
  * @swagger
@@ -113,6 +114,6 @@ router.put("/roles/:id", RoleController.update);
  *       204:
  *         description: Role deleted
  */
-router.delete("/roles/:id", RoleController.delete);
+router.delete("/roles/:id", authenticateJWT, RoleController.delete);
 
 export default router;

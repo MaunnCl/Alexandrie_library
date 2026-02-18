@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { SessionController } from "../controllers/session.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -24,7 +25,7 @@ const router = Router();
  *       400:
  *         description: Invalid input
  */
-router.post("/sessions", SessionController.create);
+router.post("/sessions", authenticateJWT, SessionController.create);
 
 /**
  * @swagger
@@ -36,7 +37,7 @@ router.post("/sessions", SessionController.create);
  *       200:
  *         description: Successful retrieval of sessions
  */
-router.get("/sessions", SessionController.getAll);
+router.get("/sessions", authenticateJWT, SessionController.getAll);
 
 /**
  * @swagger
@@ -55,7 +56,7 @@ router.get("/sessions", SessionController.getAll);
  *       404:
  *         description: Session not found
  */
-router.get("/sessions/:id", SessionController.getById);
+router.get("/sessions/:id", authenticateJWT, SessionController.getById);
 
 /**
  * @swagger
@@ -83,7 +84,7 @@ router.get("/sessions/:id", SessionController.getById);
  *       404:
  *         description: Session not found
  */
-router.put("/sessions/:id", SessionController.update);
+router.put("/sessions/:id", authenticateJWT, SessionController.update);
 
 /**
  * @swagger
@@ -102,7 +103,7 @@ router.put("/sessions/:id", SessionController.update);
  *       404:
  *         description: Session not found
  */
-router.delete("/sessions/:id", SessionController.delete);
+router.delete("/sessions/:id", authenticateJWT, SessionController.delete);
 
 /**
  * @swagger
@@ -129,7 +130,7 @@ router.delete("/sessions/:id", SessionController.delete);
  *       400:
  *         description: Invalid request
  */
-router.patch("/sessions/:id/add/:contentId", SessionController.addContentToSession);
+router.patch("/sessions/:id/add/:contentId", authenticateJWT, SessionController.addContentToSession);
 
 /**
  * @swagger
@@ -156,6 +157,6 @@ router.patch("/sessions/:id/add/:contentId", SessionController.addContentToSessi
  *       400:
  *         description: Invalid request
  */
-router.patch("/sessions/:id/remove/:contentId", SessionController.removeContentFromSession);
+router.patch("/sessions/:id/remove/:contentId", authenticateJWT, SessionController.removeContentFromSession);
 
 export default router;

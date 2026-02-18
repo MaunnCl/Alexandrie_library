@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { CongressController } from "../controllers/congress.controller";
+import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -36,7 +37,7 @@ const router = Router();
  *       201:
  *         description: Congress created successfully
  */
-router.post("/congress", CongressController.create);
+router.post("/congress", authenticateJWT, CongressController.create);
 
 /**
  * @swagger
@@ -48,7 +49,7 @@ router.post("/congress", CongressController.create);
  *       200:
  *         description: Successful retrieval
  */
-router.get("/congress", CongressController.getAll);
+router.get("/congress", authenticateJWT, CongressController.getAll);
 
 /**
  * @swagger
@@ -69,7 +70,7 @@ router.get("/congress", CongressController.getAll);
  *       404:
  *         description: Congress not found
  */
-router.get("/congress/:id", CongressController.getById);
+router.get("/congress/:id", authenticateJWT, CongressController.getById);
 
 /**
  * @swagger
@@ -104,7 +105,7 @@ router.get("/congress/:id", CongressController.getById);
  *       200:
  *         description: Congress updated successfully
  */
-router.put("/congress/:id", CongressController.update);
+router.put("/congress/:id", authenticateJWT, CongressController.update);
 
 /**
  * @swagger
@@ -121,7 +122,7 @@ router.put("/congress/:id", CongressController.update);
  *       204:
  *         description: Congress deleted successfully
  */
-router.delete("/congress/:id", CongressController.delete);
+router.delete("/congress/:id", authenticateJWT, CongressController.delete);
 
 /**
  * @swagger
@@ -185,7 +186,7 @@ router.delete("/congress/:id", CongressController.delete);
  *       500:
  *         description: Server error
  */
-router.post("/congress/:congressId/session/:sessionId", CongressController.addSessionToCongress);
+router.post("/congress/:congressId/session/:sessionId", authenticateJWT, CongressController.addSessionToCongress);
 
 /**
  * @swagger
@@ -249,6 +250,6 @@ router.post("/congress/:congressId/session/:sessionId", CongressController.addSe
  *       500:
  *         description: Server error
  */
-router.delete("/congress/:congressId/session/:sessionId", CongressController.removeSessionFromCongress);
+router.delete("/congress/:congressId/session/:sessionId", authenticateJWT, CongressController.removeSessionFromCongress);
 
 export default router;

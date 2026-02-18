@@ -1,17 +1,29 @@
 import { Request, Response } from "express";
 import { UsersService } from "../services/users.service";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
+const JWT_EXPIRES_IN = "7d";
 
 export class UsersController {
   static async create(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;  
       if (!data.password) {
-          res.status(400).json({ error: "Password is required" });
+        res.status(400).json({ error: "Password is required" });
+        return;
       }
       data.password = await bcrypt.hash(data.password, 10);
       const newUser = await UsersService.create(data);
-      res.status(201).json(newUser);
+
+      const token = jwt.sign(
+        { id: newUser.id, email: newUser.email },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+      );
+
+      res.status(201).json({ ...newUser, token });
     } catch (error: any) {
       res.status(400).json({ error: error.message });
     }
@@ -29,8 +41,10 @@ export class UsersController {
   static async getById(req: Request, res: Response): Promise<void> {
     try {
       const user = await UsersService.getById(Number(req.params.id));
-      if (!user)
+      if (!user) {
         res.status(404).json({ message: "User not found" });
+        return;
+      }
       res.status(200).json(user);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -57,23 +71,30 @@ export class UsersController {
 
   static async loginUser(req: Request, res: Response): Promise<void>  {
     try {
-      console.log("🔐 Login attempt:", req.body);
       const { email, password } = req.body;
-      console.log("📧 Email:", email);
-      if (!email || !password)
+      if (!email || !password) {
         res.status(400).json({ error: "Email and password are required" });
-      console.log("🔍 Searching for user by email...");
+        return;
+      }
       const user = await UsersService.findByEmail(email);
-      console.log("🔍 User found:", user);
-      if (!user)
+      if (!user) {
         res.status(401).json({ error: "Invalid credentials" });
-      console.log("🔑 Comparing passwords...");
+        return;
+      }
       const isMatch = await bcrypt.compare(password, user.password);
-      console.log("🔑 Password match:", isMatch);
-      if (!isMatch)
+      if (!isMatch) {
         res.status(401).json({ error: "Invalid credentials" });
+        return;
+      }
+
+      const token = jwt.sign(
+        { id: user.id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+      );
+
       const { password: _, ...userWithoutPassword } = user;
-      res.status(200).json(userWithoutPassword);
+      res.status(200).json({ ...userWithoutPassword, token });
     } catch (error) {
       console.error("❌ Login error:", error);
       res.status(500).json({ error: "Internal server error" });
