@@ -42,7 +42,6 @@ function Profile() {
           />
           <h2>{user.firstname} {user.lastname}</h2>
           <p className="email">{user.email}</p>
-          <button className="edit-btn">Edit Profile</button>
         </div>
       ) : (
         <p className="loading">Loading profile...</p>

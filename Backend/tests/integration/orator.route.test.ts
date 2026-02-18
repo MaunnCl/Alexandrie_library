@@ -1,7 +1,14 @@
 import request from "supertest";
 import app from "../../app";
+import jwt from "jsonwebtoken";
 
 process.env.NODE_ENV = 'test';
+
+const token = jwt.sign(
+  { id: 1, email: "test@test.com" },
+  process.env.JWT_SECRET || "fallback_secret",
+  { expiresIn: "1h" }
+);
 
 describe("Orators Routes", () => {
   let createdOratorId: number;
@@ -9,6 +16,7 @@ describe("Orators Routes", () => {
   it("should create an orator", async () => {
     const response = await request(app)
       .post("/api/orators")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         name: "Test Orator",
         picture: "http://test.com",
@@ -23,7 +31,8 @@ describe("Orators Routes", () => {
 
   it("should get an orator by id", async () => {
     const response = await request(app)
-      .get(`/api/orators/${createdOratorId}`);
+      .get(`/api/orators/${createdOratorId}`)
+      .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.id).toBe(createdOratorId);
@@ -32,6 +41,7 @@ describe("Orators Routes", () => {
   it("should update an orator", async () => {
     const response = await request(app)
       .put(`/api/orators/${createdOratorId}`)
+      .set("Authorization", `Bearer ${token}`)
       .send({ name: "Updated Orator" });
 
     expect(response.status).toBe(200);
@@ -40,7 +50,8 @@ describe("Orators Routes", () => {
 
   it("should add content id to orator", async () => {
     const response = await request(app)
-      .post(`/api/orators/${createdOratorId}/content/3`);
+      .post(`/api/orators/${createdOratorId}/content/3`)
+      .set("Authorization", `Bearer ${token}`);
   
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("content_ids");
@@ -50,7 +61,8 @@ describe("Orators Routes", () => {
   
   it("should remove content id from orator", async () => {
     const response = await request(app)
-      .delete(`/api/orators/${createdOratorId}/content/3`);
+      .delete(`/api/orators/${createdOratorId}/content/3`)
+      .set("Authorization", `Bearer ${token}`);
   
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("content_ids");
@@ -60,7 +72,8 @@ describe("Orators Routes", () => {
 
   it("should delete an orator", async () => {
     const response = await request(app)
-      .delete(`/api/orators/${createdOratorId}`);
+      .delete(`/api/orators/${createdOratorId}`)
+      .set("Authorization", `Bearer ${token}`);
 
     expect(response.status).toBe(204);
   });

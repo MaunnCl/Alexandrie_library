@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FcGoogle } from 'react-icons/fc';
 import '../styles/Login.css';
 import api from '../lib/api';
 
@@ -68,22 +67,6 @@ function Login() {
 
           <button type="submit" className="login-button">Sign In</button>
         </form>
-
-        <div className="login-divider">or</div>
-
-        <button className="google-login-button">
-          <FcGoogle className="google-icon" />
-          Sign in with Google
-        </button>
-
-        <p className="google-info-text">Quick and secure access with your Google account.</p>
-
-        <button
-          className="signup-button"
-          onClick={() => navigate('/register')}
-        >
-          Create Account
-        </button>
       </div>
     </div>
   );

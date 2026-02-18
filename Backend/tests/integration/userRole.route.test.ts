@@ -1,7 +1,14 @@
 import request from "supertest";
 import app from "../../app";
+import jwt from "jsonwebtoken";
 
 process.env.NODE_ENV = 'test';
+
+const token = jwt.sign(
+  { id: 1, email: "test@test.com" },
+  process.env.JWT_SECRET || "fallback_secret",
+  { expiresIn: "1h" }
+);
 
 describe("UsersRoles routes", () => {
   let userId: number;
@@ -17,16 +24,20 @@ describe("UsersRoles routes", () => {
     });
     userId = userRes.body.id;
 
-    const roleRes = await request(app).post("/api/roles").send({
-      role_name: "editor",
-      description: "Role for editing content"
-    });
+    const roleRes = await request(app)
+      .post("/api/roles")
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        role_name: "editor",
+        description: "Role for editing content"
+      });
     roleId = roleRes.body.id;
   });
 
   it("should create a user-role", async () => {
     const res = await request(app)
       .post("/api/users-roles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         user_id: userId,
         role_id: roleId
@@ -41,7 +52,9 @@ describe("UsersRoles routes", () => {
   });
 
   it("should get a user-role by id", async () => {
-    const res = await request(app).get(`/api/users-roles/${userRoleId}`);
+    const res = await request(app)
+      .get(`/api/users-roles/${userRoleId}`)
+      .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(200);
     expect(res.body.id).toBe(userRoleId);
   });
@@ -49,6 +62,7 @@ describe("UsersRoles routes", () => {
   it("should update a user-role", async () => {
     const res = await request(app)
       .put(`/api/users-roles/${userRoleId}`)
+      .set("Authorization", `Bearer ${token}`)
       .send({ role_id: roleId });
 
     expect(res.status).toBe(200);
@@ -56,12 +70,16 @@ describe("UsersRoles routes", () => {
   });
 
   it("should delete a user-role", async () => {
-    const res = await request(app).delete(`/api/users-roles/${userRoleId}`);
+    const res = await request(app)
+      .delete(`/api/users-roles/${userRoleId}`)
+      .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(204);
   });
 
   it("should delete the user", async () => {
-    const res = await request(app).delete(`/api/users/${userId}`);
+    const res = await request(app)
+      .delete(`/api/users/${userId}`)
+      .set("Authorization", `Bearer ${token}`);
     expect(res.status).toBe(204);
   });
 });

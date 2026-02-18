@@ -27,8 +27,8 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       localStorage.removeItem('user');
-      // Only redirect if not already on login/register page
-      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
+      // Only redirect if not already on login page
+      if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
     }

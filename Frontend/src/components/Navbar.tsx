@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiUser, FiLogOut } from 'react-icons/fi';
 import api from '../lib/api';
 import SearchBar from './SearchBar';
 import SidebarMenu from "./SidebarMenu"; // <-- import
@@ -107,10 +107,6 @@ function Navbar() {
               <button onClick={() => handleNavigate('/profile')}>
                 <FiUser />
                 <span>My Profile</span>
-              </button>
-              <button onClick={() => handleNavigate('/settings')}>
-                <FiSettings />
-                <span>Settings</span>
               </button>
               <button onClick={handleLogout}>
                 <FiLogOut />
