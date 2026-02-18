@@ -82,7 +82,7 @@ function Navbar() {
         <div className="profile-section" ref={profileRef}>
           <div className="profile-toggle" onClick={handleProfileClick}>
             <img
-              src="/public/avatar.png"
+              src="/avatar.png"
               alt="User Avatar"
               className="avatar"
             />
@@ -94,7 +94,7 @@ function Navbar() {
             <div className="profile-card animate-slideDown">
               <div className="profile-card-header">
                 <img
-                  src="/public/avatar.png"
+                  src="/avatar.png"
                   alt="User Avatar"
                   className="avatar"
                 />

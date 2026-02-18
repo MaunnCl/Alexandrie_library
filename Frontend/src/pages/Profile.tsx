@@ -36,7 +36,7 @@ function Profile() {
       {user ? (
         <div className="profile-page-card">  {/* <-- changé ici */}
           <img
-            src="/public/avatar.png"
+            src="/avatar.png"
             alt="User Avatar"
             className="profile-avatar"
           />
