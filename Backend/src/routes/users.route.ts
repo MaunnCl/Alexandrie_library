@@ -1,8 +1,20 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { UsersController } from "../controllers/users.controller";
 import { authenticateJWT } from "../../middlewares/auth.middleware";
 
 const router = Router();
+
+/**
+ * Blocks the route in production.
+ * Account management is done manually (DB / dev env) — no public signup/delete.
+ */
+const blockInProduction = (_req: Request, res: Response, next: NextFunction) => {
+  if (process.env.NODE_ENV === "production") {
+    res.status(403).json({ error: "This action is disabled in production" });
+    return;
+  }
+  next();
+};
 
 /**
  * @swagger
@@ -32,7 +44,7 @@ const router = Router();
  *       201:
  *         description: User created
  */
-router.post("/users", UsersController.create);
+router.post("/users", blockInProduction, UsersController.create);
 
 /**
  * @swagger
@@ -93,7 +105,7 @@ router.get("/users/:id", authenticateJWT, UsersController.getById);
  *       200:
  *         description: User updated
  */
-router.put("/users/:id", authenticateJWT, UsersController.update);
+router.put("/users/:id", authenticateJWT, blockInProduction, UsersController.update);
 
 /**
  * @swagger
@@ -111,7 +123,7 @@ router.put("/users/:id", authenticateJWT, UsersController.update);
  *       204:
  *         description: User deleted
  */
-router.delete("/users/:id", authenticateJWT, UsersController.delete);
+router.delete("/users/:id", authenticateJWT, blockInProduction, UsersController.delete);
 
 
 router.post("/login", UsersController.loginUser);
