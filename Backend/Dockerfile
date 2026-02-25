@@ -2,11 +2,12 @@ FROM node:20-bookworm
 
 WORKDIR /app
 
+ENV NODE_ENV=
+
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
-
 RUN npm run build
 
 EXPOSE 8080
